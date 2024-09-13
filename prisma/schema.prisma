@@ -1,0 +1,109 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id       String   @id @default(uuid()) @map("Id")
+  username String   @map("Username")
+  password String   @map("Password")
+  userType UserType @default(USER) @map("UserType")
+}
+
+model Projects {
+  id                          String                        @id @default(uuid()) @map("Id")
+  name                        String                        @map("Name")
+  description                 String                        @map("Description")
+  category                    String                        @map("Category")
+  round                       ProjectRound                  @map("Round")
+  projectTokenMetrics         ProjectTokenMetrics?
+  projectDeals                ProjectDeals?
+  projectTeamAndAdvisors      ProjectTeamAndAdvisors[]
+  projectPartnersAndInvestors ProjectPartnersAndInvestors[]
+  projectSocials              ProjectSocials?
+}
+
+model ProjectTokenMetrics {
+  id         String   @id @default(uuid()) @map("Id")
+  Project    Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId  String   @unique @default(uuid()) @map("ProjectId")
+  fdv        String   @map("FDV")
+  price      String   @map("Price")
+  tgeUnlock  String   @map("TgeUnlock")
+  tge        DateTime @map("TGE")
+  vesting    DateTime @map("Vesting")
+  allocation String   @map("Allocation")
+}
+
+model ProjectDeals {
+  id             String   @id @default(uuid()) @map("Id")
+  Project        Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId      String   @unique @default(uuid()) @map("ProjectId")
+  maximum        Decimal  @map("Maximum")
+  minimum        Decimal  @map("Minimum")
+  acceptedTokens String   @map("AcceptedTokens")
+  poolFee        Decimal  @map("PoolFee")
+}
+
+model ProjectTeamAndAdvisors {
+  id          String   @id @default(uuid()) @map("Id")
+  Project     Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId   String   @default(uuid()) @map("ProjectId")
+  name        String   @map("Name")
+  title       String   @map("Title")
+  description String   @map("Description")
+}
+
+model ProjectPartnersAndInvestors {
+  id        String   @id @default(uuid()) @map("Id")
+  Project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String   @default(uuid()) @map("ProjectId")
+  name      String   @map("Name")
+  logo      String   @map("Logo")
+}
+
+model ProjectSocials {
+  id        String   @id @default(uuid()) @map("Id")
+  Project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String   @unique @default(uuid()) @map("ProjectId")
+  x         String?  @map("X")
+  instagram String?  @map("Instagram")
+  discord   String?  @map("Discord")
+  telegram  String?  @map("Telegram")
+  medium    String?  @map("Medium")
+  youtube   String?  @map("Youtube")
+}
+
+// model VC {
+//   id               String   @id @default(uuid()) @map("Id")
+//   name             String   @map("Name")
+//   description      String   @map("Description")
+//   category         String   @map("Category")
+//   amountToBeRaised String   @map("AmountToBeRaise")
+//   tags             String[] @map("Tags")
+//   roiDetails       String   @map("RoiDetails")
+// }
+
+enum UserType {
+  USER
+  VC
+}
+
+enum ProjectRound {
+  PRE_SEED  @map("PRE SEED")
+  SEED      @map("SEED")
+  PRIVATE_1 @map("PRIVATE 1")
+  PRIVATE_2 @map("PRIVATE 2")
+  PRIVATE_3 @map("PRIVATE 3")
+  PUBLIC    @map("PUBLIC")
+}

@@ -4,16 +4,29 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node src/server.ts",
+    "build": "tsc",
+    "dev": "nodemon src/server.ts",
+    "dev:debug": "nodemon --inspect src/server.ts"
   },
-  "author": "",
+  "author": "Miraaj Kadam <miraajkadam@gmail.com> (https://miraajkadam.com/)",
   "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.19.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0"
+  },
   "devDependencies": {
     "@eslint/js": "^9.10.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
     "@types/node": "^22.5.4",
     "eslint": "^9.10.0",
     "globals": "^15.9.0",
     "prettier": "^3.3.3",
+    "prisma": "^5.19.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.6.2",
