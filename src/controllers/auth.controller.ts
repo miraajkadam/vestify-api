@@ -11,6 +11,26 @@ import { createNewUserInDb, getUserByEmailAndPasswordFromDb } from '@/dtos/auth.
 import { ApiResponse } from '@/models/ApiResponse'
 import { createErrorResponse } from '@/utils/error'
 
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Login a user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoginRequest'
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *       400:
+ *         description: Invalid email or password
+ *       500:
+ *         description: Server error
+ */
 export const loginUser = async (
   req: Request<null, ApiResponse<LoginApiResponse>, LoginApiPayload, null>,
   res: Response<ApiResponse<LoginApiResponse>>
@@ -42,6 +62,32 @@ export const loginUser = async (
   }
 }
 
+/**
+ * @swagger
+ * /api/auth/signup:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *               - userType
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               userType:
+ *                 type: string
+ *                 enum: [VC, USER]
+
+ */
 export const signupUser = async (
   req: Request<null, ApiResponse<SignUpUserApiResponse>, SignUpUserPayload, null>,
   res: Response<ApiResponse<SignUpUserApiResponse>>
