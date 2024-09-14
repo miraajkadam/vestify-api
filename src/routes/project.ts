@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import { addNewProject, deleteProject, getAllProjects } from '@/controllers/project.controller'
+import { addNewProject, deleteProject, getAllProjects } from '@/controllers/project'
 
 const projectRouter = Router()
 

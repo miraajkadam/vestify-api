@@ -1,7 +1,6 @@
 import express from 'express'
 
-import authRouter from '@/routes/auth.route'
-import projectRouter from '@/routes/project.route'
+import { authRouter, projectRouter } from '@/routes'
 
 const app = express()
 
