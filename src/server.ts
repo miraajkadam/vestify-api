@@ -1,9 +1,8 @@
 import express from 'express'
-import swaggerUi from 'swagger-ui-express'
 import swaggerJsdoc from 'swagger-jsdoc'
+import swaggerUi from 'swagger-ui-express'
 
-import authRouter from '@/routes/auth.route'
-import projectRouter from '@/routes/project.route'
+import { authRouter, projectRouter } from '@/routes'
 
 const app = express()
 
