@@ -9,40 +9,6 @@ import { addProjectToDb, deleteProjectFromDb, getAllProjectFromDb } from '@/dtos
 import { ApiResponse } from '@/models/ApiResponse'
 import { createErrorResponse } from '@/utils/error'
 
-/**
- * @swagger
- * components:
- *   schemas:
- *     AddProjectRequest:
- *       type: object
- *       required:
- *         - name
- *       properties:
- *         name:
- *           type: string
- *         description:
- *           type: string
- */
-
-/**
- * @swagger
- * /api/project/new:
- *   post:
- *     summary: Add a new project
- *     tags: [Project]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/AddProjectRequest'
- *     responses:
- *       200:
- *         description: Project added successfully
- *       500:
- *         description: Server error
- */
-
 export const addNewProject = async (
   req: Request<null, ApiResponse<string>, AddProjectApiPayload, null>,
   res: Response<ApiResponse<string>>
@@ -67,25 +33,6 @@ export const addNewProject = async (
     res.status(status).send({ message, success: false, stack })
   }
 }
-
-/**
- * @swagger
- * /api/project:
- *   delete:
- *     summary: Delete a project
- *     tags: [Project]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/DeleteProjectRequest'
- *     responses:
- *       200:
- *         description: Project deleted successfully
- *       500:
- *         description: Server error
- */
 
 export const deleteProject = async (
   req: Request<null, ApiResponse<null>, DeleteProjectApiPayload, null>,
@@ -112,19 +59,6 @@ export const deleteProject = async (
     res.status(status).send({ message, success: false, stack })
   }
 }
-
-/**
- * @swagger
- * /api/project:
- *   get:
- *     summary: Get all projects
- *     tags: [Project]
- *     responses:
- *       200:
- *         description: List of projects fetched successfully
- *       500:
- *         description: Server error
- */
 
 export const getAllProjects = async (
   req: Request<null, ApiResponse<ProjectListResponse>, DeleteProjectApiPayload, null>,

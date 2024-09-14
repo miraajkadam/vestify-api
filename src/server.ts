@@ -1,48 +1,12 @@
 import express from 'express'
-import swaggerUi from 'swagger-ui-express'
-import swaggerJsdoc from 'swagger-jsdoc'
 
 import authRouter from '@/routes/auth.route'
 import projectRouter from '@/routes/project.route'
 
 const app = express()
 
-/**
- * @swagger
- * components:
- *   schemas:
- *     AddProjectRequest:
- *       type: object
- *       properties:
- *         name:
- *           type: string
- *         description:
- *           type: string
- *
- */
-const swaggerOptions = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Your API',
-      version: '1.0.0',
-      description: 'API documentation Vestify',
-    },
-
-    servers: [
-      {
-        url: `http://localhost:${process.env.PORT ?? 3000}`,
-      },
-    ],
-  },
-  apis: ['./src/routes/*.ts', './src/controllers/*.ts'],
-}
-
-const swaggerSpec = swaggerJsdoc(swaggerOptions)
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
-
-// Swagger UI
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 app.use('/api/auth', authRouter)
 app.use('/api/project', projectRouter)
@@ -53,4 +17,6 @@ app.get('/health', (req, res) => {
 
 const PORT = process.env.PORT ?? 3000
 
-app.listen(PORT, () => {})
+app.listen(PORT, () => {
+  console.log(`server is listing on port ${PORT}`)
+})
