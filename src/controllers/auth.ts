@@ -1,7 +1,7 @@
 import { UserType } from '@prisma/client'
 import { type Request, type Response } from 'express'
 
-import { createNewUserInDb, getUserByEmailAndPasswordFromDb } from '@/dtos/auth.dto'
+import { AuthService } from '@/services'
 import type {
   LoginApiPayload,
   LoginApiResponse,
@@ -39,7 +39,8 @@ export const loginUser = async (
   try {
     const { username, password } = req.body
 
-    const user = await getUserByEmailAndPasswordFromDb(username, password)
+    const authService = new AuthService()
+    const user = await authService.getUserByEmailAndPasswordFromDb(username, password)
 
     if (!user) return apiResponse.error('invalid email or password')
 
@@ -89,7 +90,8 @@ export const signupUser = async (
     if (userType !== UserType.VC)
       if (userType !== UserType.USER) return apiResponse.error('invalid user type')
 
-    const newUser = await createNewUserInDb(username, password, userType)
+    const authService = new AuthService()
+    const newUser = await authService.createNewUserInDb(username, password, userType)
 
     if (!newUser) return apiResponse.error('unable to create a new user')
 

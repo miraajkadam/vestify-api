@@ -1,6 +1,6 @@
 import { type Request, type Response } from 'express'
 
-import { addProjectToDb, deleteProjectFromDb, getAllProjectFromDb } from '@/dtos/project.dto'
+import { ProjectService } from '@/services'
 import {
   AddProjectApiPayload,
   DeleteProjectApiPayload,
@@ -49,7 +49,9 @@ export const addNewProject = async (
   const apiResponse = new ApiResponse<string>(res)
 
   try {
-    const { id } = await addProjectToDb(req.body)
+    const ps = new ProjectService()
+
+    const { id } = await ps.addProjectToDb(req.body)
 
     return apiResponse.successWithData(id, 'new project was added successfully')
   } catch (ex: unknown) {
@@ -86,7 +88,10 @@ export const deleteProject = async (
 
   try {
     const { id } = req.body
-    await deleteProjectFromDb(id)
+
+    const ps = new ProjectService()
+
+    await ps.deleteProjectFromDb(id)
 
     return apiResponse.success('project deleted successfully')
   } catch (ex: unknown) {
@@ -116,7 +121,8 @@ export const getAllProjects = async (
   const apiResponse = new ApiResponse<ProjectListResponse>(res)
 
   try {
-    const projects = await getAllProjectFromDb()
+    const ps = new ProjectService()
+    const projects = await ps.getAllProjectFromDb()
 
     return apiResponse.successWithData(projects, 'project list fetch successful')
   } catch (ex: unknown) {
