@@ -1,13 +1,12 @@
 import { type Request, type Response } from 'express'
 
+import { addProjectToDb, deleteProjectFromDb, getAllProjectFromDb } from '@/dtos/project.dto'
 import {
   AddProjectApiPayload,
   DeleteProjectApiPayload,
   ProjectListResponse,
 } from '@/types/ProjectTypes'
-import { addProjectToDb, deleteProjectFromDb, getAllProjectFromDb } from '@/dtos/project.dto'
-import { ApiResponse } from '@/models/ApiResponse'
-import { createErrorResponse } from '@/utils/error'
+import ApiResponse from '@/utils/ApiResponse'
 
 /**
  * @swagger
@@ -47,24 +46,16 @@ export const addNewProject = async (
   req: Request<null, ApiResponse<string>, AddProjectApiPayload, null>,
   res: Response<ApiResponse<string>>
 ) => {
+  const apiResponse = new ApiResponse<string>(res)
+
   try {
     const { id } = await addProjectToDb(req.body)
 
-    return res.status(200).send({
-      message: 'new project added successfully',
-      success: true,
-      data: id,
-    })
+    return apiResponse.successWithData(id, 'new project was added successfully')
   } catch (ex: unknown) {
-    const error = ex as unknown as Error
+    const error = ex as Error
 
-    const errorMessage = 'An exception occurred while adding project to database, ' + error.message
-
-    console.error(errorMessage)
-
-    const { message, stack, status } = createErrorResponse(errorMessage, error?.stack)
-
-    res.status(status).send({ message, success: false, stack })
+    return apiResponse.critical('unable to add a new project', error)
   }
 }
 
@@ -91,25 +82,17 @@ export const deleteProject = async (
   req: Request<null, ApiResponse<null>, DeleteProjectApiPayload, null>,
   res: Response<ApiResponse<null>>
 ) => {
+  const apiResponse = new ApiResponse(res)
+
   try {
     const { id } = req.body
     await deleteProjectFromDb(id)
 
-    return res.status(200).send({
-      message: 'project deleted sucessfull',
-      success: true,
-    })
+    return apiResponse.success('project deleted successfully')
   } catch (ex: unknown) {
-    const error = ex as unknown as Error
+    const error = ex as Error
 
-    const errorMessage =
-      'An exception occurred while deleting project from database, ' + error.message
-
-    console.error(errorMessage)
-
-    const { message, stack, status } = createErrorResponse(errorMessage, error?.stack)
-
-    res.status(status).send({ message, success: false, stack })
+    return apiResponse.critical('unable to delete project', error)
   }
 }
 
@@ -130,23 +113,15 @@ export const getAllProjects = async (
   req: Request<null, ApiResponse<ProjectListResponse>, DeleteProjectApiPayload, null>,
   res: Response<ApiResponse<ProjectListResponse>>
 ) => {
+  const apiResponse = new ApiResponse<ProjectListResponse>(res)
+
   try {
     const projects = await getAllProjectFromDb()
 
-    return res.status(200).send({
-      message: 'project list fetch successful',
-      success: true,
-      data: projects,
-    })
+    return apiResponse.successWithData(projects, 'project list fetch successful')
   } catch (ex: unknown) {
-    const error = ex as unknown as Error
+    const error = ex as Error
 
-    const errorMessage = 'An exception occurred while getting all projects, ' + error.message
-
-    console.error(errorMessage)
-
-    const { message, stack, status } = createErrorResponse(errorMessage, error?.stack)
-
-    res.status(status).send({ message, success: false, stack })
+    return apiResponse.critical('unable to fetch project list', error)
   }
 }
