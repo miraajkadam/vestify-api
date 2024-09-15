@@ -7,10 +7,8 @@ import { Strategy as LocalStrategy } from 'passport-local'
 // Bearer strategy to authenticate endpoints with bearer
 passport.use(
   new BearerStrategy((token, done) => {
-    console.log('Token', token)
     try {
       const { user } = jwt.decode(token) as JwtPayload
-      console.log('Bearer Strategy ', user)
 
       return done(null, user)
     } catch {
@@ -31,7 +29,6 @@ passport.use(
 )
 
 passport.serializeUser((user, done) => {
-  console.log('Inside serialise cb. User id is stored to the session file store here')
   done(null, user)
 })
 

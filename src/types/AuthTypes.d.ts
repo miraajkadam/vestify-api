@@ -16,4 +16,6 @@ export type SignUpUserPayload = {
   userType: UserType
 }
 
-export type SignUpUserApiResponse = string
+export type SignUpUserApiResponse = {
+  access_token: string
+}
