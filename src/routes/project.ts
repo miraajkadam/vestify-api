@@ -1,6 +1,7 @@
 import { Router } from 'express'
 
 import { addNewProject, deleteProject, getAllProjects } from '@/controllers/project'
+import passport from '@/utils/passport'
 
 const projectRouter = Router()
 
@@ -60,6 +61,6 @@ projectRouter.post('/delete', deleteProject)
  *       500:
  *         description: Server error
  */
-projectRouter.get('/getAll', getAllProjects)
+projectRouter.get('/getAll', passport.authenticate('bearer'), getAllProjects)
 
 export default projectRouter

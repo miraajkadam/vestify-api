@@ -137,7 +137,7 @@ export default class ApiResponse<T> implements IApiResponse<T> {
     return this.res.status(this.status).json({
       success: this.isSuccess,
       message: this.clientMessage,
-      stack: process.env.NODE_ENV !== NodeEnvironment.PRODUCTION && this.exception.stack,
+      ...(process.env.NODE_ENV !== NodeEnvironment.PRODUCTION && { stack: this.exception.stack }),
     })
   }
 }
