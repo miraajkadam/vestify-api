@@ -1,14 +1,39 @@
 import express from 'express'
+import session from 'express-session'
 import swaggerJsdoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
-import { apiReference } from '@scalar/express-api-reference'
 
 import { authRouter, projectRouter } from '@/routes'
+import passport from '@/utils/passport'
+import { apiReference } from '@scalar/express-api-reference'
 
 const app = express()
 
+const JWT_SECRET = process.env.JWT_SECRET as string
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(
+  session({
+    secret: JWT_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 360000, secure: false },
+    rolling: true,
+    // genid: req => {
+    //   return uuid() // use UUID's for session id
+    // },
+  })
+)
+
+app.use((req, res, next) => {
+  console.log('SessionID: ', req.sessionID)
+
+  next()
+})
+
+app.use(passport.initialize())
+app.use(passport.session())
 
 // Swagger configuration
 const swaggerOptions = {
