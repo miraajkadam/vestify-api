@@ -60,3 +60,30 @@ export const signupUser = async (
     return apiResponse.critical('unable to create a new user', error)
   }
 }
+
+export const logoutUser = async (
+  req: Request<null, ApiResponse<SignUpUserApiResponse>, SignUpUserPayload, null>,
+  res: Response<ApiResponse<SignUpUserApiResponse>>
+) => {
+  const apiResponse = new ApiResponse<SignUpUserApiResponse>(res)
+
+  try {
+    req.logout(err => {
+      if (err) {
+        return apiResponse.error('Logout failed', 500)
+      }
+
+      req.session.destroy(err => {
+        if (err) {
+          return apiResponse.error('session destruction failed', 500)
+        }
+
+        return apiResponse.success('logged out successfully')
+      })
+    })
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('unable to create a new user', error)
+  }
+}

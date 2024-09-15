@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import { loginUser, signupUser } from '@/controllers/auth'
+import { loginUser, logoutUser, signupUser } from '@/controllers/auth'
 import passport from '@/utils/passport'
 
 const authRouter = Router()
@@ -52,5 +52,22 @@ authRouter.post('/login', passport.authenticate('local'), loginUser)
  *         description: Invalid input
  */
 authRouter.post('/signup', signupUser)
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Log out a user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: false
+ *
+ *     responses:
+ *       200:
+ *         description: User successfully logged out
+ *       500:
+ *         description: something went wrong
+ */
+authRouter.post('/logout', logoutUser)
 
 export default authRouter
