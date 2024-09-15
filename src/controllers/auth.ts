@@ -1,5 +1,6 @@
 import { UserType } from '@prisma/client'
 import { type Request, type Response } from 'express'
+import jwt from 'jsonwebtoken'
 
 import { AuthService } from '@/services'
 import type {
@@ -9,6 +10,9 @@ import type {
   SignUpUserPayload,
 } from '@/types/AuthTypes'
 import ApiResponse from '@/utils/ApiResponse'
+// import { JWT_SECRET } from '@/utils/env'
+
+const JWT_SECRET = process.env.JWT_SECRET as string
 
 export const loginUser = async (
   req: Request<null, ApiResponse<LoginApiResponse>, LoginApiPayload, null>,
@@ -17,14 +21,14 @@ export const loginUser = async (
   const apiResponse = new ApiResponse<LoginApiResponse>(res)
 
   try {
-    const { email, password } = req.body
+    const accessToken = jwt.sign(
+      {
+        user: req.user,
+      },
+      JWT_SECRET
+    )
 
-    const authService = new AuthService()
-    const user = await authService.getUserByEmailAndPasswordFromDb(email, password)
-
-    if (!user) return apiResponse.error('invalid email or password')
-
-    return apiResponse.successWithData(user, 'successfully logged in')
+    return apiResponse.successWithData({ access_token: accessToken }, 'successfully logged in')
   } catch (ex: unknown) {
     const error = ex as Error
 

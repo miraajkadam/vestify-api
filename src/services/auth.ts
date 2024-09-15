@@ -33,4 +33,15 @@ export default class AuthService {
 
     return user?.id
   }
+
+  getUserById = async (id: string) => {
+    const user = await this.prisma.users.findUnique({
+      where: {
+        id,
+      },
+      select: { email: true, username: true, userType: true },
+    })
+
+    return user
+  }
 }

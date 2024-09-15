@@ -5,7 +5,9 @@ export type LoginApiPayload = {
   password: string
 }
 
-export type LoginApiResponse = string
+export type LoginApiResponse = {
+  access_token: string
+}
 
 export type SignUpUserPayload = {
   username: string

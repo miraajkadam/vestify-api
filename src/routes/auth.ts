@@ -1,6 +1,7 @@
 import { Router } from 'express'
 
 import { loginUser, signupUser } from '@/controllers/auth'
+import passport from '@/utils/passport'
 
 const authRouter = Router()
 
@@ -30,7 +31,7 @@ const authRouter = Router()
  *       400:
  *         description: Invalid email or password
  */
-authRouter.post('/login', loginUser)
+authRouter.post('/login', passport.authenticate('local'), loginUser)
 
 /**
  * @swagger
