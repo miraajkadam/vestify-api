@@ -17,10 +17,10 @@ export const loginUser = async (
   const apiResponse = new ApiResponse<LoginApiResponse>(res)
 
   try {
-    const { username, password } = req.body
+    const { email, password } = req.body
 
     const authService = new AuthService()
-    const user = await authService.getUserByEmailAndPasswordFromDb(username, password)
+    const user = await authService.getUserByEmailAndPasswordFromDb(email, password)
 
     if (!user) return apiResponse.error('invalid email or password')
 
@@ -39,13 +39,13 @@ export const signupUser = async (
   const apiResponse = new ApiResponse<SignUpUserApiResponse>(res)
 
   try {
-    const { username, password, userType } = req.body
+    const { username, password, email, userType } = req.body
 
     if (userType !== UserType.VC)
       if (userType !== UserType.USER) return apiResponse.error('invalid user type')
 
     const authService = new AuthService()
-    const newUser = await authService.createNewUserInDb(username, password, userType)
+    const newUser = await authService.createNewUserInDb(username, email, password, userType)
 
     if (!newUser) return apiResponse.error('unable to create a new user')
 

@@ -15,7 +15,8 @@ datasource db {
 
 model Users {
   id       String   @id @default(uuid()) @map("Id")
-  username String   @map("Username")
+  username String   @unique @map("Username")
+  email    String   @unique @map("Email")
   password String   @map("Password")
   userType UserType @default(USER) @map("UserType")
 }

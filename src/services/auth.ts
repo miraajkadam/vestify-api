@@ -7,9 +7,14 @@ export default class AuthService {
     this.prisma = new PrismaClient()
   }
 
-  createNewUserInDb = async (username: string, password: string, userType: UserType) => {
+  createNewUserInDb = async (
+    username: string,
+    email: string,
+    password: string,
+    userType: UserType
+  ) => {
     const user = await this.prisma.users.create({
-      data: { username, password, userType },
+      data: { username, email, password, userType },
       select: {
         id: true,
       },
@@ -18,10 +23,10 @@ export default class AuthService {
     return user?.id
   }
 
-  getUserByEmailAndPasswordFromDb = async (username: string, password: string) => {
+  getUserByEmailAndPasswordFromDb = async (email: string, password: string) => {
     const user = await this.prisma.users.findFirst({
       where: {
-        username,
+        email,
         password,
       },
     })
