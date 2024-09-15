@@ -45,15 +45,27 @@ export const signupUser = async (
   try {
     const { username, password, email, userType } = req.body
 
-    if (userType !== UserType.VC)
-      if (userType !== UserType.USER) return apiResponse.error('invalid user type')
+    if (userType !== UserType.VC && userType !== UserType.USER) {
+      return apiResponse.error('invalid user type')
+    }
 
     const authService = new AuthService()
     const newUser = await authService.createNewUserInDb(username, email, password, userType)
 
     if (!newUser) return apiResponse.error('unable to create a new user')
 
-    return apiResponse.successWithData(newUser, 'successfully created a new user')
+    // Generate JWT token
+    const accessToken = jwt.sign(
+      {
+        user: { id: newUser },
+      },
+      JWT_SECRET
+    )
+
+    return apiResponse.successWithData(
+      { access_token: accessToken },
+      'successfully created a new user'
+    )
   } catch (ex: unknown) {
     const error = ex as Error
 
