@@ -1,4 +1,5 @@
-import projectRouter from './project'
 import authRouter from './auth'
+import projectRouter from './project'
+import vcRouter from './vc'
 
-export { projectRouter, authRouter }
+export { authRouter, projectRouter, vcRouter }
