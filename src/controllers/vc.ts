@@ -1,9 +1,14 @@
 import { type Request, type Response } from 'express'
 
-import { isAddNewVCPayloadValid } from '@/helpers/vc'
-import type { AddNewVCPayload } from '@/types/vc.d'
-import ApiResponse from '@/utils/ApiResponse'
+import { isAddNewVCPayloadValid, isValidVCId } from '@/helpers/vc'
 import VCService from '@/services/vc'
+import type {
+  AddNewVCPayload,
+  GetVCProfileById,
+  VCProfileResponse,
+  VCProjectsResponse,
+} from '@/types/vc.d'
+import ApiResponse from '@/utils/ApiResponse'
 
 export const addNewVC = async (
   req: Request<null, ApiResponse<null>, AddNewVCPayload, null>,
@@ -30,6 +35,71 @@ export const addNewVC = async (
     if (!vcCreated) return apiResponse.error('unable to add a new vc')
 
     return apiResponse.success('successfully created a new vc')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('unable to create a new vc', error)
+  }
+}
+
+export const getVCProfileById = async (
+  req: Request<
+    { vcId: string },
+    ApiResponse<VCProfileResponse>,
+    GetVCProfileById,
+    VCProfileResponse
+  >,
+  res: Response<ApiResponse<VCProfileResponse>>
+) => {
+  const apiResponse = new ApiResponse<VCProfileResponse>(res)
+
+  try {
+    const vcId = req.params.vcId
+
+    if (!isValidVCId(vcId)) return apiResponse.error('invalid VC Id')
+
+    const vcService = new VCService()
+
+    const isVCExist = await vcService.checkVCExistByIdInDb(vcId)
+
+    if (!isVCExist) return apiResponse.error('VC profile not found', 404)
+
+    const vcDetails = await vcService.getVCDetailsFromDB(vcId)
+
+    if (!vcDetails) return apiResponse.error('unable to get vc details')
+
+    return apiResponse.successWithData(vcDetails, 'successfully created a new vc')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('unable to create a new vc', error)
+  }
+}
+
+export const getVCProjectsById = async (
+  req: Request<
+    { vcId: string },
+    ApiResponse<VCProfileResponse>,
+    GetVCProfileById,
+    VCProfileResponse
+  >,
+  res: Response<ApiResponse<VCProfileResponse>>
+) => {
+  const apiResponse = new ApiResponse<VCProjectsResponse>(res)
+
+  try {
+    const vcId = req.params.vcId
+
+    if (!isValidVCId(vcId)) return apiResponse.error('invalid VC Id')
+
+    const vcService = new VCService()
+    const vcProjects = await vcService.getVCProjectsByIdFromDB(vcId)
+
+    if (!vcProjects) return apiResponse.error('unable to get vc projects')
+
+    if (!vcProjects.length) return apiResponse.error('No projects found for the given VC ID', 404)
+
+    return apiResponse.successWithData(vcProjects, 'project for vc get successful')
   } catch (ex: unknown) {
     const error = ex as Error
 
