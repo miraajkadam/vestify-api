@@ -40,4 +40,35 @@
  *         userType:
  *           type: string
  *           enum: [USER, VC]
+ *     AddNewVCPayload:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           example: "Innovative Ventures"
+ *         description:
+ *           type: string
+ *           example: "A leading VC firm focusing on tech startups."
+ *         logoBase64:
+ *           type: string
+ *           example: "iVBORw0KGgoAAAANSUhEUgAAAAU..."
+ *         subscriptionFee:
+ *           type: number
+ *           format: float
+ *           example: 5000.00
+ *         tags:
+ *           type: array
+ *           items:
+ *             type: string
+ *           example: ["tech", "startups", "innovation"]
+ *         kycDone:
+ *           type: boolean
+ *           example: true
+ *       required:
+ *         - name
+ *         - description
+ *         - logoBase64
+ *         - subscriptionFee
+ *         - tags
+ *         - kycDone
  */

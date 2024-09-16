@@ -1,12 +1,12 @@
+import { apiReference } from '@scalar/express-api-reference'
+import cors from 'cors'
 import express from 'express'
 import session from 'express-session'
 import swaggerJsdoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
 
-import { authRouter, projectRouter } from '@/routes'
+import { authRouter, projectRouter, vcRouter } from '@/routes'
 import passport from '@/utils/passport'
-import { apiReference } from '@scalar/express-api-reference'
-import cors from 'cors'
 
 const app = express()
 app.use(
@@ -32,10 +32,6 @@ app.use(
     // },
   })
 )
-
-app.use((req, res, next) => {
-  next()
-})
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -75,6 +71,7 @@ app.use(
 
 app.use('/api/auth', authRouter)
 app.use('/api/project', projectRouter)
+app.use('/api/vc', vcRouter)
 
 app.get('/health', (req, res) => {
   res.status(200).send('server is running')
