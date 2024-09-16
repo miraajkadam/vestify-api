@@ -16,6 +16,7 @@ export default class ProjectService {
         category: newProject.info.category,
         description: newProject.info.description,
         round: newProject.info.round,
+        vcId: newProject.info.vcId,
         projectTokenMetrics: {
           create: {
             allocation: newProject.tokenMetrics.allocation,
