@@ -61,6 +61,6 @@ projectRouter.post('/delete', deleteProject)
  *       500:
  *         description: Server error
  */
-projectRouter.get('/getAll', passport.authenticate('bearer'), getAllProjects)
+projectRouter.get('/getAll', getAllProjects)
 
 export default projectRouter
