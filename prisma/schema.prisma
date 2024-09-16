@@ -21,6 +21,17 @@ model Users {
   userType UserType @default(USER) @map("UserType")
 }
 
+model VC {
+  id              String     @id @default(uuid()) @map("Id")
+  name            String     @map("Name")
+  description     String     @map("Description")
+  logoBase64      String     @map("LogoBase64")
+  subscriptionFee Decimal    @map("SubscriptionFee")
+  tags            String[]   @map("Tags")
+  kycDone         Boolean    @map("KYCDone")
+  projects        Projects[]
+}
+
 model Projects {
   id                          String                        @id @default(uuid()) @map("Id")
   name                        String                        @map("Name")
@@ -32,6 +43,8 @@ model Projects {
   projectTeamAndAdvisors      ProjectTeamAndAdvisors[]
   projectPartnersAndInvestors ProjectPartnersAndInvestors[]
   projectSocials              ProjectSocials?
+  VC                          VC                            @relation(fields: [vcId], references: [id], onDelete: Cascade)
+  vcId                        String                        @default(uuid()) @map("VCId")
 }
 
 model ProjectTokenMetrics {
@@ -84,16 +97,6 @@ model ProjectSocials {
   medium    String?  @map("Medium")
   youtube   String?  @map("Youtube")
 }
-
-// model VC {
-//   id               String   @id @default(uuid()) @map("Id")
-//   name             String   @map("Name")
-//   description      String   @map("Description")
-//   category         String   @map("Category")
-//   amountToBeRaised String   @map("AmountToBeRaise")
-//   tags             String[] @map("Tags")
-//   roiDetails       String   @map("RoiDetails")
-// }
 
 enum UserType {
   USER
