@@ -1,15 +1,33 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, ProjectRound } from '@prisma/client'
 
 import type { AddProjectApiPayload } from '@/types/ProjectTypes'
 
+/**
+ * Service class for managing projects in the database.
+ *
+ * @class
+ */
 export default class ProjectService {
   private prisma: PrismaClient
 
+  /**
+   * Constructs a new ProjectService instance.
+   * Initializes a PrismaClient instance for database interactions.
+   *
+   * @constructor
+   */
   constructor() {
     this.prisma = new PrismaClient()
   }
 
-  addProjectToDb = async (newProject: AddProjectApiPayload) =>
+  /**
+   * Adds a new project to the database.
+   *
+   * @async
+   * @param {AddProjectApiPayload} newProject - The payload containing project details to be added.
+   * @returns {Promise<{id: string}>} - A promise that resolves to an object containing the ID of the newly created project.
+   */
+  addProjectToDb = async (newProject: AddProjectApiPayload): Promise<{ id: string }> =>
     await this.prisma.projects.create({
       data: {
         name: newProject.info.name,
@@ -61,7 +79,14 @@ export default class ProjectService {
       },
     })
 
-  deleteProjectFromDb = async (projectId: string) =>
+  /**
+   * Deletes a project from the database by its ID.
+   *
+   * @async
+   * @param {string} projectId - The ID of the project to be deleted.
+   * @returns {Promise<{id: string}>} - A promise that resolves to an object containing the ID of the deleted project.
+   */
+  deleteProjectFromDb = async (projectId: string): Promise<{ id: string }> =>
     await this.prisma.projects.delete({
       where: {
         id: projectId,
@@ -71,7 +96,15 @@ export default class ProjectService {
       },
     })
 
-  getAllProjectFromDb = async () =>
+  /**
+   * Retrieves all projects from the database.
+   *
+   * @async
+   * @returns {Promise<Array<{name: string, description: string, round: ProjectRound}>>} - A promise that resolves to an array of project objects containing name, description, and round.
+   */
+  getAllProjectFromDb = async (): Promise<
+    Array<{ name: string; description: string; round: ProjectRound }>
+  > =>
     await this.prisma.projects.findMany({
       select: {
         name: true,
@@ -80,6 +113,13 @@ export default class ProjectService {
       },
     })
 
+  /**
+   * Checks if a project exists in the database by its ID.
+   *
+   * @async
+   * @param {string} id - The ID of the project to check for existence.
+   * @returns {Promise<boolean>} - A promise that resolves to `true` if the project exists, otherwise `false`.
+   */
   checkProjectExistenceInDb = async (id: string): Promise<boolean> => {
     const entity = await this.prisma.projects.findUnique({
       where: { id },

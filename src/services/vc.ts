@@ -150,4 +150,44 @@ export default class VCService {
 
     return entity !== null
   }
+
+  /**
+   * Retrieves a list of all venture capitalists (VCs) from the database.
+   *
+   * This function queries the database to fetch all VC records, returning an array of VC details. Each VC detail includes the VC's name, description, logo (encoded in base64), subscription fee, and ID.
+   *
+   * @async
+   * @returns {Promise<Array<{ name: string, description: string, logoBase64: string, subscriptionFee: number, id: string }> | undefined>}
+   * A promise that resolves to an array of VC objects, where each object contains:
+   *
+   * - `name` (string): The name of the VC.
+   * - `description` (string): A description of the VC.
+   * - `logoBase64` (string): The base64-encoded logo of the VC.
+   * - `subscriptionFee` (Decimal): The subscription fee associated with the VC.
+   * - `id` (string): The unique identifier of the VC.
+   *
+   * @throws {Error} Throws an error if the database query fails.
+   */
+  getAllVCsFromDb = async (): Promise<
+    | Array<{
+        name: string
+        description: string
+        logoBase64: string
+        subscriptionFee: Decimal
+        id: string
+      }>
+    | undefined
+  > => {
+    const vcs = await this.prisma.vC.findMany({
+      select: {
+        name: true,
+        description: true,
+        logoBase64: true,
+        subscriptionFee: true,
+        id: true,
+      },
+    })
+
+    return vcs
+  }
 }
