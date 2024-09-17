@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import { addNewVC, getVCProfileById, getVCProjectsById } from '@/controllers/vc'
+import { addNewVC, getAllVC, getVCProfileById, getVCProjectsById } from '@/controllers/vc'
 
 const vcRouter = Router()
 
@@ -91,6 +91,90 @@ const vcRouter = Router()
  *       - VC
  */
 vcRouter.post('/new', addNewVC)
+
+/**
+ * @swagger
+ * /api/vc/getAll:
+ *   get:
+ *     summary: Retrieve all Venture Capitalists (VCs)
+ *     description: Fetch a list of all VCs from the database.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the list of VCs.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: VCs list fetch successfully
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       name:
+ *                         type: string
+ *                         example: Innovative Ventures
+ *                       description:
+ *                         type: string
+ *                         example: A leading VC firm focusing on tech startups.
+ *                       logoBase64:
+ *                         type: string
+ *                         example: iVBORw0KGgoAAAANSUhEUgAAAAU...
+ *                       subscriptionFee:
+ *                         type: string
+ *                         example: 5000
+ *                       id:
+ *                         type: string
+ *                         example: 7242012c-511a-410a-b99b-7f2ecf0d238b
+ *       '400':
+ *         description: Unable to get all VCs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "something went wrong."
+ *       '404':
+ *         description: No VCs found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "No VCs found"
+ *       '500':
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to get all VCs"
+ *     tags:
+ *       - VC
+ */
+vcRouter.get('/getAll', getAllVC)
 
 /**
  * @swagger

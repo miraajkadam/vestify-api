@@ -33,3 +33,8 @@ export type VCProjectsResponse = {
   description: string
   round: ProjectRound
 }[]
+
+export type AllVCResponse = Pick<
+  VC,
+  'name' | 'description' | 'logoBase64' | 'subscriptionFee' | 'id'
+>[]

@@ -4,6 +4,7 @@ import { isAddNewVCPayloadValid } from '@/helpers/vc'
 import VCService from '@/services/vc'
 import type {
   AddNewVCPayload,
+  AllVCResponse,
   GetVCProfileById,
   VCProfileResponse,
   VCProjectsResponse,
@@ -105,5 +106,27 @@ export const getVCProjectsById = async (
     const error = ex as Error
 
     return apiResponse.critical('unable to create a new vc', error)
+  }
+}
+
+export const getAllVC = async (
+  _: Request<null, ApiResponse<AllVCResponse>, GetVCProfileById>,
+  res: Response<ApiResponse<AllVCResponse>>
+) => {
+  const apiResponse = new ApiResponse<AllVCResponse>(res)
+
+  try {
+    const vcService = new VCService()
+    const vcs = await vcService.getAllVCsFromDb()
+
+    if (!vcs) return apiResponse.error('Unable to get all VCs')
+
+    if (!vcs.length) return apiResponse.error('No VCs found', 404)
+
+    if (vcs !== undefined) return apiResponse.successWithData(vcs, 'VCs list fetch successfully')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('Unable to get all VCs', error)
   }
 }
