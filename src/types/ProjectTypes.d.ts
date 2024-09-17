@@ -1,3 +1,5 @@
+import type { ProjectRound } from '@prisma/client'
+
 import type {
   ProjectDeals,
   ProjectPartnersAndInvestors,
@@ -23,5 +25,5 @@ export type DeleteProjectApiPayload = {
 export type ProjectListResponse = {
   name: string
   description: string
-  round: $Enums.ProjectRound
+  round: ProjectRound
 }[]

@@ -74,10 +74,10 @@ export const signupUser = async (
 }
 
 export const logoutUser = async (
-  req: Request<null, ApiResponse<SignUpUserApiResponse>, SignUpUserPayload, null>,
-  res: Response<ApiResponse<SignUpUserApiResponse>>
+  req: Request<null, ApiResponse<null>, null, null>,
+  res: Response<ApiResponse<null>>
 ) => {
-  const apiResponse = new ApiResponse<SignUpUserApiResponse>(res)
+  const apiResponse = new ApiResponse<null>(res)
 
   try {
     req.logout(err => {
@@ -96,6 +96,6 @@ export const logoutUser = async (
   } catch (ex: unknown) {
     const error = ex as Error
 
-    return apiResponse.critical('unable to create a new user', error)
+    return apiResponse.critical('unable to logout user', error)
   }
 }

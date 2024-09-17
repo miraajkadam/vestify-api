@@ -79,6 +79,14 @@ export default class ProjectService {
         round: true,
       },
     })
+
+  checkProjectExistenceInDb = async (id: string): Promise<boolean> => {
+    const entity = await this.prisma.projects.findUnique({
+      where: { id },
+    })
+
+    return entity !== null
+  }
 }
 
 // // const newProject: AddProjectApiPayload =

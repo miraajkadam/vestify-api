@@ -1,6 +1,6 @@
 import { type Request, type Response } from 'express'
 
-import { isAddNewVCPayloadValid, isValidVCId } from '@/helpers/vc'
+import { isAddNewVCPayloadValid } from '@/helpers/vc'
 import VCService from '@/services/vc'
 import type {
   AddNewVCPayload,
@@ -9,6 +9,7 @@ import type {
   VCProjectsResponse,
 } from '@/types/vc.d'
 import ApiResponse from '@/utils/ApiResponse'
+import { isValidGuid } from '@/utils/common'
 
 export const addNewVC = async (
   req: Request<null, ApiResponse<null>, AddNewVCPayload, null>,
@@ -56,7 +57,7 @@ export const getVCProfileById = async (
   try {
     const vcId = req.params.vcId
 
-    if (!isValidVCId(vcId)) return apiResponse.error('invalid VC Id')
+    if (!isValidGuid(vcId)) return apiResponse.error('invalid VC Id')
 
     const vcService = new VCService()
 
@@ -90,7 +91,7 @@ export const getVCProjectsById = async (
   try {
     const vcId = req.params.vcId
 
-    if (!isValidVCId(vcId)) return apiResponse.error('invalid VC Id')
+    if (!isValidGuid(vcId)) return apiResponse.error('invalid VC Id')
 
     const vcService = new VCService()
     const vcProjects = await vcService.getVCProjectsByIdFromDB(vcId)

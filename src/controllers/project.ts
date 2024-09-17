@@ -7,6 +7,7 @@ import {
   ProjectListResponse,
 } from '@/types/ProjectTypes'
 import ApiResponse from '@/utils/ApiResponse'
+import { isValidGuid } from '@/utils/common'
 
 export const addNewProject = async (
   req: Request<null, ApiResponse<string>, AddProjectApiPayload, null>,
@@ -36,7 +37,13 @@ export const deleteProject = async (
   try {
     const { id } = req.body
 
+    if (!isValidGuid(id)) return apiResponse.error('Invalid project ID')
+
     const ps = new ProjectService()
+
+    const isProjectExist = await ps.checkProjectExistenceInDb(id)
+
+    if (!isProjectExist) return apiResponse.error('Project not found', 404)
 
     await ps.deleteProjectFromDb(id)
 
