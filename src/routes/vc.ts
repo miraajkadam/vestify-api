@@ -178,7 +178,7 @@ vcRouter.get('/getAll', getAllVC)
 
 /**
  * @swagger
- * /api/vc/profile/{vcId}:
+ * /api/vc/{vcId}/profile:
  *   get:
  *     summary: Retrieve VC Profile by ID
  *     description: Fetches the VC profile details and associated projects using the provided VC ID.
@@ -290,11 +290,11 @@ vcRouter.get('/getAll', getAllVC)
  *     tags:
  *       - VC
  */
-vcRouter.get('/profile/:vcId', getVCProfileById)
+vcRouter.get('/:vcId/profile', getVCProfileById)
 
 /**
  * @swagger
- * /api/vc/projects/{vcId}:
+ * /api/vc/{vcId}/projects:
  *   get:
  *     summary: Retrieve Projects associated to a VC by VC ID
  *     description: Fetches a list of projects associated with the specified VC (Venture Capital) ID.
@@ -446,6 +446,6 @@ vcRouter.get('/profile/:vcId', getVCProfileById)
  *     tags:
  *       - VC
  */
-vcRouter.get('/projects/:vcId', getVCProjectsById)
+vcRouter.get('/:vcId/projects', getVCProjectsById)
 
 export default vcRouter
