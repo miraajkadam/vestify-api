@@ -104,15 +104,19 @@ const projectRouter = Router()
  *                       type: string
  *                       description: Title or role of the team member or advisor.
  *                       example: "Blockchain Specialist"
+ *                     imgBase64:
+ *                       type: string
+ *                       description: Image base64 of the team and advisor.
+ *                       example: "b21hZSB3YSBtb3Ugc2hpbmRlaXJ1"
  *               partnersAndInvestors:
  *                 type: array
  *                 items:
  *                   type: object
  *                   properties:
- *                     logo:
+ *                     logoBase64:
  *                       type: string
- *                       description: Logo or brand name of the partner or investor.
- *                       example: "Partner Logo"
+ *                       description: Logo base64 of the partner or investor.
+ *                       example: "b21hZSB3YSBtb3Ugc2hpbmRlaXJ1"
  *                     name:
  *                       type: string
  *                       description: Name of the partner or investor.
@@ -328,5 +332,7 @@ projectRouter.post('/delete', deleteProject)
  *                     example: unable to fetch project list
  */
 projectRouter.get('/getAll', getAllProjects)
+
+// projectRouter.get('/:projectId', getProjectByProjectId)
 
 export default projectRouter

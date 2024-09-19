@@ -76,14 +76,15 @@ model ProjectTeamAndAdvisors {
   name        String   @map("Name")
   title       String   @map("Title")
   description String   @map("Description")
+  imgBase64   String?  @map("ImageBase64")
 }
 
 model ProjectPartnersAndInvestors {
-  id        String   @id @default(uuid()) @map("Id")
-  Project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId String   @default(uuid()) @map("ProjectId")
-  name      String   @map("Name")
-  logo      String   @map("Logo")
+  id         String   @id @default(uuid()) @map("Id")
+  Project    Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId  String   @default(uuid()) @map("ProjectId")
+  name       String   @map("Name")
+  logoBase64 String?  @map("LogoBase64")
 }
 
 model ProjectSocials {
