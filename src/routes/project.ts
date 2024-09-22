@@ -1,6 +1,11 @@
 import { Router } from 'express'
 
-import { addNewProject, deleteProject, getAllProjects } from '@/controllers/project'
+import {
+  addNewProject,
+  deleteProject,
+  getAllProjects,
+  getProjectByProjectId,
+} from '@/controllers/project'
 
 const projectRouter = Router()
 
@@ -333,6 +338,151 @@ projectRouter.post('/delete', deleteProject)
  */
 projectRouter.get('/getAll', getAllProjects)
 
-// projectRouter.get('/:projectId', getProjectByProjectId)
+/**
+ * @swagger
+ * /api/project/{projectId}:
+ *   get:
+ *     summary: Retrieve a project by its ID
+ *     description: Fetches the project details using the provided project ID.
+ *     tags: [Project]
+ *     parameters:
+ *       - name: projectId
+ *         in: path
+ *         required: true
+ *         description: The unique ID of the project to retrieve.
+ *         example: 30aa20ff-81b8-4752-982e-dc9808a6af8e
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved project details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Requested project fetched successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     info:
+ *                       type: object
+ *                       properties:
+ *                         name:
+ *                           type: string
+ *                           example: "Project Name"
+ *                         description:
+ *                           type: string
+ *                           example: "Project Description"
+ *                         round:
+ *                           type: string
+ *                           example: "Seed"
+ *                         category:
+ *                           type: string
+ *                           example: "Technology"
+ *                     token:
+ *                       type: object
+ *                       properties:
+ *                         allocation:
+ *                           type: string
+ *                           example: "1000000"
+ *                         vesting:
+ *                           type: string
+ *                           example: "2024-01-01T00:00:00Z"
+ *                         tge:
+ *                           type: string
+ *                           example: "2024-01-01T00:00:00Z"
+ *                         tgeUnlock:
+ *                           type: string
+ *                           example: "2024-01-01T00:00:00Z"
+ *                         price:
+ *                           type: string
+ *                           example: "0.1"
+ *                     socialLink:
+ *                       type: object
+ *                       properties:
+ *                         medium:
+ *                           type: string
+ *                           example: "https://medium.com/@project"
+ *                         discord:
+ *                           type: string
+ *                           example: "https://discord.gg/project"
+ *                         x:
+ *                           type: string
+ *                           example: "https://twitter.com/project"
+ *                         telegram:
+ *                           type: string
+ *                           example: "https://t.me/project"
+ *                     teamAndAdvisors:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           name:
+ *                             type: string
+ *                             example: "Team Member"
+ *                           title:
+ *                             type: string
+ *                             example: "CEO"
+ *                           imgBase64:
+ *                             type: string
+ *                             example: "data:image/png;base64,..."
+ *                     partnersAndInvestors:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           name:
+ *                             type: string
+ *                             example: "Investor Name"
+ *                           logoBase64:
+ *                             type: string
+ *                             example: "data:image/png;base64,..."
+ *       400:
+ *         description: Invalid project ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid project ID"
+ *       404:
+ *         description: Project not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Project not found"
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to fetch the project"
+ */
+projectRouter.get('/:projectId', getProjectByProjectId)
 
 export default projectRouter

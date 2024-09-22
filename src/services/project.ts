@@ -1,6 +1,6 @@
 import { PrismaClient, ProjectRound } from '@prisma/client'
 
-import type { AddProjectApiPayload } from '@/types/ProjectTypes'
+import type { AddProjectApiPayload, ProjectProfileDbResponse } from '@/types/ProjectTypes'
 
 /**
  * Service class for managing projects in the database.
@@ -127,58 +127,60 @@ export default class ProjectService {
 
     return entity !== null
   }
-}
 
-// // const newProject: AddProjectApiPayload =
-//   // {
-//   //   "info": {
-//   //     "name": "Bitcoin",
-//   //     "category": "Crypto",
-//   //     "description": "Bitcoing coincryoto",
-//   //     "round": "PRE_SEED",
-//   //   },
-//   //   "tokenMetrics": {
-//   //     "allocation": "KMSAKMDK",
-//   //     "fdv": "KMDKSAMK",
-//   //     "price": "192873219873",
-//   //     "tgeUnlock": "Yes",
-//   //     "tge": new Date(),
-//   //     "vesting": new Date(),
-//   //   },
-//   //   "deals": {
-//   //     "maximum": new Prisma.Decimal(2000.1),
-//   //     "minimum": new Prisma.Decimal(1000),
-//   //     "acceptedTokens": "BTC",
-//   //     "poolFee": new Prisma.Decimal(100),
-//   //   },
-//   //   "teamAndAdvisors": [
-//   //     {
-//   //       "description": "Bitcoing is best",
-//   //       "name": "Bitcoin Foundation",
-//   //       "title": "Hello 123",
-//   //     },
-//   //     {
-//   //       "description": "Bitcoing is best 2",
-//   //       "name": "Bitcoin Foundation 2",
-//   //       "title": "Hello 123 2",
-//   //     },
-//   //   ],
-//   //   "partnersAndInvestors": [
-//   //     {
-//   //       "logo": "Hello Logo",
-//   //       "name": "Partner Name",
-//   //     },
-//   //     {
-//   //       "logo": "Hello Logo 2",
-//   //       "name": "Partner Name 2",
-//   //     },
-//   //   ],
-//   //   "projectSocials": {
-//   //     "x": "sad",
-//   //     "instagram": "",
-//   //     "discord": "",
-//   //     "telegram": "",
-//   //     "medium": "",
-//   //     "youtube": "",
-//   //   },
-//   // }
+  /**
+   * Retrieves a project from the database by its unique identifier.
+   *
+   * This function fetches detailed information about a project, including its
+   * name, description, round, category, token metrics, social media links,
+   * team members, and partners/investors.
+   *
+   * @async
+   * @function getProjectByIdFromDb
+   * @param {string} id - The unique identifier of the project to retrieve.
+   * @returns {Promise<ProjectProfileDbResponse|null>} A promise that resolves to an object containing
+   *                                  the project's details or null if no project
+   *                                  is found with the given ID.
+   * @throws {Error} Throws an error if there is an issue retrieving the project
+   *                 from the database.
+   */
+  getProjectByIdFromDb = async (id: string): Promise<ProjectProfileDbResponse | null> =>
+    await this.prisma.projects.findUnique({
+      where: { id },
+      select: {
+        name: true,
+        description: true,
+        round: true,
+        category: true,
+        projectTokenMetrics: {
+          select: {
+            allocation: true,
+            vesting: true,
+            tge: true,
+            tgeUnlock: true,
+            price: true,
+          },
+        },
+        projectSocials: {
+          select: {
+            discord: true,
+            medium: true,
+            telegram: true,
+            x: true,
+          },
+        },
+        projectTeamAndAdvisors: {
+          select: {
+            name: true,
+            imgBase64: true,
+          },
+        },
+        projectPartnersAndInvestors: {
+          select: {
+            name: true,
+            logoBase64: true,
+          },
+        },
+      },
+    })
+}

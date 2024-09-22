@@ -1,10 +1,12 @@
 import { type Request, type Response } from 'express'
 
+import { strProjForResponse } from '@/helpers/project'
 import { ProjectService } from '@/services'
 import {
   AddProjectApiPayload,
   DeleteProjectApiPayload,
   ProjectListResponse,
+  ProjectProfileResponse,
 } from '@/types/ProjectTypes'
 import ApiResponse from '@/utils/ApiResponse'
 import { isValidGuid } from '@/utils/common'
@@ -70,5 +72,37 @@ export const getAllProjects = async (
     const error = ex as Error
 
     return apiResponse.critical('unable to fetch project list', error)
+  }
+}
+
+export const getProjectByProjectId = async (
+  req: Request<{ projectId: string }, ApiResponse<ProjectProfileResponse>, null, null>,
+  res: Response<ApiResponse<ProjectProfileResponse>>
+) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const apiResponse = new ApiResponse<any>(res)
+
+  try {
+    const { projectId: id } = req.params
+
+    if (!isValidGuid(id)) return apiResponse.error('Invalid project ID')
+
+    const ps = new ProjectService()
+
+    const isProjectExist = await ps.checkProjectExistenceInDb(id)
+
+    if (!isProjectExist) return apiResponse.error('Project not found', 404)
+
+    const project = await ps.getProjectByIdFromDb(id)
+
+    if (!project) return apiResponse.error('Unable to fetch project')
+
+    const resProjResp = strProjForResponse(project)
+
+    return apiResponse.successWithData(resProjResp, 'Requested project fetched successfully')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('Unable to fetch the project', error)
   }
 }
