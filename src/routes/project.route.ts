@@ -5,7 +5,7 @@ import {
   deleteProject,
   getAllProjects,
   getProjectByProjectId,
-} from '@/controllers/project'
+} from '@/controllers/project.controller'
 
 const projectRouter = Router()
 

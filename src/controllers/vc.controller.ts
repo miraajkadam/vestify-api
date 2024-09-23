@@ -1,14 +1,14 @@
 import { type Request, type Response } from 'express'
 
-import { isAddNewVCPayloadValid } from '@/helpers/vc'
-import VCService from '@/services/vc'
+import { isAddNewVCPayloadValid } from '@/helpers/vc.helper'
+import VCService from '@/services/vc.service'
 import type {
   AddNewVCPayload,
   AllVCResponse,
   GetVCProfileById,
   VCProfileResponse,
   VCProjectsResponse,
-} from '@/types/vc.d'
+} from '@/types/VC'
 import ApiResponse from '@/utils/ApiResponse'
 import { isValidGuid } from '@/utils/common'
 

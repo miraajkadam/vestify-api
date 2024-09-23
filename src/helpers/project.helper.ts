@@ -1,4 +1,4 @@
-import { ProjectProfileDbResponse } from '@/types/ProjectTypes'
+import { ProjectProfileDbResponse } from '@/types/Project'
 
 /**
  * Transforms a project profile from the database into the expected API response format.

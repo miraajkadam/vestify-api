@@ -1,6 +1,11 @@
 import { Router } from 'express'
 
-import { addNewVC, getAllVC, getVCProfileById, getVCProjectsById } from '@/controllers/vc'
+import {
+  addNewVC,
+  getAllVC,
+  getVCProfileById,
+  getVCProjectsById,
+} from '@/controllers/vc.controller'
 
 const vcRouter = Router()
 

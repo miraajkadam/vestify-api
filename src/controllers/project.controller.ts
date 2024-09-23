@@ -1,13 +1,13 @@
 import { type Request, type Response } from 'express'
 
-import { strProjForResponse } from '@/helpers/project'
+import { strProjForResponse } from '@/helpers/project.helper'
 import { ProjectService } from '@/services'
 import {
   AddProjectApiPayload,
   DeleteProjectApiPayload,
   ProjectListResponse,
   ProjectProfileResponse,
-} from '@/types/ProjectTypes'
+} from '@/types/Project'
 import ApiResponse from '@/utils/ApiResponse'
 import { isValidGuid } from '@/utils/common'
 

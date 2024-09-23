@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import type { Decimal } from '@prisma/client/runtime/library'
 
-import { VCProfileResponse, VCProjectsResponse } from '@/types/vc'
+import { VCProfileResponse, VCProjectsResponse } from '@/types/VC.d'
 
 /**
  * Service class for managing Venture Capitalists (VCs) in the database.

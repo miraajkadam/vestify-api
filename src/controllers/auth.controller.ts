@@ -8,7 +8,7 @@ import type {
   LoginApiResponse,
   SignUpUserApiResponse,
   SignUpUserPayload,
-} from '@/types/AuthTypes'
+} from '@/types/Auth.d'
 import ApiResponse from '@/utils/ApiResponse'
 // import { JWT_SECRET } from '@/utils/env'
 

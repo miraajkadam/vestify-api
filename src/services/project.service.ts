@@ -1,6 +1,6 @@
 import { PrismaClient, ProjectRound } from '@prisma/client'
 
-import type { AddProjectApiPayload, ProjectProfileDbResponse } from '@/types/ProjectTypes'
+import type { AddProjectApiPayload, ProjectProfileDbResponse } from '@/types/Project'
 
 /**
  * Service class for managing projects in the database.
