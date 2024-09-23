@@ -13,12 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
-  id       String   @id @default(uuid()) @map("Id")
-  username String   @unique @map("Username")
-  email    String   @unique @map("Email")
-  password String   @map("Password")
-  userType UserType @default(USER) @map("UserType")
+model Accounts {
+  id          String      @id @default(uuid()) @map("Id")
+  username    String      @unique @map("Username")
+  email       String      @unique @map("Email")
+  password    String      @map("Password")
+  accountType AccountType @default(USER) @map("AccountType")
 }
 
 model VC {
@@ -99,7 +99,7 @@ model ProjectSocials {
   youtube   String?  @map("Youtube")
 }
 
-enum UserType {
+enum AccountType {
   USER
   VC
 }

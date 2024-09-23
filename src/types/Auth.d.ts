@@ -1,4 +1,4 @@
-import type { UserType } from '@prisma/client'
+import type { AccountType } from '@prisma/client'
 
 export type LoginApiPayload = {
   email: string
@@ -13,7 +13,7 @@ export type SignUpUserPayload = {
   username: string
   email: string
   password: string
-  userType: UserType
+  accountType: AccountType
 }
 
 export type SignUpUserApiResponse = {

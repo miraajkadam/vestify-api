@@ -28,7 +28,7 @@
  *         - username
  *         - email
  *         - password
- *         - userType
+ *         - accountType
  *       properties:
  *         username:
  *           type: string
@@ -37,7 +37,7 @@
  *           format: email
  *         password:
  *           type: string
- *         userType:
+ *         accountType:
  *           type: string
  *           enum: [USER, VC]
  *     AddNewVCPayload:

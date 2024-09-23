@@ -1,4 +1,4 @@
-import { UserType } from '@prisma/client'
+import { AccountType } from '@prisma/client'
 import { type Request, type Response } from 'express'
 import jwt from 'jsonwebtoken'
 
@@ -43,14 +43,14 @@ export const signupUser = async (
   const apiResponse = new ApiResponse<SignUpUserApiResponse>(res)
 
   try {
-    const { username, password, email, userType } = req.body
+    const { username, password, email, accountType } = req.body
 
-    if (userType !== UserType.VC && userType !== UserType.USER) {
+    if (accountType !== AccountType.VC && accountType !== AccountType.USER) {
       return apiResponse.error('invalid user type')
     }
 
     const authService = new AuthService()
-    const newUser = await authService.createNewUserInDb(username, email, password, userType)
+    const newUser = await authService.createNewUserInDb(username, email, password, accountType)
 
     if (!newUser) return apiResponse.error('unable to create a new user')
 
