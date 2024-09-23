@@ -21,6 +21,12 @@ model Accounts {
   accountType AccountType @default(USER) @map("AccountType")
 }
 
+model Users {
+  id String @id @default(uuid()) @map("Id")
+
+  joinedCapitals UsersJoinedCapitals[]
+}
+
 model VC {
   id              String     @id @default(uuid()) @map("Id")
   name            String     @map("Name")
@@ -30,6 +36,8 @@ model VC {
   tags            String[]   @map("Tags")
   kycDone         Boolean    @map("KYCDone")
   projects        Projects[]
+
+  usersJoined UsersJoinedCapitals[]
 }
 
 model Projects {
@@ -97,6 +105,18 @@ model ProjectSocials {
   telegram  String?  @map("Telegram")
   medium    String?  @map("Medium")
   youtube   String?  @map("Youtube")
+}
+
+model UsersJoinedCapitals {
+  vc   VC     @relation(fields: [vcId], references: [id], onDelete: NoAction)
+  vcId String @map("VcId")
+
+  user   Users  @relation(fields: [userId], references: [id], onDelete: NoAction)
+  userId String @map("UserId")
+
+  joinedAt DateTime @default(now()) @map("joined_at")
+
+  @@id([vcId, userId])
 }
 
 enum AccountType {
