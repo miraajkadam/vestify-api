@@ -1,4 +1,6 @@
-import type { Decimal } from '@prisma/client/runtime/library'
+import { Decimal } from '@prisma/client/runtime/library'
+
+import { isValidGuid } from '@/utils/common'
 
 export const formatResponse = (
   dbOutput: {
@@ -18,3 +20,29 @@ export const formatResponse = (
     logoBase64: item.vc.logoBase64,
     subscriptionFee: item.vc.subscriptionFee,
   }))
+
+export const validateProjectInvestmentPayload = (
+  userId: string,
+  projectId: string,
+  amount: Decimal,
+  fromWalletKey: string,
+  paymentCurrency: string,
+  paymentNetwork: string,
+  toWalletKey: string
+): boolean => {
+  if (!isValidGuid(userId)) return false
+
+  if (!isValidGuid(projectId)) return false
+
+  if (typeof amount !== 'number') return false
+
+  if (typeof paymentCurrency !== 'string') return false
+
+  if (typeof paymentNetwork !== 'string') return false
+
+  if (typeof fromWalletKey !== 'string') return false
+
+  if (typeof toWalletKey !== 'string') return false
+
+  return true
+}

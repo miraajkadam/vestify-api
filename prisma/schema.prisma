@@ -24,7 +24,8 @@ model Accounts {
 model Users {
   id String @id @default(uuid()) @map("Id")
 
-  joinedCapitals UsersJoinedCapitals[]
+  joinedCapitals   UsersJoinedCapitals[]
+  investedProjects UsersInvestedProjects[]
 }
 
 model VC {
@@ -37,7 +38,7 @@ model VC {
   kycDone         Boolean    @map("KYCDone")
   projects        Projects[]
 
-  usersJoined UsersJoinedCapitals[]
+  joinedUsers UsersJoinedCapitals[]
 }
 
 model Projects {
@@ -53,6 +54,8 @@ model Projects {
   projectSocials              ProjectSocials?
   VC                          VC                            @relation(fields: [vcId], references: [id], onDelete: Cascade)
   vcId                        String                        @default(uuid()) @map("VCId")
+
+  investedUsers UsersInvestedProjects[]
 }
 
 model ProjectTokenMetrics {
@@ -116,7 +119,27 @@ model UsersJoinedCapitals {
 
   joinedAt DateTime @default(now()) @map("joined_at")
 
-  @@id([vcId, userId])
+  @@id([userId, vcId])
+}
+
+model UsersInvestedProjects {
+  id String @default(uuid()) @map("Id")
+
+  user   Users  @relation(fields: [userId], references: [id], onDelete: NoAction)
+  userId String @map("UserId")
+
+  project   Projects @relation(fields: [projectId], references: [id], onDelete: NoAction)
+  projectId String   @map("ProjectId")
+
+  amount          Decimal  @map("Amount")
+  paymentCurrency String   @map("PaymentCurrency")
+  paymentNetwork  String   @map("PaymentNetwork")
+  fromWalletKey   String   @map("FromWalletKey")
+  toWalletKey     String   @map("ToWalletKey")
+  investedAt      DateTime @default(now()) @map("invested_at")
+  transactionId   String   @map("TransactionId")
+
+  @@id([id, userId, projectId])
 }
 
 enum AccountType {
