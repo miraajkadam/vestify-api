@@ -32,6 +32,45 @@ export const strProjForResponse = (projectProfile: ProjectProfileDbResponse) => 
   partnersAndInvestors: projectProfile?.projectPartnersAndInvestors,
 })
 
+/**
+ * Transforms the project statistics into a structured response format.
+ *
+ * This function takes the raw project statistics and reformats them into a
+ * more user-friendly structure, which includes project information, financial
+ * details, token metrics, and investment information.
+ *
+ * @param {object} prjStats - The raw project statistics object, which should contain:
+ * - projDet: An object containing project details (name, category, round, token metrics, deals).
+ * - totInvestedAmt: The total amount invested in the project.
+ *
+ * @returns {object} A structured response object with the following properties:
+ * - info: An object containing project information (name, category, round).
+ * - financial: An object containing financial information (target, raised, percentAchieved).
+ * - tokenMetric: An object containing token metrics (price).
+ * - invest: An object containing investment details (maximumAmount, minimumAmount, poolFee, acceptedTokens).
+ *
+ * @example
+ * const projectStats = {
+ *   projDet: {
+ *     name: "Project Alpha",
+ *     category: "Technology",
+ *     round: "Series A",
+ *     projectTokenMetrics: {
+ *       price: "0.1",
+ *     },
+ *     projectDeals: {
+ *       maximum: "10000",
+ *       minimum: "100",
+ *       poolFee: 2,
+ *       acceptedTokens: ["ETH", "BTC"],
+ *     },
+ *   },
+ *   totInvestedAmt: 25000,
+ * };
+ *
+ * const structuredResponse = strRespFrInvestmentStats(projectStats);
+ * // structuredResponse will have the desired format for API response.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const strRespFrInvestmentStats = (prjStats: any) => ({
   info: {

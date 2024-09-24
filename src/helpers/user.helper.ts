@@ -2,6 +2,13 @@ import { Decimal } from '@prisma/client/runtime/library'
 
 import { isValidGuid } from '@/utils/common'
 
+/**
+ * Formats the response from the database to a simplified structure for venture capitals.
+ *
+ * @param {Array<Object>} dbOutput - The raw output from the database containing venture capital data.
+ *
+ * @returns {Array<Object>} An array of formatted venture capital objects.
+ */
 export const formatResponse = (
   dbOutput: {
     vc: {
@@ -21,6 +28,19 @@ export const formatResponse = (
     subscriptionFee: item.vc.subscriptionFee,
   }))
 
+/**
+ * Validates the payload for project investment.
+ *
+ * @param {string} userId - The ID of the user.
+ * @param {string} projectId - The ID of the project.
+ * @param {Decimal} amount - The investment amount.
+ * @param {string} fromWalletKey - The wallet key from which the investment is made.
+ * @param {string} paymentCurrency - The currency used for the investment.
+ * @param {string} paymentNetwork - The network used for the investment.
+ * @param {string} toWalletKey - The wallet key to which the investment is sent.
+ *
+ * @returns {boolean} True if the payload is valid, otherwise false.
+ */
 export const validateProjectInvestmentPayload = (
   userId: string,
   projectId: string,
@@ -49,145 +69,125 @@ export const validateProjectInvestmentPayload = (
 
 export const SampleUserProfileResponse = {
   info: {
-    email: 'naka@bestify.com',
-    discord: 'https://discord.com',
-    x: 'https://twitter.com/',
+    email: 'jane.doe@example.com',
+    discord: 'https://discord.gg/janedoe',
+    x: 'https://twitter.com/janedoe',
     kycDone: true,
   },
   investmentSummary: {
-    deals: 15,
-    otcTrades: 5,
-    totInvestment: 7678,
-    avgInvestment: 231,
+    deals: 25,
+    otcTrades: 10,
+    totInvestment: 12500,
+    avgInvestment: 500,
   },
   wallet: {
-    current: '0xabc1234567890abcdef1234567890abcdef1234',
+    current: '0x4b0a9876543210abcdef1234567890abcdef1234',
     last5Used: [
-      '0xabc1234567890abcdef1234567890abcdef1234',
-      '0xabc1234567890abcdef1234567890abcdef1234',
-      '0xabc1234567890abcdef1234567890abcdef1234',
-      '0xabc1234567890abcdef1234567890abcdef1234',
-      '0xabc1234567890abcdef1234567890abcdef1234',
+      '0x4b0a9876543210abcdef1234567890abcdef1234',
+      '0x4b0a9876543210abcdef1234567890abcdef5678',
+      '0x4b0a9876543210abcdef1234567890abcdef8765',
+      '0x4b0a9876543210abcdef1234567890abcdef4321',
+      '0x4b0a9876543210abcdef1234567890abcdef0987',
     ],
   },
   dealsSummary: [
     {
-      projName: 'Project Universal',
-      allocation: '231',
-      tokenRecvd: 2,
-      recEvm: '0xabc1234567890abcdef1234567890abcdef1234',
+      projName: 'GreenTech Innovations',
+      allocation: '500',
+      tokenRecvd: 50,
+      recEvm: '0x4b0a9876543210abcdef1234567890abcdef1234',
       transaction: {
         contributed: {
-          amount: 2312,
-          count: 2,
+          amount: 2500,
+          count: 1,
         },
         refunded: {
-          amount: 2312,
-          count: 2,
+          amount: 500,
+          count: 1,
         },
         otc: {
-          amount: 2312,
-          count: 2,
+          amount: 1000,
+          count: 1,
         },
       },
     },
     {
-      projName: 'Project Universal',
-      allocation: '231',
-      tokenRecvd: 2,
-      recEvm: '0xabc1234567890abcdef1234567890abcdef1234',
+      projName: 'HealthWave Solutions',
+      allocation: '300',
+      tokenRecvd: 30,
+      recEvm: '0x4b0a9876543210abcdef1234567890abcdef5678',
       transaction: {
         contributed: {
-          amount: 2312,
-          count: 2,
+          amount: 1500,
+          count: 1,
         },
         refunded: {
-          amount: 2312,
-          count: 2,
+          amount: 300,
+          count: 1,
         },
         otc: {
-          amount: 2312,
-          count: 2,
+          amount: 700,
+          count: 1,
         },
       },
     },
     {
-      projName: 'Project Universal',
-      allocation: '231',
-      tokenRecvd: 2,
-      recEvm: '0xabc1234567890abcdef1234567890abcdef1234',
+      projName: 'SmartHome Systems',
+      allocation: '400',
+      tokenRecvd: 40,
+      recEvm: '0x4b0a9876543210abcdef1234567890abcdef8765',
       transaction: {
         contributed: {
-          amount: 2312,
-          count: 2,
+          amount: 2000,
+          count: 1,
         },
         refunded: {
-          amount: 2312,
-          count: 2,
+          amount: 400,
+          count: 1,
         },
         otc: {
-          amount: 2312,
-          count: 2,
+          amount: 900,
+          count: 1,
         },
       },
     },
     {
-      projName: 'Project Universal',
-      allocation: '231',
-      tokenRecvd: 2,
-      recEvm: '0xabc1234567890abcdef1234567890abcdef1234',
+      projName: 'EduTech Platform',
+      allocation: '200',
+      tokenRecvd: 20,
+      recEvm: '0x4b0a9876543210abcdef1234567890abcdef4321',
       transaction: {
         contributed: {
-          amount: 2312,
-          count: 2,
+          amount: 1000,
+          count: 1,
         },
         refunded: {
-          amount: 2312,
-          count: 2,
+          amount: 200,
+          count: 1,
         },
         otc: {
-          amount: 2312,
-          count: 2,
+          amount: 500,
+          count: 1,
         },
       },
     },
     {
-      projName: 'Project Universal',
-      allocation: '231',
-      tokenRecvd: 2,
-      recEvm: '0xabc1234567890abcdef1234567890abcdef1234',
+      projName: 'EcoFarm Solutions',
+      allocation: '350',
+      tokenRecvd: 35,
+      recEvm: '0x4b0a9876543210abcdef1234567890abcdef0987',
       transaction: {
         contributed: {
-          amount: 2312,
-          count: 2,
+          amount: 1750,
+          count: 1,
         },
         refunded: {
-          amount: 2312,
-          count: 2,
+          amount: 350,
+          count: 1,
         },
         otc: {
-          amount: 2312,
-          count: 2,
-        },
-      },
-    },
-    {
-      projName: 'Project Universal',
-      allocation: '231',
-      tokenRecvd: 2,
-      recEvm: '0xabc1234567890abcdef1234567890abcdef1234',
-      transaction: {
-        contributed: {
-          amount: 2312,
-          count: 2,
-        },
-        refunded: {
-          amount: 2312,
-          count: 2,
-        },
-        otc: {
-          amount: 2312,
-          count: 2,
+          amount: 800,
+          count: 1,
         },
       },
     },

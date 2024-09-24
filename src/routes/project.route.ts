@@ -486,6 +486,127 @@ projectRouter.get('/getAll', getAllProjects)
  */
 projectRouter.get('/:projectId', getProjectByProjectId)
 
+/**
+ * @swagger
+ * /api/project/{projectId}/investmentStats:
+ *   get:
+ *     tags:
+ *       - "Project"
+ *     summary: "Get investment statistics for a specific project"
+ *     description: "Fetches detailed investment statistics for a project based on its ID."
+ *     operationId: "getInvestmentStatsForProject"
+ *     produces:
+ *       - "application/json"
+ *     parameters:
+ *       - name: "projectId"
+ *         in: "path"
+ *         description: "Unique identifier for the project."
+ *         required: true
+ *         type: "string"
+ *         example: 30aa20ff-81b8-4752-982e-dc9808a6af8e
+ *         format: "uuid"
+ *     responses:
+ *       200:
+ *         description: "Successfully retrieved project investment statistics."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: "object"
+ *               properties:
+ *                 success:
+ *                   type: "boolean"
+ *                   example: true
+ *                 message:
+ *                   type: "string"
+ *                   example: "Requested project fetched successfully"
+ *                 data:
+ *                   type: "object"
+ *                   properties:
+ *                     info:
+ *                       type: "object"
+ *                       properties:
+ *                         name:
+ *                           type: "string"
+ *                           example: "Project Alpha"
+ *                         category:
+ *                           type: "string"
+ *                           example: "Technology"
+ *                         round:
+ *                           type: "string"
+ *                           example: "Series A"
+ *                     financial:
+ *                       type: "object"
+ *                       properties:
+ *                         target:
+ *                           type: "number"
+ *                           example: 1000000
+ *                         raised:
+ *                           type: "number"
+ *                           example: 750000
+ *                         percentAchieved:
+ *                           type: "number"
+ *                           example: 75
+ *                     tokenMetric:
+ *                       type: "object"
+ *                       properties:
+ *                         price:
+ *                           type: "string"
+ *                           example: "0.1"
+ *                     invest:
+ *                       type: "object"
+ *                       properties:
+ *                         maximumAmount:
+ *                           type: "string"
+ *                           example: "10000"
+ *                         minimumAmount:
+ *                           type: "string"
+ *                           example: "100"
+ *                         poolFee:
+ *                           type: "string"
+ *                           example: "2"
+ *                         acceptedTokens:
+ *                           type: "string"
+ *                           example: "ETH"
+ *       400:
+ *         description: "Invalid project ID supplied."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: "object"
+ *               properties:
+ *                 success:
+ *                   type: "boolean"
+ *                   example: false
+ *                 message:
+ *                   type: "string"
+ *                   example: "Invalid project ID"
+ *       404:
+ *         description: "Project not found."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: "object"
+ *               properties:
+ *                 success:
+ *                   type: "boolean"
+ *                   example: false
+ *                 message:
+ *                   type: "string"
+ *                   example: "Project not found"
+ *       500:
+ *         description: "Internal server error."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: "object"
+ *               properties:
+ *                 success:
+ *                   type: "boolean"
+ *                   example: false
+ *                 message:
+ *                   type: "string"
+ *                   example: "Unable to fetch the project"
+ */
 projectRouter.get('/:projectId/investmentStats', getInvestmentStatsForProject)
 
 export default projectRouter

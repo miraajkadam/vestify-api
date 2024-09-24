@@ -184,6 +184,20 @@ export default class ProjectService {
       },
     })
 
+  /**
+   * Retrieves statistics for a specific project.
+   *
+   * This method fetches the project's detailed information and the total amount invested
+   * in the project. It returns an object containing both project details and total investment
+   * amount.
+   *
+   * @async
+   * @param {string} projectId - The unique identifier of the project for which to retrieve statistics.
+   * @returns {Promise<{ projDet: object, totInvestedAmt: number }>} A promise that resolves to an object containing:
+   * - projDet: The detailed information about the project (name, round, category, token metrics, etc.).
+   * - totInvestedAmt: The total amount invested in the project, defaulting to 0 if no investments exist.
+   * @throws {Error} Throws an error if there is an issue retrieving the project statistics from the database.
+   */
   getProjectStats = async (projectId: string) => {
     const [projDet, totInvestedAmt] = await Promise.all([
       this.getProjDet(projectId),
@@ -196,6 +210,17 @@ export default class ProjectService {
     }
   }
 
+  /**
+   * Calculates the total amount invested in a specific project.
+   *
+   * This method aggregates the total investment amounts from users for the given project ID.
+   *
+   * @async
+   * @param {string} projectId - The unique identifier of the project for which to calculate total investments.
+   * @returns {Promise<{ _sum: { amount: number | null } }>} A promise that resolves to an object containing:
+   * - _sum: An object with the total invested amount for the project. This will be null if no investments exist.
+   * @throws {Error} Throws an error if there is an issue retrieving the total investment amount from the database.
+   */
   private getTotInvestedAmtInProj = async (projectId: string) =>
     await this.prisma.usersInvestedProjects.aggregate({
       _sum: {
@@ -206,6 +231,23 @@ export default class ProjectService {
       },
     })
 
+  /**
+   * Retrieves detailed information about a project by its unique identifier.
+   *
+   * This method fetches project details, including the name, round, category, token metrics,
+   * and other relevant information based on the provided project ID.
+   *
+   * @async
+   * @param {string} projectId - The unique identifier of the project to retrieve.
+   * @returns {Promise<{ name: string, round: ProjectRound, category: string, projectTokenMetrics: object, projectDeals: object }>}
+   * A promise that resolves to an object containing:
+   * - name: The name of the project.
+   * - round: The round in which the project is (e.g., Seed, Series A).
+   * - category: The category of the project.
+   * - projectTokenMetrics: An object containing token metrics (e.g., price).
+   * - projectDeals: An object containing deal information (e.g., accepted tokens, maximum and minimum amounts).
+   * @throws {Error} Throws an error if no project is found with the given ID.
+   */
   private getProjDet = async (projectId: string) =>
     await this.prisma.projects.findUniqueOrThrow({
       where: {
