@@ -183,4 +183,51 @@ export default class ProjectService {
         },
       },
     })
+
+  getProjectStats = async (projectId: string) => {
+    const [projDet, totInvestedAmt] = await Promise.all([
+      this.getProjDet(projectId),
+      this.getTotInvestedAmtInProj(projectId),
+    ])
+
+    return {
+      projDet,
+      totInvestedAmt: totInvestedAmt._sum.amount || 0,
+    }
+  }
+
+  private getTotInvestedAmtInProj = async (projectId: string) =>
+    await this.prisma.usersInvestedProjects.aggregate({
+      _sum: {
+        amount: true,
+      },
+      where: {
+        projectId,
+      },
+    })
+
+  private getProjDet = async (projectId: string) =>
+    await this.prisma.projects.findUniqueOrThrow({
+      where: {
+        id: projectId,
+      },
+      select: {
+        name: true,
+        round: true,
+        category: true,
+        projectTokenMetrics: {
+          select: {
+            price: true,
+          },
+        },
+        projectDeals: {
+          select: {
+            acceptedTokens: true,
+            maximum: true,
+            minimum: true,
+            poolFee: true,
+          },
+        },
+      },
+    })
 }

@@ -4,6 +4,7 @@ import {
   addNewProject,
   deleteProject,
   getAllProjects,
+  getInvestmentStatsForProject,
   getProjectByProjectId,
 } from '@/controllers/project.controller'
 
@@ -484,5 +485,7 @@ projectRouter.get('/getAll', getAllProjects)
  *                   example: "Unable to fetch the project"
  */
 projectRouter.get('/:projectId', getProjectByProjectId)
+
+projectRouter.get('/:projectId/investmentStats', getInvestmentStatsForProject)
 
 export default projectRouter

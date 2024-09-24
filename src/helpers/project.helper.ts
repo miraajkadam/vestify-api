@@ -31,3 +31,26 @@ export const strProjForResponse = (projectProfile: ProjectProfileDbResponse) => 
   teamAndAdvisors: projectProfile?.projectTeamAndAdvisors,
   partnersAndInvestors: projectProfile?.projectPartnersAndInvestors,
 })
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const strRespFrInvestmentStats = (prjStats: any) => ({
+  info: {
+    name: prjStats.projDet.name,
+    category: prjStats.projDet.category,
+    round: prjStats.projDet.round,
+  },
+  financial: {
+    target: 50000,
+    raised: +prjStats.totInvestedAmt,
+    percentAchieved: (+prjStats.totInvestedAmt / 50000) * 100,
+  },
+  tokenMetric: {
+    price: prjStats.projDet.projectTokenMetrics.price,
+  },
+  invest: {
+    maximumAmount: prjStats.projDet.projectDeals.maximum,
+    minimumAmount: prjStats.projDet.projectDeals.minimum,
+    poolFee: prjStats.projDet.projectDeals.poolFee,
+    acceptedTokens: prjStats.projDet.projectDeals.acceptedTokens,
+  },
+})
