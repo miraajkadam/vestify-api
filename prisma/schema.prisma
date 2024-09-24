@@ -13,12 +13,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Accounts {
+  id          String      @id @default(uuid()) @map("Id")
+  username    String      @unique @map("Username")
+  email       String      @unique @map("Email")
+  password    String      @map("Password")
+  accountType AccountType @default(USER) @map("AccountType")
+}
+
 model Users {
-  id       String   @id @default(uuid()) @map("Id")
-  username String   @unique @map("Username")
-  email    String   @unique @map("Email")
-  password String   @map("Password")
-  userType UserType @default(USER) @map("UserType")
+  id String @id @default(uuid()) @map("Id")
+
+  joinedCapitals   UsersJoinedCapitals[]
+  investedProjects UsersInvestedProjects[]
 }
 
 model VC {
@@ -30,6 +37,8 @@ model VC {
   tags            String[]   @map("Tags")
   kycDone         Boolean    @map("KYCDone")
   projects        Projects[]
+
+  joinedUsers UsersJoinedCapitals[]
 }
 
 model Projects {
@@ -45,6 +54,8 @@ model Projects {
   projectSocials              ProjectSocials?
   VC                          VC                            @relation(fields: [vcId], references: [id], onDelete: Cascade)
   vcId                        String                        @default(uuid()) @map("VCId")
+
+  investedUsers UsersInvestedProjects[]
 }
 
 model ProjectTokenMetrics {
@@ -99,7 +110,39 @@ model ProjectSocials {
   youtube   String?  @map("Youtube")
 }
 
-enum UserType {
+model UsersJoinedCapitals {
+  vc   VC     @relation(fields: [vcId], references: [id], onDelete: NoAction)
+  vcId String @map("VcId")
+
+  user   Users  @relation(fields: [userId], references: [id], onDelete: NoAction)
+  userId String @map("UserId")
+
+  joinedAt DateTime @default(now()) @map("joined_at")
+
+  @@id([userId, vcId])
+}
+
+model UsersInvestedProjects {
+  id String @default(uuid()) @map("Id")
+
+  user   Users  @relation(fields: [userId], references: [id], onDelete: NoAction)
+  userId String @map("UserId")
+
+  project   Projects @relation(fields: [projectId], references: [id], onDelete: NoAction)
+  projectId String   @map("ProjectId")
+
+  amount          Decimal  @map("Amount")
+  paymentCurrency String   @map("PaymentCurrency")
+  paymentNetwork  String   @map("PaymentNetwork")
+  fromWalletKey   String   @map("FromWalletKey")
+  toWalletKey     String   @map("ToWalletKey")
+  investedAt      DateTime @default(now()) @map("invested_at")
+  transactionId   String   @map("TransactionId")
+
+  @@id([id, userId, projectId])
+}
+
+enum AccountType {
   USER
   VC
 }

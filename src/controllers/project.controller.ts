@@ -1,10 +1,11 @@
 import { type Request, type Response } from 'express'
 
-import { strProjForResponse } from '@/helpers/project.helper'
+import { strProjForResponse, strRespFrInvestmentStats } from '@/helpers/project.helper'
 import { ProjectService } from '@/services'
 import {
   AddProjectApiPayload,
   DeleteProjectApiPayload,
+  ProjectDetailsResponse,
   ProjectListResponse,
   ProjectProfileResponse,
 } from '@/types/Project'
@@ -100,6 +101,35 @@ export const getProjectByProjectId = async (
     const resProjResp = strProjForResponse(project)
 
     return apiResponse.successWithData(resProjResp, 'Requested project fetched successfully')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('Unable to fetch the project', error)
+  }
+}
+
+export const getInvestmentStatsForProject = async (
+  req: Request<{ projectId: string }, ApiResponse<ProjectDetailsResponse>, null, null>,
+  res: Response<ApiResponse<ProjectDetailsResponse>>
+) => {
+  const apiResponse = new ApiResponse<ProjectDetailsResponse>(res)
+
+  try {
+    const { projectId: id } = req.params
+
+    if (!isValidGuid(id)) return apiResponse.error('Invalid project ID')
+
+    const ps = new ProjectService()
+
+    const isProjectExist = await ps.checkProjectExistenceInDb(id)
+
+    if (!isProjectExist) return apiResponse.error('Project not found', 404)
+
+    const projectStats = await ps.getProjectStats(id)
+
+    const strResp = strRespFrInvestmentStats(projectStats)
+
+    return apiResponse.successWithData(strResp, 'Requested project fetched successfully')
   } catch (ex: unknown) {
     const error = ex as Error
 

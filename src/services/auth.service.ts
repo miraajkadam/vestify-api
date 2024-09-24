@@ -1,4 +1,4 @@
-import { PrismaClient, type UserType } from '@prisma/client'
+import { PrismaClient, type AccountType } from '@prisma/client'
 
 export default class AuthService {
   private prisma: PrismaClient
@@ -11,10 +11,10 @@ export default class AuthService {
     username: string,
     email: string,
     password: string,
-    userType: UserType
+    accountType: AccountType
   ) => {
-    const user = await this.prisma.users.create({
-      data: { username, email, password, userType },
+    const user = await this.prisma.accounts.create({
+      data: { username, email, password, accountType },
       select: {
         id: true,
       },
@@ -24,7 +24,7 @@ export default class AuthService {
   }
 
   getUserByEmailAndPasswordFromDb = async (email: string, password: string) => {
-    const user = await this.prisma.users.findFirst({
+    const user = await this.prisma.accounts.findFirst({
       where: {
         email,
         password,
@@ -35,11 +35,11 @@ export default class AuthService {
   }
 
   getUserById = async (id: string) => {
-    const user = await this.prisma.users.findUnique({
+    const user = await this.prisma.accounts.findUnique({
       where: {
         id,
       },
-      select: { email: true, username: true, userType: true },
+      select: { email: true, username: true, accountType: true },
     })
 
     return user

@@ -101,9 +101,9 @@ authRouter.post('/login', passport.authenticate('local'), loginUser)
  *                 type: string
  *                 description: The password for the new user.
  *                 example: securePassword123
- *               userType:
+ *               accountType:
  *                 type: string
- *                 description: The type of user (VC or USER).
+ *                 description: The type of account (VC or USER).
  *                 example: USER
  *                 enum:
  *                   - VC

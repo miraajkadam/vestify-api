@@ -87,3 +87,35 @@ export type ProjectProfileDbResponse = {
     logoBase64: string | null
   }[]
 }
+
+//#region Project Investment Stats
+type ProjectInfo = {
+  name: Projects['name']
+  category: Projects['category']
+  round: Projects['round']
+}
+
+type Financial = {
+  target: number
+  raised: number
+  percentAchieved: number
+}
+
+type TokenMetric = {
+  price: ProjectTokenMetrics['price'] // Assuming price can be a large number in string format
+}
+
+type InvestmentDetails = {
+  maximumAmount: ProjectDeals['maximum'] // Keeping it as string for large values
+  minimumAmount: ProjectDeals['minimum']
+  poolFee: ProjectDeals['poolFee']
+  acceptedTokens: ProjectDeals['acceptedTokens'] // Could also define a union of accepted token types if needed
+}
+
+type ProjectDetailsResponse = {
+  info: ProjectInfo
+  financial: Financial
+  tokenMetric: TokenMetric
+  invest: InvestmentDetails
+}
+//#endregion
