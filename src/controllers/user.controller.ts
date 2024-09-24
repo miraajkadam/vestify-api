@@ -1,11 +1,16 @@
 import { type Request, type Response } from 'express'
 
-import { formatResponse, validateProjectInvestmentPayload } from '@/helpers/user.helper'
+import {
+  formatResponse,
+  SampleUserProfileResponse,
+  validateProjectInvestmentPayload,
+} from '@/helpers/user.helper'
 import { UserService } from '@/services'
 import {
   GetCapitalsJoinedResponse,
   ProjectInvestmentPayload,
   ProjectInvestmentResponse,
+  UserProfileResponse,
 } from '@/types/User'
 import ApiResponse from '@/utils/ApiResponse'
 import { isValidGuid } from '@/utils/common'
@@ -42,11 +47,11 @@ export const joinVC = async (
     const userService = new UserService()
     await userService.addUserCapitalInvestmentInDb(userId, vcId)
 
-    return apiResponse.successWithData(null, 'successfully created a new user')
+    return apiResponse.successWithData(null, 'Successfully joined the capital')
   } catch (ex: unknown) {
     const error = ex as Error
 
-    return apiResponse.critical('unable to create a new user', error)
+    return apiResponse.critical('Unable to join the capital', error)
   }
 }
 
@@ -131,10 +136,34 @@ export const getCapitalsJoined = async (
 
     const formattedResponse = formatResponse(usrJndCap)
 
-    return apiResponse.successWithData(formattedResponse, 'successfully created a new user')
+    return apiResponse.successWithData(
+      formattedResponse,
+      'Successfully fetched the list of capitals joined by the user'
+    )
   } catch (ex: unknown) {
     const error = ex as Error
 
     return apiResponse.critical('Unable to retrieve the list of capitals joined by user', error)
+  }
+}
+
+export const getUserProfile = async (
+  req: Request<{ userId: string }, ApiResponse<UserProfileResponse>, null, null>,
+  res: Response<ApiResponse<UserProfileResponse>>
+) => {
+  const apiResponse = new ApiResponse<UserProfileResponse>(res)
+
+  try {
+    const { userId } = req.params
+
+    if (!isValidGuid(userId)) return apiResponse.error('Invalid user Id')
+
+    const response = SampleUserProfileResponse
+
+    return apiResponse.successWithData(response, 'Successfully fetched user profile')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('Unable to fetch user profile', error)
   }
 }

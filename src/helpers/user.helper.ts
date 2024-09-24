@@ -46,3 +46,150 @@ export const validateProjectInvestmentPayload = (
 
   return true
 }
+
+export const SampleUserProfileResponse = {
+  info: {
+    email: 'naka@bestify.com',
+    discord: 'https://discord.com',
+    x: 'https://twitter.com/',
+    kycDone: true,
+  },
+  investmentSummary: {
+    deals: 15,
+    otcTrades: 5,
+    totInvestment: 7678,
+    avgInvestment: 231,
+  },
+  wallet: {
+    current: '0xabc1234567890abcdef1234567890abcdef1234',
+    last5Used: [
+      '0xabc1234567890abcdef1234567890abcdef1234',
+      '0xabc1234567890abcdef1234567890abcdef1234',
+      '0xabc1234567890abcdef1234567890abcdef1234',
+      '0xabc1234567890abcdef1234567890abcdef1234',
+      '0xabc1234567890abcdef1234567890abcdef1234',
+    ],
+  },
+  dealsSummary: [
+    {
+      projName: 'Project Universal',
+      allocation: '231',
+      tokenRecvd: 2,
+      recEvm: '0xabc1234567890abcdef1234567890abcdef1234',
+      transaction: {
+        contributed: {
+          amount: 2312,
+          count: 2,
+        },
+        refunded: {
+          amount: 2312,
+          count: 2,
+        },
+        otc: {
+          amount: 2312,
+          count: 2,
+        },
+      },
+    },
+    {
+      projName: 'Project Universal',
+      allocation: '231',
+      tokenRecvd: 2,
+      recEvm: '0xabc1234567890abcdef1234567890abcdef1234',
+      transaction: {
+        contributed: {
+          amount: 2312,
+          count: 2,
+        },
+        refunded: {
+          amount: 2312,
+          count: 2,
+        },
+        otc: {
+          amount: 2312,
+          count: 2,
+        },
+      },
+    },
+    {
+      projName: 'Project Universal',
+      allocation: '231',
+      tokenRecvd: 2,
+      recEvm: '0xabc1234567890abcdef1234567890abcdef1234',
+      transaction: {
+        contributed: {
+          amount: 2312,
+          count: 2,
+        },
+        refunded: {
+          amount: 2312,
+          count: 2,
+        },
+        otc: {
+          amount: 2312,
+          count: 2,
+        },
+      },
+    },
+    {
+      projName: 'Project Universal',
+      allocation: '231',
+      tokenRecvd: 2,
+      recEvm: '0xabc1234567890abcdef1234567890abcdef1234',
+      transaction: {
+        contributed: {
+          amount: 2312,
+          count: 2,
+        },
+        refunded: {
+          amount: 2312,
+          count: 2,
+        },
+        otc: {
+          amount: 2312,
+          count: 2,
+        },
+      },
+    },
+    {
+      projName: 'Project Universal',
+      allocation: '231',
+      tokenRecvd: 2,
+      recEvm: '0xabc1234567890abcdef1234567890abcdef1234',
+      transaction: {
+        contributed: {
+          amount: 2312,
+          count: 2,
+        },
+        refunded: {
+          amount: 2312,
+          count: 2,
+        },
+        otc: {
+          amount: 2312,
+          count: 2,
+        },
+      },
+    },
+    {
+      projName: 'Project Universal',
+      allocation: '231',
+      tokenRecvd: 2,
+      recEvm: '0xabc1234567890abcdef1234567890abcdef1234',
+      transaction: {
+        contributed: {
+          amount: 2312,
+          count: 2,
+        },
+        refunded: {
+          amount: 2312,
+          count: 2,
+        },
+        otc: {
+          amount: 2312,
+          count: 2,
+        },
+      },
+    },
+  ],
+}

@@ -30,3 +30,48 @@ export type ProjectInvestmentResponse = {
   transactionId: string
 }
 //#endregion
+
+//#region User Profile API Types
+type TransactionSummary = {
+  amount: number
+  count: number
+}
+
+type DealSummary = {
+  projName: string
+  allocation: string
+  tokenRecvd: number
+  recEvm: string
+  transaction: {
+    contributed: TransactionSummary
+    refunded: TransactionSummary
+    otc: TransactionSummary
+  }
+}
+
+type InvestmentSummary = {
+  deals: number
+  otcTrades: number
+  totInvestment: number
+  avgInvestment: number
+}
+
+type Wallet = {
+  current: string
+  last5Used: string[]
+}
+
+type UserInfo = {
+  email: string
+  discord: string
+  x: string
+  kycDone: boolean
+}
+
+export type UserProfileResponse = {
+  info: UserInfo
+  investmentSummary: InvestmentSummary
+  wallet: Wallet
+  dealsSummary: DealSummary[]
+}
+//#endregion
