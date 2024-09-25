@@ -33,7 +33,7 @@ export type ProjectProfileResponse = {
     name: Projects['name']
     description: Projects['description']
     round: Projects['round']
-    category: Projects['category']
+    categories: Projects['category']
   }
   token: {
     allocation: ProjectTokenMetrics['allocation']
@@ -63,7 +63,7 @@ export type ProjectProfileDbResponse = {
   name: string
   description: string
   round: string
-  category: string
+  categories: string[]
   projectTokenMetrics: {
     allocation: string
     vesting: Date
@@ -91,7 +91,7 @@ export type ProjectProfileDbResponse = {
 //#region Project Investment Stats
 type ProjectInfo = {
   name: Projects['name']
-  category: Projects['category']
+  categories: Projects['categories']
   round: Projects['round']
 }
 

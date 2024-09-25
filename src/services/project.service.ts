@@ -31,7 +31,7 @@ export default class ProjectService {
     await this.prisma.projects.create({
       data: {
         name: newProject.info.name,
-        category: newProject.info.category,
+        categories: newProject.info.categories,
         description: newProject.info.description,
         round: newProject.info.round,
         vcId: newProject.info.vcId,
@@ -151,7 +151,7 @@ export default class ProjectService {
         name: true,
         description: true,
         round: true,
-        category: true,
+        categories: true,
         projectTokenMetrics: {
           select: {
             allocation: true,
@@ -243,7 +243,7 @@ export default class ProjectService {
    * A promise that resolves to an object containing:
    * - name: The name of the project.
    * - round: The round in which the project is (e.g., Seed, Series A).
-   * - category: The category of the project.
+   * - categories: The categories of the project.
    * - projectTokenMetrics: An object containing token metrics (e.g., price).
    * - projectDeals: An object containing deal information (e.g., accepted tokens, maximum and minimum amounts).
    * @throws {Error} Throws an error if no project is found with the given ID.
@@ -256,7 +256,7 @@ export default class ProjectService {
       select: {
         name: true,
         round: true,
-        category: true,
+        categories: true,
         projectTokenMetrics: {
           select: {
             price: true,
