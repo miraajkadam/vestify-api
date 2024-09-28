@@ -139,7 +139,6 @@ export default class VCService {
    * @example
    * const idToCheck = '4b509982-5dc0-4999-8fe7-e347f9764288';
    * const exists = await checkVCExistByIdInDb(idToCheck);
-   * console.log(`VC exists: ${exists}`); // Output: VC exists: true or false
    *
    * @throws {Error} Throws an error if the database query fails.
    */

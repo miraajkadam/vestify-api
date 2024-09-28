@@ -21,7 +21,6 @@ import type { Decimal } from '@prisma/client/runtime/library'
  *   ["tag1", "tag2"],
  *   true
  * );
- * console.log(isValid); // Output: true
  */
 export const isAddNewVCPayloadValid = (
   name: string,
