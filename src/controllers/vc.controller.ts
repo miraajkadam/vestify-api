@@ -13,10 +13,10 @@ import ApiResponse from '@/utils/ApiResponse'
 import { isValidGuid } from '@/utils/common'
 
 export const addNewVC = async (
-  req: Request<null, ApiResponse<null>, AddNewVCPayload, null>,
-  res: Response<ApiResponse<null>>
+  req: Request<null, ApiResponse<{ vcId: string }>, AddNewVCPayload, null>,
+  res: Response<ApiResponse<{ vcId: string }>>
 ) => {
-  const apiResponse = new ApiResponse<null>(res)
+  const apiResponse = new ApiResponse<{ vcId: string }>(res)
 
   try {
     const { description, kycDone, logoBase64, name, subscriptionFee, tags } = req.body
@@ -25,7 +25,7 @@ export const addNewVC = async (
       return apiResponse.error('invalid payload')
 
     const vcService = new VCService()
-    const vcCreated = await vcService.createNewVCInDB(
+    const vcId = await vcService.createNewVCInDB(
       name,
       description,
       logoBase64,
@@ -34,9 +34,9 @@ export const addNewVC = async (
       kycDone
     )
 
-    if (!vcCreated) return apiResponse.error('unable to add a new vc')
+    if (!vcId) return apiResponse.error('unable to add a new vc')
 
-    return apiResponse.success('successfully created a new vc')
+    return apiResponse.successWithData({ vcId }, 'successfully created a new vc')
   } catch (ex: unknown) {
     const error = ex as Error
 

@@ -17,11 +17,9 @@ export enum NodeEnvironment {
  * @example
  * // Example of a valid GUID
  * const validId = "123e4567-e89b-12d3-a456-426614174000";
- * console.log(isGetVCProfileByIdValid(validId)); // Output: true
  *
  * // Example of an invalid GUID
  * const invalidId = "not-a-valid-guid";
- * console.log(isGetVCProfileByIdValid(invalidId)); // Output: false
  */
 export const isValidGuid = (id: string): boolean => {
   // GUID regex pattern
