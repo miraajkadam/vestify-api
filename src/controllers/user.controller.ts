@@ -15,26 +15,6 @@ import {
 import ApiResponse from '@/utils/ApiResponse'
 import { isValidGuid } from '@/utils/common'
 
-export const addUser = async (
-  _: Request<null, ApiResponse<{ id: string }>, null, null>,
-  res: Response<ApiResponse<{ id: string }>>
-) => {
-  const apiResponse = new ApiResponse<{ id: string }>(res)
-
-  try {
-    const userService = new UserService()
-    const { id } = await userService.addUsersToDb()
-
-    if (!id) return apiResponse.error('unable to create a new user')
-
-    return apiResponse.successWithData({ id }, 'successfully created a new user')
-  } catch (ex: unknown) {
-    const error = ex as Error
-
-    return apiResponse.critical('unable to create a new user', error)
-  }
-}
-
 export const joinVC = async (
   req: Request<null, ApiResponse<null>, { userId: string; vcId: string }, null>,
   res: Response<ApiResponse<null>>

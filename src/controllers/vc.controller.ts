@@ -19,13 +19,32 @@ export const addNewVC = async (
   const apiResponse = new ApiResponse<{ vcId: string }>(res)
 
   try {
-    const { description, kycDone, logoBase64, name, subscriptionFee, tags } = req.body
+    const {
+      description,
+      kycDone,
+      logoBase64,
+      name,
+      subscriptionFee,
+      tags,
+      id: accountId,
+    } = req.body
 
-    if (!isAddNewVCPayloadValid(name, description, logoBase64, subscriptionFee, tags, kycDone))
+    if (
+      !isAddNewVCPayloadValid(
+        accountId,
+        name,
+        description,
+        logoBase64,
+        subscriptionFee,
+        tags,
+        kycDone
+      )
+    )
       return apiResponse.error('invalid payload')
 
     const vcService = new VCService()
-    const vcId = await vcService.createNewVCInDB(
+    await vcService.createNewVCInDB(
+      accountId,
       name,
       description,
       logoBase64,
@@ -34,13 +53,11 @@ export const addNewVC = async (
       kycDone
     )
 
-    if (!vcId) return apiResponse.error('unable to add a new vc')
-
-    return apiResponse.successWithData({ vcId }, 'successfully created a new vc')
+    return apiResponse.success('Successfully added data for the new vc.')
   } catch (ex: unknown) {
     const error = ex as Error
 
-    return apiResponse.critical('unable to create a new vc', error)
+    return apiResponse.critical('Unable to add data for the new vc', error)
   }
 }
 

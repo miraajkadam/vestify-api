@@ -1,7 +1,6 @@
 import { Router } from 'express'
 
 import {
-  addUser,
   getCapitalsJoined,
   getUserProfile,
   investInProject,
@@ -9,8 +8,6 @@ import {
 } from '@/controllers/user.controller'
 
 const userRouter = Router()
-
-userRouter.post('/new', addUser)
 
 /**
  * @swagger

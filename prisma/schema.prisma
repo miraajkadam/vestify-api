@@ -19,17 +19,22 @@ model Accounts {
   email       String      @unique @map("Email")
   password    String      @map("Password")
   accountType AccountType @default(USER) @map("AccountType")
+
+  user Users?
+  vc   VC?
 }
 
 model Users {
-  id String @id @default(uuid()) @map("Id")
+  id String @id @unique @map("Id")
 
   joinedCapitals   UsersJoinedCapitals[]
   investedProjects UsersInvestedProjects[]
+
+  account Accounts @relation(fields: [id], references: [id], onDelete: Cascade)
 }
 
 model VC {
-  id              String     @id @default(uuid()) @map("Id")
+  id              String     @id @unique @map("Id")
   name            String     @map("Name")
   description     String     @map("Description")
   logoBase64      String     @map("LogoBase64")
@@ -39,6 +44,8 @@ model VC {
   projects        Projects[]
 
   joinedUsers UsersJoinedCapitals[]
+
+  account Accounts @relation(fields: [id], references: [id], onDelete: Cascade)
 }
 
 model Projects {
