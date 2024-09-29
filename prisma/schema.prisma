@@ -45,7 +45,7 @@ model Projects {
   id                          String                        @id @default(uuid()) @map("Id")
   name                        String                        @map("Name")
   description                 String                        @map("Description")
-  category                    String                        @map("Category")
+  categories                  String[]                      @map("Categories")
   round                       ProjectRound                  @map("Round")
   projectTokenMetrics         ProjectTokenMetrics?
   projectDeals                ProjectDeals?
@@ -54,6 +54,8 @@ model Projects {
   projectSocials              ProjectSocials?
   VC                          VC                            @relation(fields: [vcId], references: [id], onDelete: Cascade)
   vcId                        String                        @default(uuid()) @map("VCId")
+
+  createdAt DateTime @default(now()) @map("created_at")
 
   investedUsers UsersInvestedProjects[]
 }

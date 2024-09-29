@@ -31,10 +31,11 @@ const projectRouter = Router()
  *                     type: string
  *                     description: The name of the project.
  *                     example: "Bitcoin"
- *                   category:
- *                     type: string
- *                     description: The category of the project.
- *                     example: "Crypto"
+ *                   categories:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                     example: ["Tech", "DEFI", "Crypto"]
  *                   description:
  *                     type: string
  *                     description: A brief description of the project.
@@ -383,9 +384,11 @@ projectRouter.get('/getAll', getAllProjects)
  *                         round:
  *                           type: string
  *                           example: "Seed"
- *                         category:
- *                           type: string
- *                           example: "Technology"
+ *                         categories:
+ *                           type: array
+ *                           items:
+ *                             type: string
+ *                           example: ["Tech", "DEFI", "Crypto"]
  *                     token:
  *                       type: object
  *                       properties:
@@ -528,9 +531,11 @@ projectRouter.get('/:projectId', getProjectByProjectId)
  *                         name:
  *                           type: "string"
  *                           example: "Project Alpha"
- *                         category:
- *                           type: "string"
- *                           example: "Technology"
+ *                         categories:
+ *                           type: array
+ *                           items:
+ *                             type: string
+ *                           example: ["Tech", "DEFI", "Crypto"]
  *                         round:
  *                           type: "string"
  *                           example: "Series A"
