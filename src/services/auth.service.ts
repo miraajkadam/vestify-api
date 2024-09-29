@@ -7,51 +7,41 @@ export default class AuthService {
     this.prisma = new PrismaClient()
   }
 
-  createNewUserInDb = async (
+  createNewAccountInDb = async (
     username: string,
     email: string,
     password: string,
     accountType: AccountType
   ) => {
-    const user = await this.prisma.accounts.create({
+    const { id } = await this.prisma.accounts.create({
       data: { username, email, password, accountType },
       select: {
         id: true,
       },
     })
 
-    if (accountType === AccountType.USER)
-      await this.prisma.accounts.update({
-        where: {
-          id: user.id,
-        },
-        data: {
-          user: {
-            create: {},
-          },
-        },
-      })
-    else {
-      await this.prisma.accounts.update({
-        where: {
-          id: user.id,
-        },
-        data: {
-          vc: {
-            create: {
-              name: '',
-              description: '',
-              logoBase64: '',
-              subscriptionFee: -1,
-              tags: [],
-              kycDone: false,
+    const relatedData =
+      accountType === AccountType.VC
+        ? {
+            vc: {
+              create: {
+                name: '',
+                description: '',
+                logoBase64: '',
+                subscriptionFee: -1,
+                tags: [],
+                kycDone: false,
+              },
             },
-          },
-        },
-      })
-    }
+          }
+        : { user: { create: {} } }
 
-    return user?.id
+    await this.prisma.accounts.update({
+      where: { id },
+      data: relatedData,
+    })
+
+    return id
   }
 
   getUserByEmailAndPasswordFromDb = async (email: string, password: string) => {

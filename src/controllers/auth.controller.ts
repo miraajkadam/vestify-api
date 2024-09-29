@@ -49,14 +49,19 @@ export const signupUser = async (
       return apiResponse.error('invalid account type')
 
     const authService = new AuthService()
-    const newUser = await authService.createNewUserInDb(username, email, password, accountType)
+    const newAccountId = await authService.createNewAccountInDb(
+      username,
+      email,
+      password,
+      accountType
+    )
 
-    if (!newUser) return apiResponse.error('unable to create a new account')
+    if (!newAccountId) return apiResponse.error('unable to create a new account')
 
     // Generate JWT token
     const accessToken = jwt.sign(
       {
-        user: { id: newUser },
+        user: { id: newAccountId },
       },
       JWT_SECRET
     )
