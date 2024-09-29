@@ -1,4 +1,4 @@
-import { PrismaClient, type AccountType } from '@prisma/client'
+import { AccountType, PrismaClient } from '@prisma/client'
 
 export default class AuthService {
   private prisma: PrismaClient
@@ -19,6 +19,37 @@ export default class AuthService {
         id: true,
       },
     })
+
+    if (accountType === AccountType.USER)
+      await this.prisma.accounts.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          user: {
+            create: {},
+          },
+        },
+      })
+    else {
+      await this.prisma.accounts.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          vc: {
+            create: {
+              name: '',
+              description: '',
+              logoBase64: '',
+              subscriptionFee: -1,
+              tags: [],
+              kycDone: false,
+            },
+          },
+        },
+      })
+    }
 
     return user?.id
   }
