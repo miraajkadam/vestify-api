@@ -23,6 +23,7 @@ export default class VCService {
   /**
    * Creates a new venture capitalist record in the database.
    *
+   * @param {string} accountId - Account ID for the venture capitalist.
    * @param {string} name - The name of the venture capitalist.
    * @param {string} description - A description of the venture capitalist.
    * @param {string} logoBase64 - The base64-encoded logo of the venture capitalist.
@@ -33,21 +34,23 @@ export default class VCService {
    * @returns {Promise<string | undefined> } The ID of the newly created venture capitalist record, or `undefined` if creation fails.
    */
   createNewVCInDB = async (
+    accountId: string,
     name: string,
     description: string,
     logoBase64: string,
     subscriptionFee: Decimal,
     tags: string[],
     kycDone: boolean
-  ): Promise<string | undefined> => {
-    const vc = await this.prisma.vC.create({
+  ) => {
+    await this.prisma.vC.update({
+      where: {
+        id: accountId,
+      },
       data: { name, description, logoBase64, subscriptionFee, tags, kycDone },
       select: {
         id: true,
       },
     })
-
-    return vc?.id
   }
 
   /**

@@ -23,6 +23,9 @@ const vcRouter = Router()
  *           schema:
  *             type: object
  *             properties:
+ *               id:
+ *                 type: string
+ *                 example: "87c107e4-e55e-47df-a68e-70a1a53be7b7"
  *               name:
  *                 type: string
  *                 example: "Innovative Ventures"
@@ -53,7 +56,7 @@ const vcRouter = Router()
  *               - kycDone
  *     responses:
  *       '200':
- *         description: Successfully created a new VC.
+ *         description: Successfully added data for the new vc.
  *         content:
  *           application/json:
  *             schema:
@@ -64,7 +67,7 @@ const vcRouter = Router()
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: "successfully created a new vc"
+ *                   example: "Successfully added data for the new vc."
  *       '400':
  *         description: Invalid payload or request parameters.
  *         content:
@@ -90,7 +93,7 @@ const vcRouter = Router()
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: "unable to create a new vc"
+ *                   example: "Unable to add data for the new vc"
  *
  *     tags:
  *       - VC

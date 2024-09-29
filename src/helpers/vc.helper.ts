@@ -1,5 +1,7 @@
 import type { Decimal } from '@prisma/client/runtime/library'
 
+import { isValidGuid } from '@/utils/common'
+
 /**
  * Validates if the provided payload values meet the expected criteria for an AddNewVCPayload.
  *
@@ -23,6 +25,7 @@ import type { Decimal } from '@prisma/client/runtime/library'
  * );
  */
 export const isAddNewVCPayloadValid = (
+  accountId: string,
   name: string,
   description: string,
   logoBase64: string,
@@ -30,6 +33,9 @@ export const isAddNewVCPayloadValid = (
   tags: string[],
   kycDone: boolean
 ) => {
+  //Check if account id is a valid guid
+  if (!isValidGuid(accountId)) return false
+
   // Check if name and description are non-empty strings
   if (typeof name !== 'string' || name.trim().length === 0) return false
   if (typeof description !== 'string' || description.trim().length === 0) return false

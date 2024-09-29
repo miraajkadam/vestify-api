@@ -2,6 +2,7 @@ import type { ProjectRound } from '@prisma/client'
 import type { Decimal } from '@prisma/client/runtime/library'
 
 export type AddNewVCPayload = {
+  id: string
   name: string
   description: string
   logoBase64: string
@@ -14,7 +15,7 @@ export type GetVCProfileById = {
   id: string
 }
 
-export type VCProfileResponse = AddNewVCPayload & {
+export type VCProfileResponse = Omit<AddNewVCPayload, 'id'> & {
   name: string
   description: string
   logoBase64: string
