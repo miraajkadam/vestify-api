@@ -22,14 +22,6 @@ export default class UserService {
   }
 
   /**
-   * Adds a new user to the database.
-   *
-   * @returns {Promise<{ id: string }>} The ID of the newly created user.
-   */
-  addUsersToDb = async (): Promise<{ id: string }> =>
-    await this.prisma.users.create({ data: {}, select: { id: true } })
-
-  /**
    * Records a user's capital investment in a venture capital fund.
    *
    * @param {string} userId - The ID of the user.
