@@ -8,7 +8,7 @@ import type {
   GetVCProfileById,
   VCProfileResponse,
   VCProjectsResponse,
-} from '@/types/VC'
+} from '@/types/VC.d'
 import ApiResponse from '@/utils/ApiResponse'
 import { isValidGuid } from '@/utils/common'
 
