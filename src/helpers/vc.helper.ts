@@ -1,6 +1,7 @@
 import type { Decimal } from '@prisma/client/runtime/library'
 
 import { isValidGuid } from '@/utils/common'
+import { VCSocial } from '@prisma/client'
 
 /**
  * Validates if the provided payload values meet the expected criteria for an AddNewVCPayload.
@@ -11,6 +12,13 @@ import { isValidGuid } from '@/utils/common'
  * @param {number} subscriptionFee - The subscription fee, which should be a non-negative number.
  * @param {string[]} tags - An array of tags associated with the VC, where each tag should be a non-empty string.
  * @param {boolean} kycDone - A boolean indicating whether KYC (Know Your Customer) verification is completed.
+ * @param {Object} socials - The social media links associated with the VC.
+ * @param {string|null} [socials.x] - Additional info (optional).
+ * @param {string|null} [socials.instagram] - Instagram link (optional).
+ * @param {string|null} [socials.discord] - Discord link (optional).
+ * @param {string|null} [socials.telegram] - Telegram link (optional).
+ * @param {string|null} [socials.medium] - Medium link (optional).
+ * @param {string|null} [socials.youtube] - YouTube channel link (optional).
  *
  * @returns {boolean} Returns `true` if all parameters meet their respective validation criteria, otherwise `false`.
  *
@@ -21,7 +29,15 @@ import { isValidGuid } from '@/utils/common'
  *   "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
  *   99.99,
  *   ["tag1", "tag2"],
- *   true
+ *   true,
+ *   {
+ *     x: "Additional info",
+ *     instagram: "https://instagram.com/sample_vc",
+ *     discord: null,
+ *     telegram: "https://t.me/sample_vc",
+ *     medium: "https://medium.com/@sample_vc",
+ *     youtube: ""
+ *   }
  * );
  */
 export const isAddNewVCPayloadValid = (
@@ -31,8 +47,9 @@ export const isAddNewVCPayloadValid = (
   logoBase64: string,
   subscriptionFee: Decimal,
   tags: string[],
-  kycDone: boolean
-) => {
+  kycDone: boolean,
+  socials: Omit<VCSocial, 'id' | 'vcId'>
+): boolean => {
   //Check if account id is a valid guid
   if (!isValidGuid(accountId)) return false
 
@@ -53,5 +70,31 @@ export const isAddNewVCPayloadValid = (
   // Check if kycDone is a boolean
   if (typeof kycDone !== 'boolean') return false
 
+  // Check if social links are valid
+  const socialFields: (keyof Socials)[] = [
+    'x',
+    'instagram',
+    'discord',
+    'telegram',
+    'medium',
+    'youtube',
+  ]
+
+  for (const field of socialFields) {
+    const value = socials[field]
+
+    if (value !== undefined && value !== null && value !== '' && typeof value !== 'string')
+      return false
+  }
+
   return true
+}
+
+interface Socials {
+  x?: string | null
+  instagram?: string | null
+  discord?: string | null
+  telegram?: string | null
+  medium?: string | null
+  youtube?: string | null
 }
