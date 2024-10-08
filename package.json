@@ -9,9 +9,9 @@
     "build": "npx prisma generate && tsc",
     "dev": "npx nodemon src/server.ts",
     "dev:debug": "npx nodemon --inspect src/server.ts",
-    "pris:gen": "npx prisma generate",
-    "pris:mig": "npx prisma migrate dev",
-    "pris:stud": "npx prisma studio"
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:studio": "npx prisma studio"
   },
   "author": "Miraaj Kadam <miraajkadam@gmail.com> (https://miraajkadam.com/)",
   "license": "ISC",
