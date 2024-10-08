@@ -11,7 +11,9 @@
     "dev:debug": "npx nodemon --inspect src/server.ts",
     "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate dev",
-    "prisma:studio": "npx prisma studio"
+    "prisma:studio": "npx prisma studio",
+    "prisma:db-reset": "npx prisma db push --force-reset",
+    "prisma:migrate-reset": "npx prisma migrate reset"
   },
   "author": "Miraaj Kadam <miraajkadam@gmail.com> (https://miraajkadam.com/)",
   "license": "ISC",
