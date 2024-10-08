@@ -47,6 +47,28 @@ const vcRouter = Router()
  *               kycDone:
  *                 type: boolean
  *                 example: true
+ *               socials:
+ *                 type: object
+ *                 properties:
+ *                   x:
+ *                     type: string
+ *                     example: "Additional info"
+ *                   instagram:
+ *                     type: string
+ *                     example: "https://instagram.com/project_handle"
+ *                   discord:
+ *                     type: string
+ *                     example: "https://discord.gg/project_invite"
+ *                   telegram:
+ *                     type: string
+ *                     example: "https://t.me/project_channel"
+ *                   medium:
+ *                     type: string
+ *                     example: "https://medium.com/@project_blog"
+ *                   youtube:
+ *                     type: string
+ *                     example: "https://youtube.com/channel/project_channel"
+ *                 required: []
  *             required:
  *               - name
  *               - description
@@ -56,7 +78,7 @@ const vcRouter = Router()
  *               - kycDone
  *     responses:
  *       '200':
- *         description: Successfully added data for the new vc.
+ *         description: Successfully added data for the new VC.
  *         content:
  *           application/json:
  *             schema:
@@ -67,7 +89,7 @@ const vcRouter = Router()
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: "Successfully added data for the new vc."
+ *                   example: "Successfully added data for the new VC."
  *       '400':
  *         description: Invalid payload or request parameters.
  *         content:
@@ -80,7 +102,7 @@ const vcRouter = Router()
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: "invalid payload"
+ *                   example: "Invalid payload"
  *       '500':
  *         description: Internal server error or unable to process request.
  *         content:
@@ -93,7 +115,7 @@ const vcRouter = Router()
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: "Unable to add data for the new vc"
+ *                   example: "Unable to add data for the new VC"
  *
  *     tags:
  *       - VC

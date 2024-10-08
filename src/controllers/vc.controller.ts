@@ -27,6 +27,7 @@ export const addNewVC = async (
       subscriptionFee,
       tags,
       id: accountId,
+      socials,
     } = req.body
 
     if (
@@ -37,7 +38,8 @@ export const addNewVC = async (
         logoBase64,
         subscriptionFee,
         tags,
-        kycDone
+        kycDone,
+        socials
       )
     )
       return apiResponse.error('invalid payload')
@@ -50,7 +52,8 @@ export const addNewVC = async (
       logoBase64,
       subscriptionFee,
       tags,
-      kycDone
+      kycDone,
+      socials
     )
 
     return apiResponse.success('Successfully added data for the new vc.')

@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, VCSocial } from '@prisma/client'
 import type { Decimal } from '@prisma/client/runtime/library'
 
 import { VCProfileResponse, VCProjectsResponse } from '@/types/VC.d'
@@ -30,6 +30,13 @@ export default class VCService {
    * @param {number} subscriptionFee - The subscription fee associated with the venture capitalist.
    * @param {string[]} tags - An array of tags associated with the venture capitalist.
    * @param {boolean} kycDone - Indicates whether Know Your Customer (KYC) verification has been completed for the venture capitalist.
+   * @param {Object} socials - The social media links associated with the VC.
+   * @param {string|null} [socials.x] - Additional info (optional).
+   * @param {string|null} [socials.instagram] - Instagram link (optional).
+   * @param {string|null} [socials.discord] - Discord link (optional).
+   * @param {string|null} [socials.telegram] - Telegram link (optional).
+   * @param {string|null} [socials.medium] - Medium link (optional).
+   * @param {string|null} [socials.youtube] - YouTube channel link (optional).
    *
    * @returns {Promise<string | undefined> } The ID of the newly created venture capitalist record, or `undefined` if creation fails.
    */
@@ -40,13 +47,31 @@ export default class VCService {
     logoBase64: string,
     subscriptionFee: Decimal,
     tags: string[],
-    kycDone: boolean
+    kycDone: boolean,
+    socials: Omit<VCSocial, 'id' | 'vcId'>
   ) => {
     await this.prisma.vC.update({
       where: {
         id: accountId,
       },
-      data: { name, description, logoBase64, subscriptionFee, tags, kycDone },
+      data: {
+        name,
+        description,
+        logoBase64,
+        subscriptionFee,
+        tags,
+        kycDone,
+        VCSocial: {
+          create: {
+            discord: socials.discord,
+            instagram: socials.instagram,
+            medium: socials.medium,
+            telegram: socials.telegram,
+            x: socials.x,
+            youtube: socials.youtube,
+          },
+        },
+      },
       select: {
         id: true,
       },

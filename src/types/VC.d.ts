@@ -1,4 +1,4 @@
-import type { ProjectRound } from '@prisma/client'
+import type { ProjectRound, VCSocial } from '@prisma/client'
 import type { Decimal } from '@prisma/client/runtime/library'
 
 export type AddNewVCPayload = {
@@ -9,13 +9,14 @@ export type AddNewVCPayload = {
   subscriptionFee: Decimal
   tags: string[]
   kycDone: boolean
+  socials: Omit<VCSocial, 'id' | 'vcId'>
 }
 
 export type GetVCProfileById = {
   id: string
 }
 
-export type VCProfileResponse = Omit<AddNewVCPayload, 'id'> & {
+export type VCProfileResponse = Omit<AddNewVCPayload, 'id' | 'socials'> & {
   name: string
   description: string
   logoBase64: string

@@ -13,6 +13,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// region Account
+
 model Accounts {
   id          String      @id @default(uuid()) @map("Id")
   username    String      @unique @map("Username")
@@ -24,6 +26,10 @@ model Accounts {
   vc   VC?
 }
 
+// endregion
+
+// region User
+
 model Users {
   id String @id @unique @map("Id")
 
@@ -32,6 +38,42 @@ model Users {
 
   account Accounts @relation(fields: [id], references: [id], onDelete: Cascade)
 }
+
+model UsersJoinedCapitals {
+  vc   VC     @relation(fields: [vcId], references: [id], onDelete: NoAction)
+  vcId String @map("VcId")
+
+  user   Users  @relation(fields: [userId], references: [id], onDelete: NoAction)
+  userId String @map("UserId")
+
+  joinedAt DateTime @default(now()) @map("joined_at")
+
+  @@id([userId, vcId])
+}
+
+model UsersInvestedProjects {
+  id String @default(uuid()) @map("Id")
+
+  user   Users  @relation(fields: [userId], references: [id], onDelete: NoAction)
+  userId String @map("UserId")
+
+  project   Projects @relation(fields: [projectId], references: [id], onDelete: NoAction)
+  projectId String   @map("ProjectId")
+
+  amount          Decimal  @map("Amount")
+  paymentCurrency String   @map("PaymentCurrency")
+  paymentNetwork  String   @map("PaymentNetwork")
+  fromWalletKey   String   @map("FromWalletKey")
+  toWalletKey     String   @map("ToWalletKey")
+  investedAt      DateTime @default(now()) @map("invested_at")
+  transactionId   String   @map("TransactionId")
+
+  @@id([id, userId, projectId])
+}
+
+// endregion
+
+// region VC
 
 model VC {
   id              String     @id @unique @map("Id")
@@ -45,8 +87,26 @@ model VC {
 
   joinedUsers UsersJoinedCapitals[]
 
-  account Accounts @relation(fields: [id], references: [id], onDelete: Cascade)
+  VCSocial VCSocial?
+  account  Accounts  @relation(fields: [id], references: [id], onDelete: Cascade)
 }
+
+model VCSocial {
+  id        String     @id @default(uuid()) @map("Id")
+  VC        VC         @relation(fields: [vcId], references: [id], onDelete: Cascade)
+  vcId      String     @unique @default(uuid()) @map("ProjectId")
+  x         String?    @map("X")
+  instagram String?    @map("Instagram")
+  discord   String?    @map("Discord")
+  telegram  String?    @map("Telegram")
+  medium    String?    @map("Medium")
+  youtube   String?    @map("Youtube")
+  Projects  Projects[]
+}
+
+// endregion
+
+// region Project
 
 model Projects {
   id                          String                        @id @default(uuid()) @map("Id")
@@ -65,6 +125,8 @@ model Projects {
   createdAt DateTime @default(now()) @map("created_at")
 
   investedUsers UsersInvestedProjects[]
+  VCSocial      VCSocial?               @relation(fields: [vCSocialId], references: [id])
+  vCSocialId    String?
 }
 
 model ProjectTokenMetrics {
@@ -119,37 +181,9 @@ model ProjectSocials {
   youtube   String?  @map("Youtube")
 }
 
-model UsersJoinedCapitals {
-  vc   VC     @relation(fields: [vcId], references: [id], onDelete: NoAction)
-  vcId String @map("VcId")
+// endregion
 
-  user   Users  @relation(fields: [userId], references: [id], onDelete: NoAction)
-  userId String @map("UserId")
-
-  joinedAt DateTime @default(now()) @map("joined_at")
-
-  @@id([userId, vcId])
-}
-
-model UsersInvestedProjects {
-  id String @default(uuid()) @map("Id")
-
-  user   Users  @relation(fields: [userId], references: [id], onDelete: NoAction)
-  userId String @map("UserId")
-
-  project   Projects @relation(fields: [projectId], references: [id], onDelete: NoAction)
-  projectId String   @map("ProjectId")
-
-  amount          Decimal  @map("Amount")
-  paymentCurrency String   @map("PaymentCurrency")
-  paymentNetwork  String   @map("PaymentNetwork")
-  fromWalletKey   String   @map("FromWalletKey")
-  toWalletKey     String   @map("ToWalletKey")
-  investedAt      DateTime @default(now()) @map("invested_at")
-  transactionId   String   @map("TransactionId")
-
-  @@id([id, userId, projectId])
-}
+// region enums
 
 enum AccountType {
   USER
@@ -164,3 +198,5 @@ enum ProjectRound {
   PRIVATE_3 @map("PRIVATE 3")
   PUBLIC    @map("PUBLIC")
 }
+
+// endregion
