@@ -9,14 +9,65 @@ import type {
   ProjectTokenMetrics,
 } from '@prisma/client'
 
-export type AddProjectApiPayload = {
-  info: Omit<Projects, 'id'>
-  tokenMetrics: Omit<ProjectTokenMetrics, 'id' | 'projectId'>
-  deals: Omit<ProjectDeals, 'id' | 'projectId'>
-  teamAndAdvisors: Omit<ProjectTeamAndAdvisors, 'id' | 'projectId'>[]
-  partnersAndInvestors: Omit<ProjectPartnersAndInvestors, 'id' | 'projectId'>[]
-  projectSocials: Omit<ProjectSocials, 'id' | 'projectId'>
+// region AddProject
+
+type ProjectInfo = {
+  name: string
+  categories: string[]
+  description: string
+  round: ProjectRound
+  vcId: string
 }
+
+type TokenMetric = {
+  fdv: string
+  price: string
+  tgeUnlock: string
+  tge: string // ISO 8601 date string
+  round: ProjectRound
+  tgeSummary: string
+}
+
+type Deals = {
+  maximum: number
+  minimum: number
+  acceptedTokens: string
+  poolFee: number
+  startDate: string // ISO 8601 date string
+  endDate: string // ISO 8601 date string
+}
+
+type TeamAndAdvisor = {
+  description: string
+  name: string
+  title: string
+  imgBase64: string
+}
+
+type PartnerAndInvestor = {
+  logoBase64: string
+  name: string
+}
+
+type ProjectSocials = {
+  x: string | null
+  instagram: string | null
+  discord: string | null
+  telegram: string | null
+  medium: string | null
+  youtube: string | null
+}
+
+export type AddProjectApiPayload = {
+  info: ProjectInfo
+  tokenMetrics: TokenMetric[]
+  deals: Deals
+  teamAndAdvisors: TeamAndAdvisor[]
+  partnersAndInvestors: PartnerAndInvestor[]
+  projectSocials: ProjectSocials
+}
+
+// endregion
 
 export type DeleteProjectApiPayload = {
   id: string
@@ -36,7 +87,6 @@ export type ProjectProfileResponse = {
     categories: Projects['category']
   }
   token: {
-    allocation: ProjectTokenMetrics['allocation']
     vesting: ProjectTokenMetrics['vesting']
     tge: ProjectTokenMetrics['tge']
     tgeUnlock: ProjectTokenMetrics['tgeUnlock']
@@ -65,7 +115,6 @@ export type ProjectProfileDbResponse = {
   round: string
   categories: string[]
   projectTokenMetrics: {
-    allocation: string
     vesting: Date
     tge: Date
     tgeUnlock: string

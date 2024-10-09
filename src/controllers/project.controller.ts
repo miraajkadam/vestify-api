@@ -1,6 +1,6 @@
 import { type Request, type Response } from 'express'
 
-import { strProjForResponse, strRespFrInvestmentStats } from '@/helpers/project.helper'
+import { isAddNewProjectPayloadValid } from '@/helpers/project.helper'
 import { ProjectService } from '@/services'
 import {
   AddProjectApiPayload,
@@ -19,10 +19,13 @@ export const addNewProject = async (
   const apiResponse = new ApiResponse<string>(res)
 
   try {
+    if (!isAddNewProjectPayloadValid(req.body)) return apiResponse.error('Invalid request payload')
+
     const ps = new ProjectService()
 
     const { id } = await ps.addProjectToDb(req.body)
 
+    console.log(`New project {${id}} added successfully under VC {${req.body.info.vcId}} `)
     return apiResponse.successWithData(id, 'new project was added successfully')
   } catch (ex: unknown) {
     const error = ex as Error

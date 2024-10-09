@@ -49,32 +49,34 @@ const projectRouter = Router()
  *                     description: The ID of the venture capital firm associated with the project.
  *                     example: "7242012c-511a-410a-b99b-7f2ecf0d238b"
  *               tokenMetrics:
- *                 type: object
- *                 properties:
- *                   allocation:
- *                     type: string
- *                     description: Token allocation details.
- *                     example: "5000000"
- *                   fdv:
- *                     type: string
- *                     description: Fully Diluted Valuation.
- *                     example: "1000000000"
- *                   price:
- *                     type: string
- *                     description: Price of the token.
- *                     example: "1.23"
- *                   tgeUnlock:
- *                     type: string
- *                     description: Token Generation Event unlock status.
- *                     example: "Yes"
- *                   tge:
- *                     type: string
- *                     description: Date and time of the Token Generation Event.
- *                     example: "2024-08-28T12:20:13.264Z"
- *                   vesting:
- *                     type: string
- *                     description: Date and time when the token vesting starts.
- *                     example: "2024-08-28T12:20:13.264Z"
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     fdv:
+ *                       type: string
+ *                       description: Fully Diluted Valuation.
+ *                       example: "1000000000"
+ *                     price:
+ *                       type: string
+ *                       description: Price of the token.
+ *                       example: "1.23"
+ *                     tgeUnlock:
+ *                       type: string
+ *                       description: Token Generation Event unlock status.
+ *                       example: "Yes"
+ *                     tge:
+ *                       type: string
+ *                       description: Date and time of the Token Generation Event.
+ *                       example: "2024-08-28T12:20:13.264Z"
+ *                     round:
+ *                       type: string
+ *                       description: The funding round for the token metrics.
+ *                       example: "PRE_SEED"
+ *                     tgeSummary:
+ *                       type: string
+ *                       description: Summary of the Token Generation Event.
+ *                       example: "This is TGE Summary"
  *               deals:
  *                 type: object
  *                 properties:
@@ -94,6 +96,14 @@ const projectRouter = Router()
  *                     type: number
  *                     description: Fee percentage for the pool.
  *                     example: 2.5
+ *                   startDate:
+ *                     type: string
+ *                     description: Start date of the deal.
+ *                     example: "2024-08-18T12:20:13.264Z"
+ *                   endDate:
+ *                     type: string
+ *                     description: End date of the deal.
+ *                     example: "2024-08-28T12:20:13.264Z"
  *               teamAndAdvisors:
  *                 type: array
  *                 items:

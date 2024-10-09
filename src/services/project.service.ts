@@ -36,17 +36,14 @@ export default class ProjectService {
         round: newProject.info.round,
         vcId: newProject.info.vcId,
         projectTokenMetrics: {
-          create: {
-            allocation: newProject.tokenMetrics.allocation,
-            fdv: newProject.tokenMetrics.fdv,
-            price: newProject.tokenMetrics.price,
-            tgeUnlock: newProject.tokenMetrics.tgeUnlock,
-            tge: newProject.tokenMetrics.tge,
-            vesting: newProject.tokenMetrics.vesting,
+          createMany: {
+            data: newProject.tokenMetrics,
           },
         },
         projectDeals: {
           create: {
+            endDate: newProject.deals.endDate,
+            startDate: newProject.deals.startDate,
             maximum: newProject.deals.maximum,
             minimum: newProject.deals.minimum,
             acceptedTokens: newProject.deals.acceptedTokens,
