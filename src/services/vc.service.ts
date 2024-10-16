@@ -103,6 +103,7 @@ export default class VCService {
     const vcDetails = await this.prisma.vC.findUnique({
       where: { id },
       select: {
+        id: true,
         description: true,
         kycDone: true,
         logoBase64: true,
@@ -118,7 +119,7 @@ export default class VCService {
       },
     })
 
-    return vcDetails
+    return vcDetails ? { ...vcDetails, vcId: vcDetails.id } : null
   }
 
   /**
@@ -141,6 +142,7 @@ export default class VCService {
     const vcProjects = await this.prisma.vC.findUnique({
       where: { id },
       select: {
+        id: true,
         projects: {
           select: {
             id: true,
@@ -152,7 +154,7 @@ export default class VCService {
       },
     })
 
-    return vcProjects?.projects
+    return vcProjects ? { vcId: vcProjects.id, projects: vcProjects.projects } : undefined
   }
 
   /**

@@ -90,22 +90,22 @@ export const getVCProfileById = async (
 
     if (!vcDetails) return apiResponse.error('unable to get vc details')
 
-    return apiResponse.successWithData(vcDetails, 'successfully created a new vc')
+    return apiResponse.successWithData(vcDetails, 'VC profile retrieved successfully')
   } catch (ex: unknown) {
     const error = ex as Error
 
-    return apiResponse.critical('unable to create a new vc', error)
+    return apiResponse.critical('unable to retrieve VC profile', error)
   }
 }
 
 export const getVCProjectsById = async (
   req: Request<
     { vcId: string },
-    ApiResponse<VCProfileResponse>,
+    ApiResponse<VCProjectsResponse>,
     GetVCProfileById,
-    VCProfileResponse
+    VCProjectsResponse
   >,
-  res: Response<ApiResponse<VCProfileResponse>>
+  res: Response<ApiResponse<VCProjectsResponse>>
 ) => {
   const apiResponse = new ApiResponse<VCProjectsResponse>(res)
 
@@ -115,17 +115,18 @@ export const getVCProjectsById = async (
     if (!isValidGuid(vcId)) return apiResponse.error('invalid VC Id')
 
     const vcService = new VCService()
-    const vcProjects = await vcService.getVCProjectsByIdFromDB(vcId)
+    const vcProjectsData = await vcService.getVCProjectsByIdFromDB(vcId)
 
-    if (!vcProjects) return apiResponse.error('unable to get vc projects')
+    if (!vcProjectsData) return apiResponse.error('unable to get vc projects')
 
-    if (!vcProjects.length) return apiResponse.error('No projects found for the given VC ID', 404)
+    if (!vcProjectsData.projects.length)
+      return apiResponse.error('No projects found for the given VC ID', 404)
 
-    return apiResponse.successWithData(vcProjects, 'project for vc get successful')
+    return apiResponse.successWithData(vcProjectsData, 'Project retrieval successful')
   } catch (ex: unknown) {
     const error = ex as Error
 
-    return apiResponse.critical('unable to create a new vc', error)
+    return apiResponse.critical('unable to retrieve vc projects', error)
   }
 }
 
