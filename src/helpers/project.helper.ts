@@ -17,7 +17,6 @@ export const strProjForResponse = (projectProfile: ProjectProfileDbResponse) => 
     tokensReceived: '0/0',
   },
   token: {
-    allocation: projectProfile?.projectTokenMetrics?.allocation,
     vesting: projectProfile?.projectTokenMetrics?.vesting,
     tge: projectProfile?.projectTokenMetrics?.tge,
     tgeUnlock: projectProfile?.projectTokenMetrics?.tgeUnlock,
@@ -99,14 +98,13 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload) => {
   // Check 'info' object
   if (!payload.info || typeof payload.info !== 'object') return false
 
-  const { name, categories, description, round, vcId } = payload.info
+  const { name, categories, description, vcId } = payload.info
 
   if (
     typeof name !== 'string' ||
     !Array.isArray(categories) ||
     categories.length === 0 ||
     typeof description !== 'string' ||
-    typeof round !== 'string' ||
     !isValidGuid(vcId)
   )
     return false

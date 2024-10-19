@@ -40,10 +40,6 @@ const projectRouter = Router()
  *                     type: string
  *                     description: A brief description of the project.
  *                     example: "Bitcoin is a leading cryptocurrency with significant market potential."
- *                   round:
- *                     type: string
- *                     description: The funding round for the project.
- *                     example: "PRE_SEED"
  *                   vcId:
  *                     type: string
  *                     description: The ID of the venture capital firm associated with the project.

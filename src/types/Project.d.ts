@@ -15,7 +15,6 @@ type ProjectInfo = {
   name: string
   categories: string[]
   description: string
-  round: ProjectRound
   vcId: string
 }
 
@@ -138,10 +137,10 @@ export type ProjectProfileDbResponse = {
 }
 
 //#region Project Investment Stats
-type ProjectInfo = {
+type ProjectInfoInv = {
   name: Projects['name']
   categories: Projects['categories']
-  round: Projects['round']
+  round: ProjectRound
 }
 
 type Financial = {
@@ -150,7 +149,7 @@ type Financial = {
   percentAchieved: number
 }
 
-type TokenMetric = {
+type TokenMetricInv = {
   price: ProjectTokenMetrics['price'] // Assuming price can be a large number in string format
 }
 
@@ -162,9 +161,9 @@ type InvestmentDetails = {
 }
 
 type ProjectDetailsResponse = {
-  info: ProjectInfo
+  info: ProjectInfoInv
   financial: Financial
-  tokenMetric: TokenMetric
+  tokenMetric: TokenMetricInv
   invest: InvestmentDetails
 }
 //#endregion

@@ -33,7 +33,6 @@ export default class ProjectService {
         name: newProject.info.name,
         categories: newProject.info.categories,
         description: newProject.info.description,
-        round: newProject.info.round,
         vcId: newProject.info.vcId,
         projectTokenMetrics: {
           createMany: {
@@ -101,14 +100,40 @@ export default class ProjectService {
    */
   getAllProjectFromDb = async (): Promise<
     Array<{ name: string; description: string; round: ProjectRound }>
-  > =>
-    await this.prisma.projects.findMany({
+  > => {
+    const allProjectsResp = await this.getAllProjectsFromDb()
+
+    return this.strAllProjectsResp(allProjectsResp)
+  }
+
+  private strAllProjectsResp = (
+    projects: {
+      name: string
+      description: string
+      projectTokenMetrics: {
+        round: ProjectRound
+      }[]
+    }[]
+  ) =>
+    projects.map(({ projectTokenMetrics, ...rest }) => ({
+      ...rest,
+      round: projectTokenMetrics[0].round,
+    }))
+
+  private getAllProjectsFromDb = async () => {
+    return await this.prisma.projects.findMany({
       select: {
         name: true,
         description: true,
-        round: true,
+        projectTokenMetrics: {
+          take: 1,
+          select: {
+            round: true,
+          },
+        },
       },
     })
+  }
 
   /**
    * Checks if a project exists in the database by its ID.
@@ -201,10 +226,15 @@ export default class ProjectService {
       this.getTotInvestedAmtInProj(projectId),
     ])
 
-    return {
-      projDet,
+    const response = {
+      projDet: {
+        ...projDet,
+        projectTokenMetrics: projDet.projectTokenMetrics[0],
+      },
       totInvestedAmt: totInvestedAmt._sum.amount || 0,
     }
+
+    return response
   }
 
   /**
@@ -252,12 +282,13 @@ export default class ProjectService {
       },
       select: {
         name: true,
-        round: true,
         categories: true,
         projectTokenMetrics: {
           select: {
             price: true,
+            round: true,
           },
+          take: 1,
         },
         projectDeals: {
           select: {

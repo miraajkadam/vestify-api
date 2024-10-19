@@ -1,6 +1,10 @@
 import { type Request, type Response } from 'express'
 
-import { isAddNewProjectPayloadValid } from '@/helpers/project.helper'
+import {
+  isAddNewProjectPayloadValid,
+  strProjForResponse,
+  strRespFrInvestmentStats,
+} from '@/helpers/project.helper'
 import { ProjectService } from '@/services'
 import {
   AddProjectApiPayload,
