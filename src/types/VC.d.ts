@@ -17,6 +17,7 @@ export type GetVCProfileById = {
 }
 
 export type VCProfileResponse = Omit<AddNewVCPayload, 'id' | 'socials'> & {
+  vcId: string
   name: string
   description: string
   logoBase64: string
@@ -30,11 +31,14 @@ export type VCProfileResponse = Omit<AddNewVCPayload, 'id' | 'socials'> & {
 }
 
 export type VCProjectsResponse = {
-  id: string
-  name: string
-  description: string
-  round: ProjectRound
-}[]
+  vcId: string
+  projects: {
+    id: string
+    name: string
+    description: string
+    round: ProjectRound
+  }[]
+}
 
 export type AllVCResponse = Pick<
   VC,
