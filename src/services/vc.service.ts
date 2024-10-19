@@ -1,4 +1,4 @@
-import { PrismaClient, VCSocial } from '@prisma/client'
+import { PrismaClient, ProjectRound, VCSocial } from '@prisma/client'
 import type { Decimal } from '@prisma/client/runtime/library'
 
 import { VCProfileResponse, VCProjectsResponse } from '@/types/VC.d'
@@ -148,13 +148,28 @@ export default class VCService {
             id: true,
             name: true,
             description: true,
-            round: true,
+            projectTokenMetrics: {
+              select: {
+                round: true,
+              },
+              take: 1,
+            },
           },
         },
       },
     })
 
-    return vcProjects ? { vcId: vcProjects.id, projects: vcProjects.projects } : undefined
+    const restProjects = vcProjects?.projects.map(({ projectTokenMetrics, ...rest }) => ({
+      ...rest,
+      round: projectTokenMetrics[0].round,
+    })) as {
+      round: ProjectRound
+      id: string
+      name: string
+      description: string
+    }[]
+
+    return vcProjects ? { vcId: vcProjects.id, projects: restProjects } : undefined
   }
 
   /**

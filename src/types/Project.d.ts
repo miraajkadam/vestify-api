@@ -9,14 +9,64 @@ import type {
   ProjectTokenMetrics,
 } from '@prisma/client'
 
-export type AddProjectApiPayload = {
-  info: Omit<Projects, 'id'>
-  tokenMetrics: Omit<ProjectTokenMetrics, 'id' | 'projectId'>
-  deals: Omit<ProjectDeals, 'id' | 'projectId'>
-  teamAndAdvisors: Omit<ProjectTeamAndAdvisors, 'id' | 'projectId'>[]
-  partnersAndInvestors: Omit<ProjectPartnersAndInvestors, 'id' | 'projectId'>[]
-  projectSocials: Omit<ProjectSocials, 'id' | 'projectId'>
+// region AddProject
+
+type ProjectInfo = {
+  name: string
+  categories: string[]
+  description: string
+  vcId: string
 }
+
+type TokenMetric = {
+  fdv: string
+  price: string
+  tgeUnlock: string
+  tge: string // ISO 8601 date string
+  round: ProjectRound
+  tgeSummary: string
+}
+
+type Deals = {
+  maximum: number
+  minimum: number
+  acceptedTokens: string
+  poolFee: number
+  startDate: string // ISO 8601 date string
+  endDate: string // ISO 8601 date string
+}
+
+type TeamAndAdvisor = {
+  description: string
+  name: string
+  title: string
+  imgBase64: string
+}
+
+type PartnerAndInvestor = {
+  logoBase64: string
+  name: string
+}
+
+type ProjectSocials = {
+  x: string | null
+  instagram: string | null
+  discord: string | null
+  telegram: string | null
+  medium: string | null
+  youtube: string | null
+}
+
+export type AddProjectApiPayload = {
+  info: ProjectInfo
+  tokenMetrics: TokenMetric[]
+  deals: Deals
+  teamAndAdvisors: TeamAndAdvisor[]
+  partnersAndInvestors: PartnerAndInvestor[]
+  projectSocials: ProjectSocials
+}
+
+// endregion
 
 export type DeleteProjectApiPayload = {
   id: string
@@ -32,15 +82,14 @@ export type ProjectProfileResponse = {
   info: {
     name: Projects['name']
     description: Projects['description']
-    round: Projects['round']
+    round: ProjectRound
     categories: Projects['category']
   }
   token: {
-    allocation: ProjectTokenMetrics['allocation']
-    vesting: ProjectTokenMetrics['vesting']
     tge: ProjectTokenMetrics['tge']
     tgeUnlock: ProjectTokenMetrics['tgeUnlock']
     price: ProjectTokenMetrics['price']
+    tgeSummary: ProjectTokenMetrics['tgeSummary']
   }
   socialLink: {
     medium: ProjectSocials['medium']
@@ -60,17 +109,19 @@ export type ProjectProfileResponse = {
 }
 
 export type ProjectProfileDbResponse = {
-  name: string
+  name: string | undefined
   description: string
-  round: string
   categories: string[]
-  projectTokenMetrics: {
-    allocation: string
-    vesting: Date
-    tge: Date
-    tgeUnlock: string
-    price: string
-  } | null
+  projectTokenMetrics:
+    | {
+        tge: Date
+        tgeUnlock: string
+        price: string
+        round: ProjectRound
+        tgeSummary: string
+      }
+    | null
+    | undefined
   projectSocials: {
     discord: string | null
     medium: string | null
@@ -81,7 +132,6 @@ export type ProjectProfileDbResponse = {
     name: string
     imgBase64: string | null
   }[]
-
   projectPartnersAndInvestors: {
     name: string
     logoBase64: string | null
@@ -89,10 +139,10 @@ export type ProjectProfileDbResponse = {
 }
 
 //#region Project Investment Stats
-type ProjectInfo = {
+type ProjectInfoInv = {
   name: Projects['name']
   categories: Projects['categories']
-  round: Projects['round']
+  round: ProjectRound
 }
 
 type Financial = {
@@ -101,7 +151,7 @@ type Financial = {
   percentAchieved: number
 }
 
-type TokenMetric = {
+type TokenMetricInv = {
   price: ProjectTokenMetrics['price'] // Assuming price can be a large number in string format
 }
 
@@ -113,9 +163,9 @@ type InvestmentDetails = {
 }
 
 type ProjectDetailsResponse = {
-  info: ProjectInfo
+  info: ProjectInfoInv
   financial: Financial
-  tokenMetric: TokenMetric
+  tokenMetric: TokenMetricInv
   invest: InvestmentDetails
 }
 //#endregion

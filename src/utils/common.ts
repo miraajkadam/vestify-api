@@ -27,3 +27,16 @@ export const isValidGuid = (id: string): boolean => {
 
   return guidRegex.test(id)
 }
+
+/**
+ * Checks if a given date string is a valid date.
+ *
+ * @param {string} dateString - The date string to be validated, expected in ISO 8601 format.
+ *
+ * @returns {boolean} - Returns true if the date string is valid; otherwise, false.
+ */
+export const isValidDate = (dateString: string): boolean => {
+  const date = new Date(dateString)
+
+  return date instanceof Date && !isNaN(date.getTime())
+}

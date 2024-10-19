@@ -1,4 +1,5 @@
-import { ProjectProfileDbResponse } from '@/types/Project'
+import { AddProjectApiPayload, ProjectProfileDbResponse } from '@/types/Project'
+import { isValidDate, isValidGuid } from '@/utils/common'
 
 /**
  * Transforms a project profile from the database into the expected API response format.
@@ -11,16 +12,15 @@ export const strProjForResponse = (projectProfile: ProjectProfileDbResponse) => 
   project: {
     name: projectProfile.name,
     description: projectProfile.description,
-    round: projectProfile.round,
+    round: projectProfile.projectTokenMetrics?.round,
     categories: projectProfile.categories,
     tokensReceived: '0/0',
   },
   token: {
-    allocation: projectProfile?.projectTokenMetrics?.allocation,
-    vesting: projectProfile?.projectTokenMetrics?.vesting,
     tge: projectProfile?.projectTokenMetrics?.tge,
     tgeUnlock: projectProfile?.projectTokenMetrics?.tgeUnlock,
     price: projectProfile?.projectTokenMetrics?.price,
+    tgeSummary: projectProfile?.projectTokenMetrics?.tgeSummary,
   },
   socialLink: {
     medium: projectProfile?.projectSocials?.medium,
@@ -76,7 +76,7 @@ export const strRespFrInvestmentStats = (prjStats: any) => ({
   info: {
     name: prjStats.projDet.name,
     categories: prjStats.projDet.categories,
-    round: prjStats.projDet.round,
+    round: prjStats.projDet.projectTokenMetrics.round,
   },
   financial: {
     target: 50000,
@@ -93,3 +93,89 @@ export const strRespFrInvestmentStats = (prjStats: any) => ({
     acceptedTokens: prjStats.projDet.projectDeals.acceptedTokens,
   },
 })
+
+export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload) => {
+  // Check 'info' object
+  if (!payload.info || typeof payload.info !== 'object') return false
+
+  const { name, categories, description, vcId } = payload.info
+
+  if (
+    typeof name !== 'string' ||
+    !Array.isArray(categories) ||
+    categories.length === 0 ||
+    typeof description !== 'string' ||
+    !isValidGuid(vcId)
+  )
+    return false
+
+  // Validate categories
+  if (!categories.every(cat => typeof cat === 'string')) return false
+
+  // Check 'tokenMetrics' array
+  if (!Array.isArray(payload.tokenMetrics)) return false
+
+  for (const tokenMetric of payload.tokenMetrics) {
+    if (typeof tokenMetric !== 'object' || !tokenMetric) return false
+
+    const { fdv, price, tgeUnlock, tge, round, tgeSummary } = tokenMetric
+
+    if (
+      typeof fdv !== 'string' ||
+      typeof price !== 'string' ||
+      typeof tgeUnlock !== 'string' ||
+      !isValidDate(tge) ||
+      typeof round !== 'string' ||
+      typeof tgeSummary !== 'string'
+    )
+      return false
+  }
+
+  // Check 'deals' object
+  if (!payload.deals || typeof payload.deals !== 'object') return false
+
+  const { maximum, minimum, acceptedTokens, poolFee, startDate, endDate } = payload.deals
+
+  if (
+    typeof maximum !== 'number' ||
+    typeof minimum !== 'number' ||
+    typeof acceptedTokens !== 'string' ||
+    typeof poolFee !== 'number' ||
+    !isValidDate(startDate) ||
+    !isValidDate(endDate)
+  )
+    return false
+
+  // Check 'teamAndAdvisors' array
+  if (!Array.isArray(payload.teamAndAdvisors)) return false
+
+  for (const member of payload.teamAndAdvisors) {
+    if (typeof member !== 'object' || !member) return false
+
+    const { description, name, title, imgBase64 } = member
+
+    if (
+      typeof description !== 'string' ||
+      typeof name !== 'string' ||
+      typeof title !== 'string' ||
+      typeof imgBase64 !== 'string'
+    )
+      return false
+  }
+
+  // Check 'partnersAndInvestors' array
+  if (!Array.isArray(payload.partnersAndInvestors)) return false
+
+  for (const partner of payload.partnersAndInvestors) {
+    if (typeof partner !== 'object' || !partner) return false
+
+    const { logoBase64, name } = partner
+
+    if (typeof logoBase64 !== 'string' || typeof name !== 'string') return false
+  }
+
+  // Check 'projectSocials' object
+  if (!payload.projectSocials || typeof payload.projectSocials !== 'object') return false
+
+  return true // If all checks passed
+}

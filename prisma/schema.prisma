@@ -76,32 +76,31 @@ model UsersInvestedProjects {
 // region VC
 
 model VC {
-  id              String     @id @unique @map("Id")
-  name            String     @map("Name")
-  description     String     @map("Description")
-  logoBase64      String     @map("LogoBase64")
-  subscriptionFee Decimal    @map("SubscriptionFee")
-  tags            String[]   @map("Tags")
-  kycDone         Boolean    @map("KYCDone")
-  projects        Projects[]
+  id              String   @id @unique @map("Id")
+  name            String   @map("Name")
+  description     String   @map("Description")
+  logoBase64      String   @map("LogoBase64")
+  subscriptionFee Decimal  @map("SubscriptionFee")
+  tags            String[] @map("Tags")
+  kycDone         Boolean  @map("KYCDone")
 
+  account     Accounts              @relation(fields: [id], references: [id], onDelete: Cascade)
+  projects    Projects[]
   joinedUsers UsersJoinedCapitals[]
-
-  VCSocial VCSocial?
-  account  Accounts  @relation(fields: [id], references: [id], onDelete: Cascade)
+  VCSocial    VCSocial?
 }
 
 model VCSocial {
-  id        String     @id @default(uuid()) @map("Id")
-  VC        VC         @relation(fields: [vcId], references: [id], onDelete: Cascade)
-  vcId      String     @unique @default(uuid()) @map("ProjectId")
-  x         String?    @map("X")
-  instagram String?    @map("Instagram")
-  discord   String?    @map("Discord")
-  telegram  String?    @map("Telegram")
-  medium    String?    @map("Medium")
-  youtube   String?    @map("Youtube")
-  Projects  Projects[]
+  id        String  @id @default(uuid()) @map("Id")
+  x         String? @map("X")
+  instagram String? @map("Instagram")
+  discord   String? @map("Discord")
+  telegram  String? @map("Telegram")
+  medium    String? @map("Medium")
+  youtube   String? @map("Youtube")
+
+  VC   VC     @relation(fields: [vcId], references: [id], onDelete: Cascade)
+  vcId String @unique @default(uuid()) @map("VCId")
 }
 
 // endregion
@@ -113,8 +112,7 @@ model Projects {
   name                        String                        @map("Name")
   description                 String                        @map("Description")
   categories                  String[]                      @map("Categories")
-  round                       ProjectRound                  @map("Round")
-  projectTokenMetrics         ProjectTokenMetrics?
+  projectTokenMetrics         ProjectTokenMetrics[]
   projectDeals                ProjectDeals?
   projectTeamAndAdvisors      ProjectTeamAndAdvisors[]
   projectPartnersAndInvestors ProjectPartnersAndInvestors[]
@@ -125,20 +123,18 @@ model Projects {
   createdAt DateTime @default(now()) @map("created_at")
 
   investedUsers UsersInvestedProjects[]
-  VCSocial      VCSocial?               @relation(fields: [vCSocialId], references: [id])
-  vCSocialId    String?
 }
 
 model ProjectTokenMetrics {
-  id         String   @id @default(uuid()) @map("Id")
-  Project    Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId  String   @unique @default(uuid()) @map("ProjectId")
-  fdv        String   @map("FDV")
-  price      String   @map("Price")
-  tgeUnlock  String   @map("TgeUnlock")
-  tge        DateTime @map("TGE")
-  vesting    DateTime @map("Vesting")
-  allocation String   @map("Allocation")
+  id         String       @id @default(uuid()) @map("Id")
+  Project    Projects     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId  String       @default(uuid()) @map("ProjectId")
+  round      ProjectRound @map("Round")
+  fdv        String       @map("FDV")
+  price      String       @map("Price")
+  tgeUnlock  String       @map("TgeUnlock")
+  tge        DateTime     @map("TGE")
+  tgeSummary String       @map("TgeSummary")
 }
 
 model ProjectDeals {
@@ -149,6 +145,8 @@ model ProjectDeals {
   minimum        Decimal  @map("Minimum")
   acceptedTokens String   @map("AcceptedTokens")
   poolFee        Decimal  @map("PoolFee")
+  startDate      DateTime @map("StartDate")
+  endDate        DateTime @map("EndDate")
 }
 
 model ProjectTeamAndAdvisors {

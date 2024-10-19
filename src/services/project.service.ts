@@ -33,20 +33,16 @@ export default class ProjectService {
         name: newProject.info.name,
         categories: newProject.info.categories,
         description: newProject.info.description,
-        round: newProject.info.round,
         vcId: newProject.info.vcId,
         projectTokenMetrics: {
-          create: {
-            allocation: newProject.tokenMetrics.allocation,
-            fdv: newProject.tokenMetrics.fdv,
-            price: newProject.tokenMetrics.price,
-            tgeUnlock: newProject.tokenMetrics.tgeUnlock,
-            tge: newProject.tokenMetrics.tge,
-            vesting: newProject.tokenMetrics.vesting,
+          createMany: {
+            data: newProject.tokenMetrics,
           },
         },
         projectDeals: {
           create: {
+            endDate: newProject.deals.endDate,
+            startDate: newProject.deals.startDate,
             maximum: newProject.deals.maximum,
             minimum: newProject.deals.minimum,
             acceptedTokens: newProject.deals.acceptedTokens,
@@ -104,14 +100,40 @@ export default class ProjectService {
    */
   getAllProjectFromDb = async (): Promise<
     Array<{ name: string; description: string; round: ProjectRound }>
-  > =>
-    await this.prisma.projects.findMany({
+  > => {
+    const allProjectsResp = await this.getAllProjectsFromDb()
+
+    return this.strAllProjectsResp(allProjectsResp)
+  }
+
+  private strAllProjectsResp = (
+    projects: {
+      name: string
+      description: string
+      projectTokenMetrics: {
+        round: ProjectRound
+      }[]
+    }[]
+  ) =>
+    projects.map(({ projectTokenMetrics, ...rest }) => ({
+      ...rest,
+      round: projectTokenMetrics[0].round,
+    }))
+
+  private getAllProjectsFromDb = async () => {
+    return await this.prisma.projects.findMany({
       select: {
         name: true,
         description: true,
-        round: true,
+        projectTokenMetrics: {
+          take: 1,
+          select: {
+            round: true,
+          },
+        },
       },
     })
+  }
 
   /**
    * Checks if a project exists in the database by its ID.
@@ -144,21 +166,20 @@ export default class ProjectService {
    * @throws {Error} Throws an error if there is an issue retrieving the project
    *                 from the database.
    */
-  getProjectByIdFromDb = async (id: string): Promise<ProjectProfileDbResponse | null> =>
-    await this.prisma.projects.findUnique({
+  getProjectByIdFromDb = async (id: string): Promise<ProjectProfileDbResponse> => {
+    const project = await this.prisma.projects.findUnique({
       where: { id },
       select: {
         name: true,
         description: true,
-        round: true,
         categories: true,
         projectTokenMetrics: {
           select: {
-            allocation: true,
-            vesting: true,
             tge: true,
             tgeUnlock: true,
             price: true,
+            round: true,
+            tgeSummary: true,
           },
         },
         projectSocials: {
@@ -184,6 +205,14 @@ export default class ProjectService {
       },
     })
 
+    const { ...rest } = project
+
+    return {
+      ...rest,
+      projectTokenMetrics: rest.projectTokenMetrics[0],
+    }
+  }
+
   /**
    * Retrieves statistics for a specific project.
    *
@@ -204,10 +233,15 @@ export default class ProjectService {
       this.getTotInvestedAmtInProj(projectId),
     ])
 
-    return {
-      projDet,
+    const response = {
+      projDet: {
+        ...projDet,
+        projectTokenMetrics: projDet.projectTokenMetrics[0],
+      },
       totInvestedAmt: totInvestedAmt._sum.amount || 0,
     }
+
+    return response
   }
 
   /**
@@ -255,12 +289,13 @@ export default class ProjectService {
       },
       select: {
         name: true,
-        round: true,
         categories: true,
         projectTokenMetrics: {
           select: {
             price: true,
+            round: true,
           },
+          take: 1,
         },
         projectDeals: {
           select: {
