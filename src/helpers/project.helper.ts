@@ -113,7 +113,7 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload) => {
   if (!categories.every(cat => typeof cat === 'string')) return false
 
   // Check 'tokenMetrics' array
-  if (!Array.isArray(payload.tokenMetrics)) return false
+  if (!Array.isArray(payload.tokenMetrics) || !payload.tokenMetrics.length) return false
 
   for (const tokenMetric of payload.tokenMetrics) {
     if (typeof tokenMetric !== 'object' || !tokenMetric) return false
