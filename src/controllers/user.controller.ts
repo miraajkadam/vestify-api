@@ -25,6 +25,11 @@ export const joinVC = async (
     const { userId, vcId } = req.body
 
     const userService = new UserService()
+
+    const isJoinedVCAlready = await userService.checkIfUserJoinedVCAlready(userId, vcId)
+
+    if (isJoinedVCAlready) return apiResponse.error('You have already joined this capital', 406)
+
     await userService.addUserCapitalInvestmentInDb(userId, vcId)
 
     return apiResponse.successWithData(null, 'Successfully joined the capital')

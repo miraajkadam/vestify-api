@@ -38,6 +38,29 @@ export default class UserService {
     })
 
   /**
+   * Checks if a user has already joined a specific venture capital (VC).
+   *
+   * @async
+   * @function checkIfUserJoinedVCAlready
+   * @param {string} userId - The ID of the user to check.
+   * @param {string} vcId - The ID of the venture capital to check against.
+   * @returns {Promise<boolean>} - Returns true if the user has joined the VC, otherwise false.
+   */
+  checkIfUserJoinedVCAlready = async (userId: string, vcId: string) => {
+    const entity = await this.prisma.usersJoinedCapitals.findFirst({
+      where: {
+        userId,
+        vcId,
+      },
+      select: {
+        joinedAt: true,
+      },
+    })
+
+    return entity !== null
+  }
+
+  /**
    * Retrieves the list of venture capitals that a user has joined.
    *
    * @param {string} userId - The ID of the user.

@@ -49,6 +49,19 @@ const userRouter = Router()
  *                 message:
  *                   type: "string"
  *                   example: "Successfully joined the capital"
+ *       406:
+ *         description: "Already joined the given capital."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: "object"
+ *               properties:
+ *                 success:
+ *                   type: "boolean"
+ *                   example: false
+ *                 message:
+ *                   type: "string"
+ *                   example: "You have already joined this capital"
  *       400:
  *         description: "Invalid input data."
  *         content:
