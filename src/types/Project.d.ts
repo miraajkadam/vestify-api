@@ -82,14 +82,14 @@ export type ProjectProfileResponse = {
   info: {
     name: Projects['name']
     description: Projects['description']
-    round: Projects['round']
+    round: ProjectRound
     categories: Projects['category']
   }
   token: {
-    vesting: ProjectTokenMetrics['vesting']
     tge: ProjectTokenMetrics['tge']
     tgeUnlock: ProjectTokenMetrics['tgeUnlock']
     price: ProjectTokenMetrics['price']
+    tgeSummary: ProjectTokenMetrics['tgeSummary']
   }
   socialLink: {
     medium: ProjectSocials['medium']
@@ -109,16 +109,19 @@ export type ProjectProfileResponse = {
 }
 
 export type ProjectProfileDbResponse = {
-  name: string
+  name: string | undefined
   description: string
-  round: string
   categories: string[]
-  projectTokenMetrics: {
-    vesting: Date
-    tge: Date
-    tgeUnlock: string
-    price: string
-  } | null
+  projectTokenMetrics:
+    | {
+        tge: Date
+        tgeUnlock: string
+        price: string
+        round: ProjectRound
+        tgeSummary: string
+      }
+    | null
+    | undefined
   projectSocials: {
     discord: string | null
     medium: string | null
@@ -129,7 +132,6 @@ export type ProjectProfileDbResponse = {
     name: string
     imgBase64: string | null
   }[]
-
   projectPartnersAndInvestors: {
     name: string
     logoBase64: string | null

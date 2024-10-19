@@ -166,21 +166,20 @@ export default class ProjectService {
    * @throws {Error} Throws an error if there is an issue retrieving the project
    *                 from the database.
    */
-  getProjectByIdFromDb = async (id: string): Promise<ProjectProfileDbResponse | null> =>
-    await this.prisma.projects.findUnique({
+  getProjectByIdFromDb = async (id: string): Promise<ProjectProfileDbResponse> => {
+    const project = await this.prisma.projects.findUnique({
       where: { id },
       select: {
         name: true,
         description: true,
-        round: true,
         categories: true,
         projectTokenMetrics: {
           select: {
-            allocation: true,
-            vesting: true,
             tge: true,
             tgeUnlock: true,
             price: true,
+            round: true,
+            tgeSummary: true,
           },
         },
         projectSocials: {
@@ -205,6 +204,14 @@ export default class ProjectService {
         },
       },
     })
+
+    const { ...rest } = project
+
+    return {
+      ...rest,
+      projectTokenMetrics: rest.projectTokenMetrics[0],
+    }
+  }
 
   /**
    * Retrieves statistics for a specific project.

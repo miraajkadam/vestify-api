@@ -12,15 +12,15 @@ export const strProjForResponse = (projectProfile: ProjectProfileDbResponse) => 
   project: {
     name: projectProfile.name,
     description: projectProfile.description,
-    round: projectProfile.round,
+    round: projectProfile.projectTokenMetrics?.round,
     categories: projectProfile.categories,
     tokensReceived: '0/0',
   },
   token: {
-    vesting: projectProfile?.projectTokenMetrics?.vesting,
     tge: projectProfile?.projectTokenMetrics?.tge,
     tgeUnlock: projectProfile?.projectTokenMetrics?.tgeUnlock,
     price: projectProfile?.projectTokenMetrics?.price,
+    tgeSummary: projectProfile?.projectTokenMetrics?.tgeSummary,
   },
   socialLink: {
     medium: projectProfile?.projectSocials?.medium,
@@ -76,7 +76,7 @@ export const strRespFrInvestmentStats = (prjStats: any) => ({
   info: {
     name: prjStats.projDet.name,
     categories: prjStats.projDet.categories,
-    round: prjStats.projDet.round,
+    round: prjStats.projDet.projectTokenMetrics.round,
   },
   financial: {
     target: 50000,
