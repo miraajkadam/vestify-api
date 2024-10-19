@@ -112,7 +112,6 @@ model Projects {
   name                        String                        @map("Name")
   description                 String                        @map("Description")
   categories                  String[]                      @map("Categories")
-  round                       ProjectRound                  @map("Round")
   projectTokenMetrics         ProjectTokenMetrics[]
   projectDeals                ProjectDeals?
   projectTeamAndAdvisors      ProjectTeamAndAdvisors[]
