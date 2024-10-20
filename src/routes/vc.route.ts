@@ -52,7 +52,7 @@ const vcRouter = Router()
  *                 properties:
  *                   x:
  *                     type: string
- *                     example: "Additional info"
+ *                     example: "https://twitter.com/username"
  *                   instagram:
  *                     type: string
  *                     example: "https://instagram.com/project_handle"

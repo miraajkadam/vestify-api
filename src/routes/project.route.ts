@@ -139,8 +139,8 @@ const projectRouter = Router()
  *                 properties:
  *                   x:
  *                     type: string
- *                     description: Placeholder or extra social information.
- *                     example: "Additional info"
+ *                     description: Twitter/X handle or URL.
+ *                     example: "https://twitter.com/username"
  *                   instagram:
  *                     type: string
  *                     description: Instagram handle or URL.
