@@ -52,7 +52,7 @@ const vcRouter = Router()
  *                 properties:
  *                   x:
  *                     type: string
- *                     example: "Additional info"
+ *                     example: "https://twitter.com/username"
  *                   instagram:
  *                     type: string
  *                     example: "https://instagram.com/project_handle"
@@ -103,6 +103,19 @@ const vcRouter = Router()
  *                 message:
  *                   type: string
  *                   example: "Invalid payload"
+ *       '404':
+ *         description: Given VC Id account not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "VC Account not found"
  *       '500':
  *         description: Internal server error or unable to process request.
  *         content:

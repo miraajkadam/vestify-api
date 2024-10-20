@@ -1,5 +1,14 @@
 import { AddProjectApiPayload, ProjectProfileDbResponse } from '@/types/Project'
 import { isValidDate, isValidGuid } from '@/utils/common'
+import {
+  isValidDiscordLink,
+  isValidInstagramLink,
+  isValidMediumLink,
+  isValidTelegramLink,
+  isValidTwitterLink,
+  isValidXLink,
+  isValidYouTubeLink,
+} from '@/utils/socialsValidator'
 
 /**
  * Transforms a project profile from the database into the expected API response format.
@@ -176,6 +185,23 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload) => {
 
   // Check 'projectSocials' object
   if (!payload.projectSocials || typeof payload.projectSocials !== 'object') return false
+
+  if (
+    payload.projectSocials.x &&
+    !isValidXLink(payload.projectSocials.x) &&
+    !isValidTwitterLink(payload.projectSocials.x)
+  )
+    return false
+  if (payload.projectSocials.instagram && !isValidInstagramLink(payload.projectSocials.instagram))
+    return false
+  if (payload.projectSocials.discord && !isValidDiscordLink(payload.projectSocials.discord))
+    return false
+  if (payload.projectSocials.telegram && !isValidTelegramLink(payload.projectSocials.telegram))
+    return false
+  if (payload.projectSocials.medium && !isValidMediumLink(payload.projectSocials.medium))
+    return false
+  if (payload.projectSocials.youtube && !isValidYouTubeLink(payload.projectSocials.youtube))
+    return false
 
   return true // If all checks passed
 }

@@ -45,6 +45,11 @@ export const addNewVC = async (
       return apiResponse.error('invalid payload')
 
     const vcService = new VCService()
+
+    const isVCExist = await vcService.checkVCExistByIdInDb(accountId)
+
+    if (!isVCExist) return apiResponse.error('Account for VC not found', 404)
+
     await vcService.createNewVCInDB(
       accountId,
       name,
