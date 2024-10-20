@@ -2,6 +2,15 @@ import type { Decimal } from '@prisma/client/runtime/library'
 
 import { isValidGuid } from '@/utils/common'
 import { VCSocial } from '@prisma/client'
+import {
+  isValidXLink,
+  isValidTwitterLink,
+  isValidInstagramLink,
+  isValidDiscordLink,
+  isValidTelegramLink,
+  isValidMediumLink,
+  isValidYouTubeLink,
+} from '@/utils/socialsValidator'
 
 /**
  * Validates if the provided payload values meet the expected criteria for an AddNewVCPayload.
@@ -86,6 +95,13 @@ export const isAddNewVCPayloadValid = (
     if (value !== undefined && value !== null && value !== '' && typeof value !== 'string')
       return false
   }
+
+  if (socials.x && !isValidXLink(socials.x) && !isValidTwitterLink(socials.x)) return false
+  if (socials.instagram && !isValidInstagramLink(socials.instagram)) return false
+  if (socials.discord && !isValidDiscordLink(socials.discord)) return false
+  if (socials.telegram && !isValidTelegramLink(socials.telegram)) return false
+  if (socials.medium && !isValidMediumLink(socials.medium)) return false
+  if (socials.youtube && !isValidYouTubeLink(socials.youtube)) return false
 
   return true
 }
