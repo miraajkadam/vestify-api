@@ -129,7 +129,7 @@ authRouter.post('/login', passport.authenticate('local'), loginUser)
  *                       type: string
  *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNDIyMGY0MzEtOTU1ZS00OTdhLTliODItMzBkN2MzNTJjZWYzIn0sImlhdCI6MTcyNjU4NTQxN30.LZ77EbxAAIkKiHxyudicL1rBX9mhJCBreVgpfP3SLZQ
  *       400:
- *         description: Bad request due to invalid user type or missing fields.
+ *         description: Invalid Payload.
  *         content:
  *           application/json:
  *             schema:
@@ -140,7 +140,7 @@ authRouter.post('/login', passport.authenticate('local'), loginUser)
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: invalid user type
+ *                   example: Invalid Payload
  *       500:
  *         description: Server error while creating a new user.
  *         content:
