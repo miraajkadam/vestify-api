@@ -1,7 +1,7 @@
-import { AccountType } from '@prisma/client'
 import { type Request, type Response } from 'express'
 import jwt from 'jsonwebtoken'
 
+import { validateSignupPayload } from '@/helpers/auth.helper'
 import { AuthService } from '@/services'
 import type {
   LoginApiPayload,
@@ -10,7 +10,6 @@ import type {
   SignUpUserPayload,
 } from '@/types/Auth.d'
 import ApiResponse from '@/utils/ApiResponse'
-// import { JWT_SECRET } from '@/utils/env'
 
 const JWT_SECRET = process.env.JWT_SECRET as string
 
@@ -45,8 +44,9 @@ export const signupUser = async (
   try {
     const { username, password, email, accountType } = req.body
 
-    if (accountType !== AccountType.VC && accountType !== AccountType.USER)
-      return apiResponse.error('invalid account type')
+    const isValidPayload = validateSignupPayload(username, email, password, accountType)
+
+    if (!isValidPayload) return apiResponse.error('Invalid payload')
 
     const authService = new AuthService()
     const newAccountId = await authService.createNewAccountInDb(
