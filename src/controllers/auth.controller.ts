@@ -1,7 +1,7 @@
 import { type Request, type Response } from 'express'
 import jwt from 'jsonwebtoken'
 
-import { validateSignupPayload } from '@/helpers/auth.helper'
+import { getCrypticPassword, validateSignupPayload } from '@/helpers/auth.helper'
 import { AuthService } from '@/services'
 import type {
   LoginApiPayload,
@@ -48,11 +48,13 @@ export const signupUser = async (
 
     if (!isValidPayload) return apiResponse.error('Invalid payload')
 
+    const crypticPassword = await getCrypticPassword(password)
+
     const authService = new AuthService()
     const newAccountId = await authService.createNewAccountInDb(
       username,
       email,
-      password,
+      crypticPassword,
       accountType
     )
 
