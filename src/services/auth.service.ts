@@ -44,15 +44,18 @@ export default class AuthService {
     return id
   }
 
-  getUserByEmailAndPasswordFromDb = async (email: string, password: string) => {
+  getEncPassIdByEmlFrmDb = async (email: string) => {
     const user = await this.prisma.accounts.findFirst({
       where: {
         email,
-        password,
+      },
+      select: {
+        password: true,
+        id: true,
       },
     })
 
-    return user?.id
+    return user
   }
 
   getUserById = async (id: string) => {
