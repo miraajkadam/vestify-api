@@ -59,3 +59,23 @@ export const getCrypticPassword = async (password: string): Promise<string> => {
 
   return hashedPassword
 }
+
+/**
+ * Validates the login payload for a user.
+ *
+ * @param {string} email - The email address of the user. Must be a valid email format.
+ * @param {string} password - The password for the user's account. Must be a non-empty string.
+ *
+ * @returns {boolean} - Returns true if both email and password are valid, otherwise false.
+ *
+ * @example
+ * const isValid = validateLoginPayload('user@example.com', 'myPassword');
+ * console.log(isValid); // true or false based on validation
+ */
+export const validateLoginPayload = (email: string, password: string) => {
+  if (!email || typeof email !== 'string' || !isEmail(email)) return false
+
+  if (!password || typeof password !== 'string') return false
+
+  return true
+}
