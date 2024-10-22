@@ -87,11 +87,13 @@ model VC {
   account     Accounts              @relation(fields: [id], references: [id], onDelete: Cascade)
   projects    Projects[]
   joinedUsers UsersJoinedCapitals[]
-  VCSocial    VCSocial?
+
+  VCSocial VCSocial @relation(fields: [id], references: [id], onDelete: Cascade, map: "VCSocial_VC_ID")
 }
 
 model VCSocial {
-  id        String  @id @default(uuid()) @map("Id")
+  id String @id @unique @map("Id")
+
   x         String? @map("X")
   instagram String? @map("Instagram")
   discord   String? @map("Discord")
@@ -99,8 +101,7 @@ model VCSocial {
   medium    String? @map("Medium")
   youtube   String? @map("Youtube")
 
-  VC   VC     @relation(fields: [vcId], references: [id], onDelete: Cascade)
-  vcId String @unique @default(uuid()) @map("VCId")
+  VC VC?
 }
 
 // endregion

@@ -31,6 +31,17 @@ export default class AuthService {
                 subscriptionFee: -1,
                 tags: [],
                 kycDone: false,
+                VCSocial: {
+                  create: {
+                    id,
+                    discord: '',
+                    instagram: '',
+                    medium: '',
+                    telegram: '',
+                    x: '',
+                    youtube: '',
+                  },
+                },
               },
             },
           }
