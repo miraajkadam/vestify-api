@@ -1,4 +1,6 @@
+import { validateLoginPayload } from '@/helpers/auth.helper'
 import { AuthService } from '@/services'
+import { compare } from 'bcrypt'
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import passport from 'passport'
 import { Strategy as BearerStrategy } from 'passport-http-bearer'
@@ -19,12 +21,21 @@ passport.use(
 
 passport.use(
   new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
+    const isValidPayload = validateLoginPayload(email, password)
+
+    if (!isValidPayload) return done(null, false, { message: 'Invalid payload' })
+
     const authService = new AuthService()
-    const userId = await authService.getUserByEmailAndPasswordFromDb(email, password)
 
-    if (!userId) return done(null, false, { message: 'invalid email or password' })
+    const user = await authService.getEncPassIdByEmlFrmDb(email)
 
-    return done(null, { id: userId })
+    if (!user) return done(null, false, { message: 'Invalid email' })
+
+    const isPswrdMatch = await compare(password, user.password)
+
+    if (!isPswrdMatch) return done(null, false, { message: 'Invalid password' })
+
+    return done(null, { id: user.id })
   })
 )
 
