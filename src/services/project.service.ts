@@ -27,9 +27,39 @@ export default class ProjectService {
    * @param {AddProjectApiPayload} newProject - The payload containing project details to be added.
    * @returns {Promise<{id: string}>} - A promise that resolves to an object containing the ID of the newly created project.
    */
-  addProjectToDb = async (newProject: AddProjectApiPayload): Promise<{ id: string }> =>
+  addProjectToDb = async (newProject: AddProjectApiPayload): Promise<{ id: string }> => {
+    const uniqueId = uuid()
+
+    await Promise.all([
+      this.prisma.projectDeals.create({
+        data: {
+          id: uniqueId,
+          endDate: newProject.deals.endDate,
+          startDate: newProject.deals.startDate,
+          maximum: newProject.deals.maximum,
+          minimum: newProject.deals.minimum,
+          acceptedTokens: newProject.deals.acceptedTokens,
+          poolFee: newProject.deals.poolFee,
+        },
+        select: { id: true },
+      }),
+      this.prisma.projectSocials.create({
+        data: {
+          id: uniqueId,
+          x: newProject.projectSocials.x,
+          instagram: newProject.projectSocials.instagram,
+          discord: newProject.projectSocials.discord,
+          telegram: newProject.projectSocials.telegram,
+          medium: newProject.projectSocials.medium,
+          youtube: newProject.projectSocials.youtube,
+        },
+        select: { id: true },
+      }),
+    ])
+
     await this.prisma.projects.create({
       data: {
+id: uniqueId,
         name: newProject.info.name,
         categories: newProject.info.categories,
         description: newProject.info.description,
@@ -39,17 +69,7 @@ export default class ProjectService {
             data: newProject.tokenMetrics,
           },
         },
-        projectDeals: {
-          create: {
-            endDate: newProject.deals.endDate,
-            startDate: newProject.deals.startDate,
-            maximum: newProject.deals.maximum,
-            minimum: newProject.deals.minimum,
-            acceptedTokens: newProject.deals.acceptedTokens,
-            poolFee: newProject.deals.poolFee,
-          },
-        },
-        projectTeamAndAdvisors: {
+                projectTeamAndAdvisors: {
           createMany: {
             data: newProject.teamAndAdvisors,
           },
@@ -59,21 +79,12 @@ export default class ProjectService {
             data: newProject.partnersAndInvestors,
           },
         },
-        projectSocials: {
-          create: {
-            x: newProject.projectSocials.x,
-            instagram: newProject.projectSocials.instagram,
-            discord: newProject.projectSocials.discord,
-            telegram: newProject.projectSocials.telegram,
-            medium: newProject.projectSocials.medium,
-            youtube: newProject.projectSocials.youtube,
-          },
-        },
-      },
-      select: {
-        id: true,
-      },
+              },
+      select: { id: true },
     })
+
+    return { id: uniqueId }
+  }
 
   /**
    * Deletes a project from the database by its ID.
