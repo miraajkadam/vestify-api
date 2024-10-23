@@ -9,7 +9,7 @@ import { Decimal } from '@prisma/client/runtime/library'
  * @class UserService
  */
 export default class UserService {
-  private prisma: PrismaClient
+  private readonly prisma: PrismaClient
 
   /**
    * Constructs a new UserService instance.

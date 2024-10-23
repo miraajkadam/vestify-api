@@ -1,6 +1,8 @@
 import { PrismaClient, ProjectRound } from '@prisma/client'
+import { v4 as uuid } from 'uuid'
 
 import type { AddProjectApiPayload, ProjectProfileDbResponse } from '@/types/Project'
+import { Decimal } from '@prisma/client/runtime/library'
 
 /**
  * Service class for managing projects in the database.
@@ -8,7 +10,7 @@ import type { AddProjectApiPayload, ProjectProfileDbResponse } from '@/types/Pro
  * @class
  */
 export default class ProjectService {
-  private prisma: PrismaClient
+  private readonly prisma: PrismaClient
 
   /**
    * Constructs a new ProjectService instance.
@@ -27,9 +29,39 @@ export default class ProjectService {
    * @param {AddProjectApiPayload} newProject - The payload containing project details to be added.
    * @returns {Promise<{id: string}>} - A promise that resolves to an object containing the ID of the newly created project.
    */
-  addProjectToDb = async (newProject: AddProjectApiPayload): Promise<{ id: string }> =>
+  addProjectToDb = async (newProject: AddProjectApiPayload): Promise<{ id: string }> => {
+    const uniqueId = uuid()
+
+    await Promise.all([
+      this.prisma.projectDeals.create({
+        data: {
+          id: uniqueId,
+          endDate: newProject.deals.endDate,
+          startDate: newProject.deals.startDate,
+          maximum: newProject.deals.maximum,
+          minimum: newProject.deals.minimum,
+          acceptedTokens: newProject.deals.acceptedTokens,
+          poolFee: newProject.deals.poolFee,
+        },
+        select: { id: true },
+      }),
+      this.prisma.projectSocials.create({
+        data: {
+          id: uniqueId,
+          x: newProject.projectSocials.x,
+          instagram: newProject.projectSocials.instagram,
+          discord: newProject.projectSocials.discord,
+          telegram: newProject.projectSocials.telegram,
+          medium: newProject.projectSocials.medium,
+          youtube: newProject.projectSocials.youtube,
+        },
+        select: { id: true },
+      }),
+    ])
+
     await this.prisma.projects.create({
       data: {
+        id: uniqueId,
         name: newProject.info.name,
         categories: newProject.info.categories,
         description: newProject.info.description,
@@ -37,16 +69,6 @@ export default class ProjectService {
         projectTokenMetrics: {
           createMany: {
             data: newProject.tokenMetrics,
-          },
-        },
-        projectDeals: {
-          create: {
-            endDate: newProject.deals.endDate,
-            startDate: newProject.deals.startDate,
-            maximum: newProject.deals.maximum,
-            minimum: newProject.deals.minimum,
-            acceptedTokens: newProject.deals.acceptedTokens,
-            poolFee: newProject.deals.poolFee,
           },
         },
         projectTeamAndAdvisors: {
@@ -59,21 +81,12 @@ export default class ProjectService {
             data: newProject.partnersAndInvestors,
           },
         },
-        projectSocials: {
-          create: {
-            x: newProject.projectSocials.x,
-            instagram: newProject.projectSocials.instagram,
-            discord: newProject.projectSocials.discord,
-            telegram: newProject.projectSocials.telegram,
-            medium: newProject.projectSocials.medium,
-            youtube: newProject.projectSocials.youtube,
-          },
-        },
       },
-      select: {
-        id: true,
-      },
+      select: { id: true },
     })
+
+    return { id: uniqueId }
+  }
 
   /**
    * Deletes a project from the database by its ID.
@@ -106,7 +119,7 @@ export default class ProjectService {
     return this.strAllProjectsResp(allProjectsResp)
   }
 
-  private strAllProjectsResp = (
+  private readonly strAllProjectsResp = (
     projects: {
       name: string
       description: string
@@ -120,8 +133,8 @@ export default class ProjectService {
       round: projectTokenMetrics[0].round,
     }))
 
-  private getAllProjectsFromDb = async () => {
-    return await this.prisma.projects.findMany({
+  private readonly getAllProjectsFromDb = async () =>
+    await this.prisma.projects.findMany({
       select: {
         name: true,
         description: true,
@@ -133,7 +146,6 @@ export default class ProjectService {
         },
       },
     })
-  }
 
   /**
    * Checks if a project exists in the database by its ID.
@@ -255,7 +267,7 @@ export default class ProjectService {
    * - _sum: An object with the total invested amount for the project. This will be null if no investments exist.
    * @throws {Error} Throws an error if there is an issue retrieving the total investment amount from the database.
    */
-  private getTotInvestedAmtInProj = async (projectId: string) =>
+  private readonly getTotInvestedAmtInProj = async (projectId: string) =>
     await this.prisma.usersInvestedProjects.aggregate({
       _sum: {
         amount: true,
@@ -273,7 +285,7 @@ export default class ProjectService {
    *
    * @async
    * @param {string} projectId - The unique identifier of the project to retrieve.
-   * @returns {Promise<{ name: string, round: ProjectRound, category: string, projectTokenMetrics: object, projectDeals: object }>}
+   *
    * A promise that resolves to an object containing:
    * - name: The name of the project.
    * - round: The round in which the project is (e.g., Seed, Series A).
@@ -282,7 +294,22 @@ export default class ProjectService {
    * - projectDeals: An object containing deal information (e.g., accepted tokens, maximum and minimum amounts).
    * @throws {Error} Throws an error if no project is found with the given ID.
    */
-  private getProjDet = async (projectId: string) =>
+  private readonly getProjDet = async (
+    projectId: string
+  ): Promise<{
+    name: string
+    categories: string[]
+    projectTokenMetrics: {
+      round: ProjectRound
+      price: string
+    }[]
+    projectDeals: {
+      maximum: Decimal
+      minimum: Decimal
+      acceptedTokens: string
+      poolFee: Decimal
+    }
+  }> =>
     await this.prisma.projects.findUniqueOrThrow({
       where: {
         id: projectId,

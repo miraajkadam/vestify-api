@@ -1,7 +1,7 @@
 import { AccountType, PrismaClient } from '@prisma/client'
 
 export default class AuthService {
-  private prisma: PrismaClient
+  private readonly prisma: PrismaClient
 
   constructor() {
     this.prisma = new PrismaClient()
@@ -31,6 +31,17 @@ export default class AuthService {
                 subscriptionFee: -1,
                 tags: [],
                 kycDone: false,
+                VCSocial: {
+                  create: {
+                    id,
+                    discord: '',
+                    instagram: '',
+                    medium: '',
+                    telegram: '',
+                    x: '',
+                    youtube: '',
+                  },
+                },
               },
             },
           }

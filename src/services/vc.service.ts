@@ -9,7 +9,7 @@ import { VCProfileResponse, VCProjectsResponse } from '@/types/VC.d'
  * @class
  */
 export default class VCService {
-  private prisma: PrismaClient
+  private readonly prisma: PrismaClient
 
   /**
    * Creates an instance of VCService and initializes PrismaClient.
@@ -62,7 +62,7 @@ export default class VCService {
         tags,
         kycDone,
         VCSocial: {
-          create: {
+          update: {
             discord: socials.discord,
             instagram: socials.instagram,
             medium: socials.medium,

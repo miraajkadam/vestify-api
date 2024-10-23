@@ -109,25 +109,23 @@ export type ProjectProfileResponse = {
 }
 
 export type ProjectProfileDbResponse = {
-  name: string | undefined
+  name: string
   description: string
   categories: string[]
-  projectTokenMetrics:
-    | {
-        tge: Date
-        tgeUnlock: string
-        price: string
-        round: ProjectRound
-        tgeSummary: string
-      }
-    | null
-    | undefined
+  projectTokenMetrics: {
+    tge: Date
+    tgeUnlock: string
+    price: string
+    round: ProjectRound
+    tgeSummary: string
+  }
+
   projectSocials: {
     discord: string | null
     medium: string | null
     telegram: string | null
     x: string | null
-  } | null
+  }
   projectTeamAndAdvisors: {
     name: string
     imgBase64: string | null
