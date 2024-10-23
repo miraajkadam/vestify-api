@@ -8,7 +8,7 @@ import type { AddProjectApiPayload, ProjectProfileDbResponse } from '@/types/Pro
  * @class
  */
 export default class ProjectService {
-  private prisma: PrismaClient
+  private readonly prisma: PrismaClient
 
   /**
    * Constructs a new ProjectService instance.
