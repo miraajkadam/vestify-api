@@ -1,4 +1,11 @@
-import { AddProjectApiPayload, ProjectProfileDbResponse } from '@/types/Project'
+import { ProjectRound } from '@prisma/client'
+import { Decimal } from '@prisma/client/runtime/library'
+
+import {
+  AddProjectApiPayload,
+  ProjectDetailsResponse,
+  ProjectProfileDbResponse,
+} from '@/types/Project'
 import { isValidDate, isValidGuid } from '@/utils/common'
 import {
   isValidDiscordLink,
@@ -80,8 +87,23 @@ export const strProjForResponse = (projectProfile: ProjectProfileDbResponse) => 
  * const structuredResponse = strRespFrInvestmentStats(projectStats);
  * // structuredResponse will have the desired format for API response.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const strRespFrInvestmentStats = (prjStats: any) => ({
+export const strRespFrInvestmentStats = (prjStats: {
+  projDet: {
+    projectTokenMetrics: {
+      round: ProjectRound
+      price: string
+    }
+    name: string
+    categories: string[]
+    projectDeals: {
+      maximum: Decimal
+      minimum: Decimal
+      acceptedTokens: string
+      poolFee: Decimal
+    }
+  }
+  totInvestedAmt: number | Decimal
+}): ProjectDetailsResponse => ({
   info: {
     name: prjStats.projDet.name,
     categories: prjStats.projDet.categories,

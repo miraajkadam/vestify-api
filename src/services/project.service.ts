@@ -1,6 +1,8 @@
 import { PrismaClient, ProjectRound } from '@prisma/client'
+import { v4 as uuid } from 'uuid'
 
 import type { AddProjectApiPayload, ProjectProfileDbResponse } from '@/types/Project'
+import { Decimal } from '@prisma/client/runtime/library'
 
 /**
  * Service class for managing projects in the database.
@@ -59,7 +61,7 @@ export default class ProjectService {
 
     await this.prisma.projects.create({
       data: {
-id: uniqueId,
+        id: uniqueId,
         name: newProject.info.name,
         categories: newProject.info.categories,
         description: newProject.info.description,
@@ -69,7 +71,7 @@ id: uniqueId,
             data: newProject.tokenMetrics,
           },
         },
-                projectTeamAndAdvisors: {
+        projectTeamAndAdvisors: {
           createMany: {
             data: newProject.teamAndAdvisors,
           },
@@ -79,7 +81,7 @@ id: uniqueId,
             data: newProject.partnersAndInvestors,
           },
         },
-              },
+      },
       select: { id: true },
     })
 
@@ -117,7 +119,7 @@ id: uniqueId,
     return this.strAllProjectsResp(allProjectsResp)
   }
 
-  private strAllProjectsResp = (
+  private readonly strAllProjectsResp = (
     projects: {
       name: string
       description: string
@@ -131,8 +133,8 @@ id: uniqueId,
       round: projectTokenMetrics[0].round,
     }))
 
-  private getAllProjectsFromDb = async () => {
-    return await this.prisma.projects.findMany({
+  private readonly getAllProjectsFromDb = async () =>
+    await this.prisma.projects.findMany({
       select: {
         name: true,
         description: true,
@@ -144,7 +146,6 @@ id: uniqueId,
         },
       },
     })
-  }
 
   /**
    * Checks if a project exists in the database by its ID.
@@ -266,7 +267,7 @@ id: uniqueId,
    * - _sum: An object with the total invested amount for the project. This will be null if no investments exist.
    * @throws {Error} Throws an error if there is an issue retrieving the total investment amount from the database.
    */
-  private getTotInvestedAmtInProj = async (projectId: string) =>
+  private readonly getTotInvestedAmtInProj = async (projectId: string) =>
     await this.prisma.usersInvestedProjects.aggregate({
       _sum: {
         amount: true,
@@ -284,7 +285,7 @@ id: uniqueId,
    *
    * @async
    * @param {string} projectId - The unique identifier of the project to retrieve.
-   * @returns {Promise<{ name: string, round: ProjectRound, category: string, projectTokenMetrics: object, projectDeals: object }>}
+   *
    * A promise that resolves to an object containing:
    * - name: The name of the project.
    * - round: The round in which the project is (e.g., Seed, Series A).
@@ -293,7 +294,22 @@ id: uniqueId,
    * - projectDeals: An object containing deal information (e.g., accepted tokens, maximum and minimum amounts).
    * @throws {Error} Throws an error if no project is found with the given ID.
    */
-  private getProjDet = async (projectId: string) =>
+  private readonly getProjDet = async (
+    projectId: string
+  ): Promise<{
+    name: string
+    categories: string[]
+    projectTokenMetrics: {
+      round: ProjectRound
+      price: string
+    }[]
+    projectDeals: {
+      maximum: Decimal
+      minimum: Decimal
+      acceptedTokens: string
+      poolFee: Decimal
+    }
+  }> =>
     await this.prisma.projects.findUniqueOrThrow({
       where: {
         id: projectId,
