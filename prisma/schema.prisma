@@ -109,17 +109,20 @@ model VCSocial {
 // region Project
 
 model Projects {
-  id                          String                        @id @default(uuid()) @map("Id")
-  name                        String                        @map("Name")
-  description                 String                        @map("Description")
-  categories                  String[]                      @map("Categories")
+  id          String   @id @default(uuid()) @map("Id")
+  name        String   @map("Name")
+  description String   @map("Description")
+  categories  String[] @map("Categories")
+
   projectTokenMetrics         ProjectTokenMetrics[]
-  projectDeals                ProjectDeals?
   projectTeamAndAdvisors      ProjectTeamAndAdvisors[]
   projectPartnersAndInvestors ProjectPartnersAndInvestors[]
-  projectSocials              ProjectSocials?
-  VC                          VC                            @relation(fields: [vcId], references: [id], onDelete: Cascade)
-  vcId                        String                        @default(uuid()) @map("VCId")
+
+  projectDeals   ProjectDeals   @relation(fields: [id], references: [id], onDelete: Cascade, map: "ProjectDeals_Project_Id")
+  projectSocials ProjectSocials @relation(fields: [id], references: [id], onDelete: Cascade, map: "ProjectSocials_Project_Id")
+
+  VC   VC     @relation(fields: [vcId], references: [id], onDelete: Cascade)
+  vcId String @default(uuid()) @map("VCId")
 
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -139,15 +142,15 @@ model ProjectTokenMetrics {
 }
 
 model ProjectDeals {
-  id             String   @id @default(uuid()) @map("Id")
-  Project        Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId      String   @unique @default(uuid()) @map("ProjectId")
+  id             String   @id @unique @map("Id")
   maximum        Decimal  @map("Maximum")
   minimum        Decimal  @map("Minimum")
   acceptedTokens String   @map("AcceptedTokens")
   poolFee        Decimal  @map("PoolFee")
   startDate      DateTime @map("StartDate")
   endDate        DateTime @map("EndDate")
+
+  Projects Projects?
 }
 
 model ProjectTeamAndAdvisors {
@@ -169,15 +172,15 @@ model ProjectPartnersAndInvestors {
 }
 
 model ProjectSocials {
-  id        String   @id @default(uuid()) @map("Id")
-  Project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId String   @unique @default(uuid()) @map("ProjectId")
-  x         String?  @map("X")
-  instagram String?  @map("Instagram")
-  discord   String?  @map("Discord")
-  telegram  String?  @map("Telegram")
-  medium    String?  @map("Medium")
-  youtube   String?  @map("Youtube")
+  id        String  @id @unique @map("Id")
+  x         String? @map("X")
+  instagram String? @map("Instagram")
+  discord   String? @map("Discord")
+  telegram  String? @map("Telegram")
+  medium    String? @map("Medium")
+  youtube   String? @map("Youtube")
+
+  Projects Projects?
 }
 
 // endregion
