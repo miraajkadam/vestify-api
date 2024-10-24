@@ -136,7 +136,7 @@ model ProjectTokenMetrics {
   round      ProjectRound @map("Round")
   fdv        String       @map("FDV")
   price      String       @map("Price")
-  tgeUnlock  String       @map("TgeUnlock")
+  tgeUnlock  Decimal      @map("TgeUnlock")
   tge        DateTime     @map("TGE")
   tgeSummary String       @map("TgeSummary")
 }
