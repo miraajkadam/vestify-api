@@ -154,7 +154,9 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload) => {
     if (
       typeof fdv !== 'string' ||
       typeof price !== 'string' ||
-      typeof tgeUnlock !== 'string' ||
+      typeof tgeUnlock !== 'number' ||
+      tgeUnlock < 0 ||
+      tgeUnlock > 100 ||
       !isValidDate(tge) ||
       typeof round !== 'string' ||
       typeof tgeSummary !== 'string'

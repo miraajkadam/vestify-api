@@ -58,9 +58,9 @@ const projectRouter = Router()
  *                       description: Price of the token.
  *                       example: "1.23"
  *                     tgeUnlock:
- *                       type: string
- *                       description: Token Generation Event unlock status.
- *                       example: "Yes"
+ *                       type: number
+ *                       description: Token Generation Event unlock percentage. (must be between 0-100)
+ *                       example: 80
  *                     tge:
  *                       type: string
  *                       description: Date and time of the Token Generation Event.
