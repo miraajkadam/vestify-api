@@ -1,8 +1,7 @@
-import type { ProjectRound } from '@prisma/client'
-
 import type {
   ProjectDeals,
   ProjectPartnersAndInvestors,
+  ProjectRound,
   Projects,
   ProjectSocials,
   ProjectTeamAndAdvisors,
@@ -21,7 +20,7 @@ type ProjectInfo = {
 type TokenMetric = {
   fdv: string
   price: string
-  tgeUnlock: string
+  tgeUnlock: ProjectTokenMetrics['tgeUnlock']
   tge: string // ISO 8601 date string
   round: ProjectRound
   tgeSummary: string
@@ -114,7 +113,7 @@ export type ProjectProfileDbResponse = {
   categories: string[]
   projectTokenMetrics: {
     tge: Date
-    tgeUnlock: string
+    tgeUnlock: ProjectTokenMetrics['tgeUnlock']
     price: string
     round: ProjectRound
     tgeSummary: string
