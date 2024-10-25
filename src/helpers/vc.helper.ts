@@ -10,7 +10,9 @@ import {
   isValidTelegramLink,
   isValidMediumLink,
   isValidYouTubeLink,
+  isValidLinkedinLink,
 } from '@/utils/socialsValidator'
+import { VCProfileResponse } from '@/types/VC'
 
 /**
  * Validates if the provided payload values meet the expected criteria for an AddNewVCPayload.
@@ -28,6 +30,7 @@ import {
  * @param {string|null} [socials.telegram] - Telegram link (optional).
  * @param {string|null} [socials.medium] - Medium link (optional).
  * @param {string|null} [socials.youtube] - YouTube channel link (optional).
+ * @param {string|null} [socials.linkedin] - Linkedin profile link (optional).
  *
  * @returns {boolean} Returns `true` if all parameters meet their respective validation criteria, otherwise `false`.
  *
@@ -45,7 +48,8 @@ import {
  *     discord: null,
  *     telegram: "https://t.me/sample_vc",
  *     medium: "https://medium.com/@sample_vc",
- *     youtube: ""
+ *     youtube: "",
+ *     linkedin: "https://www.linkedin.com/in/firstname-lastname",
  *   }
  * );
  */
@@ -87,6 +91,7 @@ export const isAddNewVCPayloadValid = (
     'telegram',
     'medium',
     'youtube',
+    'linkedin',
   ]
 
   for (const field of socialFields) {
@@ -102,10 +107,32 @@ export const isAddNewVCPayloadValid = (
   if (socials.telegram && !isValidTelegramLink(socials.telegram)) return false
   if (socials.medium && !isValidMediumLink(socials.medium)) return false
   if (socials.youtube && !isValidYouTubeLink(socials.youtube)) return false
+  if (socials.linkedin && !isValidLinkedinLink(socials.linkedin)) return false
 
   return true
 }
 
+export const sanitizeVCProfileForResponse = (vcDetails: {
+  vcId: string
+  id: string
+  name: string
+  VCSocial: {
+    x: string | null
+    discord: string | null
+    telegram: string | null
+    linkedin: string | null
+  }
+  description: string
+  logoBase64: string
+  subscriptionFee: Decimal
+  tags: string[]
+  kycDone: boolean
+  projects: { id: string; name: string }[]
+}): VCProfileResponse => {
+  const { VCSocial, ...rest } = vcDetails // Destructure to separate VCSocial
+
+  return { ...rest, social: VCSocial, vcId: vcDetails.id } // Rename and return
+}
 interface Socials {
   x?: string | null
   instagram?: string | null
@@ -113,4 +140,5 @@ interface Socials {
   telegram?: string | null
   medium?: string | null
   youtube?: string | null
+  linkedin?: string | null
 }

@@ -131,3 +131,22 @@ export const isValidYouTubeLink = (url: string): boolean => {
 
   return regex.test(url)
 }
+
+/**
+ * Validates if a given URL is a valid LinkedIn profile link.
+ *
+ * @param {string} url - The URL to validate.
+ * @returns {boolean} True if the URL is a valid LinkedIn profile link, false otherwise.
+ *
+ * @example
+ * isValidLinkedinLink("https://www.linkedin.com/in/jane-doe/"); // returns true
+ * isValidLinkedinLink("https://linkedin.com/company/openai/"); // returns true
+ * isValidLinkedinLink("https://linkedin.com/"); // returns false
+ * isValidLinkedinLink("https://example.com/user/username"); // returns false
+ */
+export const isValidLinkedinLink = (url: string): boolean => {
+  const regex =
+    /((https?:\/\/)?((www|\w\w)\.)?linkedin\.com\/)((([\w]{2,3})?)|([^\/]+\/(([\w|\d-&#?=])+\/?){1,}))$/
+
+  return regex.test(url)
+}

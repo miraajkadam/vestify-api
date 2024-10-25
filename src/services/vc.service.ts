@@ -1,7 +1,7 @@
 import { PrismaClient, ProjectRound, VCSocial } from '@prisma/client'
 import type { Decimal } from '@prisma/client/runtime/library'
 
-import { VCProfileResponse, VCProjectsResponse } from '@/types/VC.d'
+import { VCProjectsResponse } from '@/types/VC.d'
 
 /**
  * Service class for managing Venture Capitalists (VCs) in the database.
@@ -37,6 +37,7 @@ export default class VCService {
    * @param {string|null} [socials.telegram] - Telegram link (optional).
    * @param {string|null} [socials.medium] - Medium link (optional).
    * @param {string|null} [socials.youtube] - YouTube channel link (optional).
+   * @param {string|null} [socials.linkedin] - Linkedin profile link (optional).
    *
    * @returns {Promise<string | undefined> } The ID of the newly created venture capitalist record, or `undefined` if creation fails.
    */
@@ -68,6 +69,7 @@ export default class VCService {
             medium: socials.medium,
             telegram: socials.telegram,
             x: socials.x,
+            linkedin: socials.linkedin,
             youtube: socials.youtube,
           },
         },
@@ -99,7 +101,7 @@ export default class VCService {
    *
    * @throws {Error} Throws an error if the database query fails.
    */
-  getVCDetailsFromDB = async (id: string): Promise<VCProfileResponse | null> => {
+  getVCDetailsFromDB = async (id: string) => {
     const vcDetails = await this.prisma.vC.findUnique({
       where: { id },
       select: {
@@ -114,6 +116,14 @@ export default class VCService {
           select: {
             id: true,
             name: true,
+          },
+        },
+        VCSocial: {
+          select: {
+            discord: true,
+            x: true,
+            telegram: true,
+            linkedin: true,
           },
         },
       },

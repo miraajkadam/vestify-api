@@ -68,6 +68,9 @@ const vcRouter = Router()
  *                   youtube:
  *                     type: string
  *                     example: "https://youtube.com/channel/project_channel"
+ *                   linkedin:
+ *                     type: string
+ *                     example: "https://www.linkedin.com/in/firstname-lastname/"
  *                 required: []
  *             required:
  *               - name
@@ -252,9 +255,10 @@ vcRouter.get('/getAll', getAllVC)
  *                 data:
  *                   type: object
  *                   properties:
- *                     name:
+ *                     id:
  *                       type: string
- *                       example: "Innovative Ventures"
+ *                       format: uuid
+ *                       example: "5a93b9dc-d106-4870-8f6c-c978f21471ea"
  *                     description:
  *                       type: string
  *                       example: "A leading VC firm focusing on tech startups."
@@ -262,6 +266,9 @@ vcRouter.get('/getAll', getAllVC)
  *                       type: string
  *                       format: byte
  *                       example: "iVBORw0KGgoAAAANSUhEUgAAAAU..."
+ *                     name:
+ *                       type: string
+ *                       example: "Innovative Ventures"
  *                     subscriptionFee:
  *                       type: string
  *                       format: decimal
@@ -291,6 +298,25 @@ vcRouter.get('/getAll', getAllVC)
  *                           name: "Bitcoin"
  *                         - id: "c78e782a-bdca-4969-9d31-74265e27ada2"
  *                           name: "Ethereum"
+ *                     vcId:
+ *                       type: string
+ *                       format: uuid
+ *                       example: "5a93b9dc-d106-4870-8f6c-c978f21471ea"
+ *                     social:
+ *                       type: object
+ *                       properties:
+ *                         discord:
+ *                           type: string
+ *                           example: "https://discord.gg/project_invite"
+ *                         x:
+ *                           type: string
+ *                           example: "https://twitter.com/username"
+ *                         telegram:
+ *                           type: string
+ *                           example: "https://t.me/project_channel"
+ *                         linkedin:
+ *                           type: string
+ *                           example: "https://www.linkedin.com/in/firstname-lastname/"
  *       '400':
  *         description: Bad request if the VC ID is invalid or missing.
  *         content:

@@ -100,6 +100,7 @@ model VCSocial {
   telegram  String? @map("Telegram")
   medium    String? @map("Medium")
   youtube   String? @map("Youtube")
+  linkedin  String? @map("Linkedin")
 
   VC VC?
 }
