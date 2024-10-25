@@ -1,7 +1,7 @@
 import { PrismaClient, ProjectRound, VCSocial } from '@prisma/client'
 import type { Decimal } from '@prisma/client/runtime/library'
 
-import { VCProfileResponse, VCProjectsResponse } from '@/types/VC.d'
+import { VCProjectsResponse } from '@/types/VC.d'
 
 /**
  * Service class for managing Venture Capitalists (VCs) in the database.
@@ -101,7 +101,7 @@ export default class VCService {
    *
    * @throws {Error} Throws an error if the database query fails.
    */
-  getVCDetailsFromDB = async (id: string): Promise<VCProfileResponse | null> => {
+  getVCDetailsFromDB = async (id: string) => {
     const vcDetails = await this.prisma.vC.findUnique({
       where: { id },
       select: {
@@ -116,6 +116,14 @@ export default class VCService {
           select: {
             id: true,
             name: true,
+          },
+        },
+        VCSocial: {
+          select: {
+            discord: true,
+            x: true,
+            telegram: true,
+            linkedin: true,
           },
         },
       },

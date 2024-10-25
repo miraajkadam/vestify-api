@@ -1,6 +1,6 @@
 import { type Request, type Response } from 'express'
 
-import { isAddNewVCPayloadValid } from '@/helpers/vc.helper'
+import { isAddNewVCPayloadValid, sanitizeVCProfileForResponse } from '@/helpers/vc.helper'
 import VCService from '@/services/vc.service'
 import type {
   AddNewVCPayload,
@@ -95,7 +95,9 @@ export const getVCProfileById = async (
 
     if (!vcDetails) return apiResponse.error('unable to get vc details')
 
-    return apiResponse.successWithData(vcDetails, 'VC profile retrieved successfully')
+    const vcResponse = sanitizeVCProfileForResponse(vcDetails)
+
+    return apiResponse.successWithData(vcResponse, 'VC profile retrieved successfully')
   } catch (ex: unknown) {
     const error = ex as Error
 

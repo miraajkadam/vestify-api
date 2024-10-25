@@ -12,6 +12,7 @@ import {
   isValidYouTubeLink,
   isValidLinkedinLink,
 } from '@/utils/socialsValidator'
+import { VCProfileResponse } from '@/types/VC'
 
 /**
  * Validates if the provided payload values meet the expected criteria for an AddNewVCPayload.
@@ -111,6 +112,27 @@ export const isAddNewVCPayloadValid = (
   return true
 }
 
+export const sanitizeVCProfileForResponse = (vcDetails: {
+  vcId: string
+  id: string
+  name: string
+  VCSocial: {
+    x: string | null
+    discord: string | null
+    telegram: string | null
+    linkedin: string | null
+  }
+  description: string
+  logoBase64: string
+  subscriptionFee: Decimal
+  tags: string[]
+  kycDone: boolean
+  projects: { id: string; name: string }[]
+}): VCProfileResponse => {
+  const { VCSocial, ...rest } = vcDetails // Destructure to separate VCSocial
+
+  return { ...rest, social: VCSocial, vcId: vcDetails.id } // Rename and return
+}
 interface Socials {
   x?: string | null
   instagram?: string | null

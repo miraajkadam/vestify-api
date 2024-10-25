@@ -16,18 +16,22 @@ export type GetVCProfileById = {
   id: string
 }
 
-export type VCProfileResponse = Omit<AddNewVCPayload, 'id' | 'socials'> & {
+export type VCProfileResponse = {
   vcId: string
+  id: string
   name: string
+  social: {
+    x: string | null
+    discord: string | null
+    telegram: string | null
+    linkedin: string | null
+  }
   description: string
   logoBase64: string
   subscriptionFee: Decimal
   tags: string[]
   kycDone: boolean
-  projects: {
-    id: string
-    name: string
-  }[]
+  projects: { id: string; name: string }[]
 }
 
 export type VCProjectsResponse = {
