@@ -37,6 +37,7 @@ export default class VCService {
    * @param {string|null} [socials.telegram] - Telegram link (optional).
    * @param {string|null} [socials.medium] - Medium link (optional).
    * @param {string|null} [socials.youtube] - YouTube channel link (optional).
+   * @param {string|null} [socials.linkedin] - Linkedin profile link (optional).
    *
    * @returns {Promise<string | undefined> } The ID of the newly created venture capitalist record, or `undefined` if creation fails.
    */
@@ -68,6 +69,7 @@ export default class VCService {
             medium: socials.medium,
             telegram: socials.telegram,
             x: socials.x,
+            linkedin: socials.linkedin,
             youtube: socials.youtube,
           },
         },

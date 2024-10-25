@@ -68,6 +68,9 @@ const vcRouter = Router()
  *                   youtube:
  *                     type: string
  *                     example: "https://youtube.com/channel/project_channel"
+ *                   linkedin:
+ *                     type: string
+ *                     example: "https://www.linkedin.com/in/firstname-lastname/"
  *                 required: []
  *             required:
  *               - name

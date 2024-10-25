@@ -10,6 +10,7 @@ import {
   isValidTelegramLink,
   isValidMediumLink,
   isValidYouTubeLink,
+  isValidLinkedinLink,
 } from '@/utils/socialsValidator'
 
 /**
@@ -28,6 +29,7 @@ import {
  * @param {string|null} [socials.telegram] - Telegram link (optional).
  * @param {string|null} [socials.medium] - Medium link (optional).
  * @param {string|null} [socials.youtube] - YouTube channel link (optional).
+ * @param {string|null} [socials.linkedin] - Linkedin profile link (optional).
  *
  * @returns {boolean} Returns `true` if all parameters meet their respective validation criteria, otherwise `false`.
  *
@@ -45,7 +47,8 @@ import {
  *     discord: null,
  *     telegram: "https://t.me/sample_vc",
  *     medium: "https://medium.com/@sample_vc",
- *     youtube: ""
+ *     youtube: "",
+ *     linkedin: "https://www.linkedin.com/in/firstname-lastname",
  *   }
  * );
  */
@@ -87,6 +90,7 @@ export const isAddNewVCPayloadValid = (
     'telegram',
     'medium',
     'youtube',
+    'linkedin',
   ]
 
   for (const field of socialFields) {
@@ -102,6 +106,7 @@ export const isAddNewVCPayloadValid = (
   if (socials.telegram && !isValidTelegramLink(socials.telegram)) return false
   if (socials.medium && !isValidMediumLink(socials.medium)) return false
   if (socials.youtube && !isValidYouTubeLink(socials.youtube)) return false
+  if (socials.linkedin && !isValidLinkedinLink(socials.linkedin)) return false
 
   return true
 }
@@ -113,4 +118,5 @@ interface Socials {
   telegram?: string | null
   medium?: string | null
   youtube?: string | null
+  linkedin?: string | null
 }
