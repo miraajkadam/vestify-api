@@ -22,6 +22,31 @@ export default class UserService {
   }
 
   /**
+   * Checks if a user exists in the database by their unique identifier.
+   *
+   * This method queries the database to determine whether a user with the given user ID is present.
+   *
+   * @async
+   * @param {string} userId - The unique identifier of the user to check for existence.
+   *
+   * @returns {Promise<boolean>} A promise that resolves to `true` if the user exists, otherwise `false`.
+   *
+   * @throws {Error} Throws an error if there is an issue retrieving the user information from the database.
+   */
+  checkIfUserExists = async (userId: string): Promise<boolean> => {
+    const entity = await this.prisma.users.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        id: true,
+      },
+    })
+
+    return entity !== null
+  }
+
+  /**
    * Records a user's capital investment in a venture capital fund.
    *
    * @param {string} userId - The ID of the user.

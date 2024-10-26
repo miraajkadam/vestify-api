@@ -334,4 +334,30 @@ export default class ProjectService {
         },
       },
     })
+
+  /**
+   * Retrieves the venture capital (VC) ID associated with a specific project by its unique identifier.
+   *
+   * This method queries the database to find the VC ID linked to the given project ID.
+   *
+   * @async
+   * @param {string} projId - The unique identifier of the project for which to retrieve the VC ID.
+   *
+   * @returns {Promise<string | null>} A promise that resolves to the VC ID associated with the project.
+   * If no project is found, it resolves to null.
+   *
+   * @throws {Error} Throws an error if there is an issue retrieving the VC ID from the database.
+   */
+  getVCIdViaProjId = async (projId: string) => {
+    const entity = await this.prisma.projects.findUnique({
+      where: {
+        id: projId,
+      },
+      select: {
+        vcId: true,
+      },
+    })
+
+    return entity?.vcId
+  }
 }
