@@ -442,9 +442,9 @@ projectRouter.get('/getAll', getAllProjects)
  *                         medium:
  *                           type: string
  *                           example: "https://medium.com/@project"
- *                         discord:
+ *                         website:
  *                           type: string
- *                           example: "https://discord.gg/project"
+ *                           example: "https://website.com/project"
  *                         x:
  *                           type: string
  *                           example: "https://twitter.com/project"

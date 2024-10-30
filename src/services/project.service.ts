@@ -197,7 +197,7 @@ export default class ProjectService {
         },
         projectSocials: {
           select: {
-            discord: true,
+            website: true,
             medium: true,
             telegram: true,
             x: true,

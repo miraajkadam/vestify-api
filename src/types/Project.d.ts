@@ -120,10 +120,10 @@ export type ProjectProfileDbResponse = {
   }
 
   projectSocials: {
-    discord: string | null
+    website: string
     medium: string | null
-    telegram: string | null
-    x: string | null
+    telegram: string
+    x: string
   }
   projectTeamAndAdvisors: {
     name: string

@@ -41,7 +41,7 @@ export const strProjForResponse = (projectProfile: ProjectProfileDbResponse) => 
   },
   socialLink: {
     medium: projectProfile?.projectSocials?.medium,
-    discord: projectProfile?.projectSocials?.discord,
+    website: projectProfile?.projectSocials?.website,
     x: projectProfile?.projectSocials?.x,
     telegram: projectProfile?.projectSocials?.telegram,
   },
