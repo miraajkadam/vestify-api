@@ -73,6 +73,25 @@ const projectRouter = Router()
  *                       type: string
  *                       description: Summary of the Token Generation Event.
  *                       example: "This is TGE Summary"
+ *                 example:
+ *                   - fdv: "1000000000"
+ *                     price: "1.23"
+ *                     tgeUnlock: 80
+ *                     tge: "2024-08-28T12:20:13.264Z"
+ *                     round: "PRE_SEED"
+ *                     tgeSummary: "This is TGE Summary for Pre Seed round"
+ *                   - fdv: "2000000000"
+ *                     price: "2.45"
+ *                     tgeUnlock: 70
+ *                     tge: "2024-09-15T10:00:00.000Z"
+ *                     round: "SEED"
+ *                     tgeSummary: "This is TGE Summary for Seed round"
+ *                   - fdv: "1500000000"
+ *                     price: "1.75"
+ *                     tgeUnlock: 60
+ *                     tge: "2024-10-05T14:30:00.000Z"
+ *                     round: "PRIVATE_1"
+ *                     tgeSummary: "Summary for the Series A round"
  *               deals:
  *                 type: object
  *                 properties:
