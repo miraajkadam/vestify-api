@@ -21,10 +21,10 @@ export type VCProfileResponse = {
   id: string
   name: string
   social: {
-    x: string | null
+    x: string
     discord: string | null
-    telegram: string | null
-    linkedin: string | null
+    telegram: string
+    website: string
   }
   description: string
   logoBase64: string

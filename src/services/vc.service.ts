@@ -31,13 +31,13 @@ export default class VCService {
    * @param {string[]} tags - An array of tags associated with the venture capitalist.
    * @param {boolean} kycDone - Indicates whether Know Your Customer (KYC) verification has been completed for the venture capitalist.
    * @param {Object} socials - The social media links associated with the VC.
-   * @param {string|null} [socials.x] - Additional info (optional).
+   * @param {string|null} [socials.x] - X Link.
    * @param {string|null} [socials.instagram] - Instagram link (optional).
    * @param {string|null} [socials.discord] - Discord link (optional).
-   * @param {string|null} [socials.telegram] - Telegram link (optional).
+   * @param {string|null} [socials.telegram] - Telegram link.
    * @param {string|null} [socials.medium] - Medium link (optional).
    * @param {string|null} [socials.youtube] - YouTube channel link (optional).
-   * @param {string|null} [socials.linkedin] - Linkedin profile link (optional).
+   * @param {string|null} [socials.website] - Website link.
    *
    * @returns {Promise<string | undefined> } The ID of the newly created venture capitalist record, or `undefined` if creation fails.
    */
@@ -69,7 +69,7 @@ export default class VCService {
             medium: socials.medium,
             telegram: socials.telegram,
             x: socials.x,
-            linkedin: socials.linkedin,
+            website: socials.website,
             youtube: socials.youtube,
           },
         },
@@ -123,7 +123,7 @@ export default class VCService {
             discord: true,
             x: true,
             telegram: true,
-            linkedin: true,
+            website: true,
           },
         },
       },
