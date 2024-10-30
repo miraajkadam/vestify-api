@@ -94,13 +94,12 @@ model VC {
 model VCSocial {
   id String @id @unique @map("Id")
 
-  x         String  @map("X")
-  telegram  String  @map("Telegram")
-  website   String  @map("Website")
-  instagram String? @map("Instagram")
-  discord   String? @map("Discord")
-  medium    String? @map("Medium")
-  youtube   String? @map("Youtube")
+  x        String  @map("X")
+  telegram String  @map("Telegram")
+  website  String  @map("Website")
+  discord  String? @map("Discord")
+  medium   String? @map("Medium")
+  youtube  String? @map("Youtube")
 
   VC VC?
 }
@@ -173,14 +172,13 @@ model ProjectPartnersAndInvestors {
 }
 
 model ProjectSocials {
-  id        String  @id @unique @map("Id")
-  x         String  @map("X")
-  telegram  String  @map("Telegram")
-  website   String  @map("Website")
-  instagram String? @map("Instagram")
-  discord   String? @map("Discord")
-  medium    String? @map("Medium")
-  youtube   String? @map("Youtube")
+  id       String  @id @unique @map("Id")
+  x        String  @map("X")
+  telegram String  @map("Telegram")
+  website  String  @map("Website")
+  discord  String? @map("Discord")
+  medium   String? @map("Medium")
+  youtube  String? @map("Youtube")
 
   Projects Projects?
 }
