@@ -29,16 +29,11 @@ export const strProjForResponse = (projectProfile: ProjectProfileDbResponse) => 
   project: {
     name: projectProfile.name,
     description: projectProfile.description,
-    round: projectProfile.projectTokenMetrics?.round,
+    round: projectProfile.projectTokenMetrics[0].round,
     categories: projectProfile.categories,
     tokensReceived: '0/0',
   },
-  token: {
-    tge: projectProfile?.projectTokenMetrics?.tge,
-    tgeUnlock: projectProfile?.projectTokenMetrics?.tgeUnlock,
-    price: projectProfile?.projectTokenMetrics?.price,
-    tgeSummary: projectProfile?.projectTokenMetrics?.tgeSummary,
-  },
+  tokenMetrics: projectProfile.projectTokenMetrics,
   socialLink: {
     medium: projectProfile?.projectSocials?.medium,
     website: projectProfile?.projectSocials?.website,

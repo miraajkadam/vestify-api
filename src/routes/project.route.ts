@@ -418,24 +418,55 @@ projectRouter.get('/getAll', getAllProjects)
  *                           items:
  *                             type: string
  *                           example: ["Tech", "DEFI", "Crypto"]
- *                     token:
- *                       type: object
- *                       properties:
- *                         allocation:
- *                           type: string
- *                           example: "1000000"
- *                         vesting:
- *                           type: string
- *                           example: "2024-01-01T00:00:00Z"
- *                         tge:
- *                           type: string
- *                           example: "2024-01-01T00:00:00Z"
- *                         tgeUnlock:
- *                           type: string
- *                           example: "2024-01-01T00:00:00Z"
- *                         price:
- *                           type: string
- *                           example: "0.1"
+ *                     tokenMetrics:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           tge:
+ *                             type: string
+ *                             example: "2024-08-28T12:20:13.264Z"
+ *                           tgeUnlock:
+ *                             type: string
+ *                             example: "80"
+ *                           price:
+ *                             type: string
+ *                             example: "1.23"
+ *                           round:
+ *                             type: string
+ *                             example: "PRE_SEED"
+ *                           tgeSummary:
+ *                             type: string
+ *                             example: "This is TGE Summary for Pre Seed round"
+ *                           fdv:
+ *                             type: string
+ *                             example: "1000000000"
+ *                         example: [
+ *                           {
+ *                             tge: "2024-08-28T12:20:13.264Z",
+ *                             tgeUnlock: "80",
+ *                             price: "1.23",
+ *                             round: "PRE_SEED",
+ *                             tgeSummary: "This is TGE Summary for Pre Seed round",
+ *                             fdv: "1000000000"
+ *                           },
+ *                           {
+ *                             tge: "2024-09-15T10:00:00.000Z",
+ *                             tgeUnlock: "70",
+ *                             price: "2.45",
+ *                             round: "SEED",
+ *                             tgeSummary: "This is TGE Summary for Seed round",
+ *                             fdv: "2000000000"
+ *                           },
+ *                           {
+ *                             tge: "2024-10-05T14:30:00.000Z",
+ *                             tgeUnlock: "60",
+ *                             price: "1.75",
+ *                             round: "PRIVATE_1",
+ *                             tgeSummary: "Summary for the Series A round",
+ *                             fdv: "1500000000"
+ *                           }
+ *                         ]
  *                     socialLink:
  *                       type: object
  *                       properties:

@@ -84,12 +84,7 @@ export type ProjectProfileResponse = {
     round: ProjectRound
     categories: Projects['category']
   }
-  token: {
-    tge: ProjectTokenMetrics['tge']
-    tgeUnlock: ProjectTokenMetrics['tgeUnlock']
-    price: ProjectTokenMetrics['price']
-    tgeSummary: ProjectTokenMetrics['tgeSummary']
-  }
+  tokenMetrics: Omit<ProjectTokenMetrics, 'id' | 'projectId'>
   socialLink: {
     medium: ProjectSocials['medium']
     discord: ProjectSocials['discord']
@@ -117,7 +112,8 @@ export type ProjectProfileDbResponse = {
     price: string
     round: ProjectRound
     tgeSummary: string
-  }
+    fdv: string
+  }[]
 
   projectSocials: {
     website: string
