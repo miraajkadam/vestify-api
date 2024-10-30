@@ -9,10 +9,10 @@ import {
 import { isValidDate, isValidGuid } from '@/utils/common'
 import {
   isValidDiscordLink,
-  isValidInstagramLink,
   isValidMediumLink,
   isValidTelegramLink,
   isValidTwitterLink,
+  isValidWebsiteUrl,
   isValidXLink,
   isValidYouTubeLink,
 } from '@/utils/socialsValidator'
@@ -28,19 +28,14 @@ export const strProjForResponse = (projectProfile: ProjectProfileDbResponse) => 
   project: {
     name: projectProfile.name,
     description: projectProfile.description,
-    round: projectProfile.projectTokenMetrics?.round,
+    round: projectProfile.projectTokenMetrics[0].round,
     categories: projectProfile.categories,
     tokensReceived: '0/0',
   },
-  token: {
-    tge: projectProfile?.projectTokenMetrics?.tge,
-    tgeUnlock: projectProfile?.projectTokenMetrics?.tgeUnlock,
-    price: projectProfile?.projectTokenMetrics?.price,
-    tgeSummary: projectProfile?.projectTokenMetrics?.tgeSummary,
-  },
+  tokenMetrics: projectProfile.projectTokenMetrics,
   socialLink: {
     medium: projectProfile?.projectSocials?.medium,
-    discord: projectProfile?.projectSocials?.discord,
+    website: projectProfile?.projectSocials?.website,
     x: projectProfile?.projectSocials?.x,
     telegram: projectProfile?.projectSocials?.telegram,
   },
@@ -211,16 +206,16 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload) => {
   if (!payload.projectSocials || typeof payload.projectSocials !== 'object') return false
 
   if (
-    payload.projectSocials.x &&
-    !isValidXLink(payload.projectSocials.x) &&
-    !isValidTwitterLink(payload.projectSocials.x)
+    !payload.projectSocials.x ||
+    (!isValidXLink(payload.projectSocials.x) && !isValidTwitterLink(payload.projectSocials.x))
   )
     return false
-  if (payload.projectSocials.instagram && !isValidInstagramLink(payload.projectSocials.instagram))
+  if (!payload.projectSocials.telegram || !isValidTelegramLink(payload.projectSocials.telegram))
     return false
+  if (!payload.projectSocials.website || !isValidWebsiteUrl(payload.projectSocials.website))
+    return false
+
   if (payload.projectSocials.discord && !isValidDiscordLink(payload.projectSocials.discord))
-    return false
-  if (payload.projectSocials.telegram && !isValidTelegramLink(payload.projectSocials.telegram))
     return false
   if (payload.projectSocials.medium && !isValidMediumLink(payload.projectSocials.medium))
     return false

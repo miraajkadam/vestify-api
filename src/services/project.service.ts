@@ -1,8 +1,8 @@
 import { PrismaClient, ProjectRound } from '@prisma/client'
+import { Decimal } from '@prisma/client/runtime/library'
 import { v4 as uuid } from 'uuid'
 
-import type { AddProjectApiPayload, ProjectProfileDbResponse } from '@/types/Project'
-import { Decimal } from '@prisma/client/runtime/library'
+import type { AddProjectApiPayload } from '@/types/Project'
 
 /**
  * Service class for managing projects in the database.
@@ -49,11 +49,11 @@ export default class ProjectService {
         data: {
           id: uniqueId,
           x: newProject.projectSocials.x,
-          instagram: newProject.projectSocials.instagram,
           discord: newProject.projectSocials.discord,
           telegram: newProject.projectSocials.telegram,
           medium: newProject.projectSocials.medium,
           youtube: newProject.projectSocials.youtube,
+          website: newProject.projectSocials.website,
         },
         select: { id: true },
       }),
@@ -172,13 +172,13 @@ export default class ProjectService {
    * @async
    * @function getProjectByIdFromDb
    * @param {string} id - The unique identifier of the project to retrieve.
-   * @returns {Promise<ProjectProfileDbResponse|null>} A promise that resolves to an object containing
+   * @returns {Promise} A promise that resolves to an object containing
    *                                  the project's details or null if no project
    *                                  is found with the given ID.
    * @throws {Error} Throws an error if there is an issue retrieving the project
    *                 from the database.
    */
-  getProjectByIdFromDb = async (id: string): Promise<ProjectProfileDbResponse> => {
+  getProjectByIdFromDb = async (id: string) => {
     const project = await this.prisma.projects.findUnique({
       where: { id },
       select: {
@@ -192,11 +192,12 @@ export default class ProjectService {
             price: true,
             round: true,
             tgeSummary: true,
+            fdv: true,
           },
         },
         projectSocials: {
           select: {
-            discord: true,
+            website: true,
             medium: true,
             telegram: true,
             x: true,
@@ -217,12 +218,7 @@ export default class ProjectService {
       },
     })
 
-    const { ...rest } = project
-
-    return {
-      ...rest,
-      projectTokenMetrics: rest.projectTokenMetrics[0],
-    }
+    return project
   }
 
   /**

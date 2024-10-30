@@ -53,9 +53,6 @@ const vcRouter = Router()
  *                   x:
  *                     type: string
  *                     example: "https://twitter.com/username"
- *                   instagram:
- *                     type: string
- *                     example: "https://instagram.com/project_handle"
  *                   discord:
  *                     type: string
  *                     example: "https://discord.gg/project_invite"
@@ -68,9 +65,9 @@ const vcRouter = Router()
  *                   youtube:
  *                     type: string
  *                     example: "https://youtube.com/channel/project_channel"
- *                   linkedin:
+ *                   website:
  *                     type: string
- *                     example: "https://www.linkedin.com/in/firstname-lastname/"
+ *                     example: "https://www.website.com/profile/"
  *                 required: []
  *             required:
  *               - name

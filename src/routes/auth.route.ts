@@ -25,7 +25,7 @@ const authRouter = Router()
  *               password:
  *                 type: string
  *                 description: The password for the user.
- *                 example: securePassword123
+ *                 example: StrongP@asdasdasdssw0rd!
  *     responses:
  *       200:
  *         description: Successfully authenticated and returned an access token.
@@ -100,7 +100,7 @@ authRouter.post('/login', passport.authenticate('local'), loginUser)
  *               password:
  *                 type: string
  *                 description: The password for the new user.
- *                 example: securePassword123
+ *                 example: StrongP@asdasdasdssw0rd!
  *               accountType:
  *                 type: string
  *                 description: The type of account (VC or USER).

@@ -73,6 +73,25 @@ const projectRouter = Router()
  *                       type: string
  *                       description: Summary of the Token Generation Event.
  *                       example: "This is TGE Summary"
+ *                 example:
+ *                   - fdv: "1000000000"
+ *                     price: "1.23"
+ *                     tgeUnlock: 80
+ *                     tge: "2024-08-28T12:20:13.264Z"
+ *                     round: "PRE_SEED"
+ *                     tgeSummary: "This is TGE Summary for Pre Seed round"
+ *                   - fdv: "2000000000"
+ *                     price: "2.45"
+ *                     tgeUnlock: 70
+ *                     tge: "2024-09-15T10:00:00.000Z"
+ *                     round: "SEED"
+ *                     tgeSummary: "This is TGE Summary for Seed round"
+ *                   - fdv: "1500000000"
+ *                     price: "1.75"
+ *                     tgeUnlock: 60
+ *                     tge: "2024-10-05T14:30:00.000Z"
+ *                     round: "PRIVATE_1"
+ *                     tgeSummary: "Summary for the Series A round"
  *               deals:
  *                 type: object
  *                 properties:
@@ -141,10 +160,6 @@ const projectRouter = Router()
  *                     type: string
  *                     description: Twitter/X handle or URL.
  *                     example: "https://twitter.com/username"
- *                   instagram:
- *                     type: string
- *                     description: Instagram handle or URL.
- *                     example: "https://instagram.com/project_handle"
  *                   discord:
  *                     type: string
  *                     description: Discord handle or URL.
@@ -161,6 +176,10 @@ const projectRouter = Router()
  *                     type: string
  *                     description: YouTube channel or video URL.
  *                     example: "https://youtube.com/channel/project_channel"
+ *                   website:
+ *                     type: string
+ *                     description: Website link.
+ *                     example: "https://website.com/profile/"
  *     responses:
  *       200:
  *         description: Successfully added a new project and returned the project ID.
@@ -395,33 +414,64 @@ projectRouter.get('/getAll', getAllProjects)
  *                           items:
  *                             type: string
  *                           example: ["Tech", "DEFI", "Crypto"]
- *                     token:
- *                       type: object
- *                       properties:
- *                         allocation:
- *                           type: string
- *                           example: "1000000"
- *                         vesting:
- *                           type: string
- *                           example: "2024-01-01T00:00:00Z"
- *                         tge:
- *                           type: string
- *                           example: "2024-01-01T00:00:00Z"
- *                         tgeUnlock:
- *                           type: string
- *                           example: "2024-01-01T00:00:00Z"
- *                         price:
- *                           type: string
- *                           example: "0.1"
+ *                     tokenMetrics:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           tge:
+ *                             type: string
+ *                             example: "2024-08-28T12:20:13.264Z"
+ *                           tgeUnlock:
+ *                             type: string
+ *                             example: "80"
+ *                           price:
+ *                             type: string
+ *                             example: "1.23"
+ *                           round:
+ *                             type: string
+ *                             example: "PRE_SEED"
+ *                           tgeSummary:
+ *                             type: string
+ *                             example: "This is TGE Summary for Pre Seed round"
+ *                           fdv:
+ *                             type: string
+ *                             example: "1000000000"
+ *                         example: [
+ *                           {
+ *                             tge: "2024-08-28T12:20:13.264Z",
+ *                             tgeUnlock: "80",
+ *                             price: "1.23",
+ *                             round: "PRE_SEED",
+ *                             tgeSummary: "This is TGE Summary for Pre Seed round",
+ *                             fdv: "1000000000"
+ *                           },
+ *                           {
+ *                             tge: "2024-09-15T10:00:00.000Z",
+ *                             tgeUnlock: "70",
+ *                             price: "2.45",
+ *                             round: "SEED",
+ *                             tgeSummary: "This is TGE Summary for Seed round",
+ *                             fdv: "2000000000"
+ *                           },
+ *                           {
+ *                             tge: "2024-10-05T14:30:00.000Z",
+ *                             tgeUnlock: "60",
+ *                             price: "1.75",
+ *                             round: "PRIVATE_1",
+ *                             tgeSummary: "Summary for the Series A round",
+ *                             fdv: "1500000000"
+ *                           }
+ *                         ]
  *                     socialLink:
  *                       type: object
  *                       properties:
  *                         medium:
  *                           type: string
  *                           example: "https://medium.com/@project"
- *                         discord:
+ *                         website:
  *                           type: string
- *                           example: "https://discord.gg/project"
+ *                           example: "https://website.com/project"
  *                         x:
  *                           type: string
  *                           example: "https://twitter.com/project"

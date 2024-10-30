@@ -47,15 +47,6 @@ type PartnerAndInvestor = {
   name: string
 }
 
-type ProjectSocials = {
-  x: string | null
-  instagram: string | null
-  discord: string | null
-  telegram: string | null
-  medium: string | null
-  youtube: string | null
-}
-
 export type AddProjectApiPayload = {
   info: ProjectInfo
   tokenMetrics: TokenMetric[]
@@ -84,12 +75,7 @@ export type ProjectProfileResponse = {
     round: ProjectRound
     categories: Projects['category']
   }
-  token: {
-    tge: ProjectTokenMetrics['tge']
-    tgeUnlock: ProjectTokenMetrics['tgeUnlock']
-    price: ProjectTokenMetrics['price']
-    tgeSummary: ProjectTokenMetrics['tgeSummary']
-  }
+  tokenMetrics: Omit<ProjectTokenMetrics, 'id' | 'projectId'>
   socialLink: {
     medium: ProjectSocials['medium']
     discord: ProjectSocials['discord']
@@ -117,13 +103,14 @@ export type ProjectProfileDbResponse = {
     price: string
     round: ProjectRound
     tgeSummary: string
-  }
+    fdv: string
+  }[]
 
   projectSocials: {
-    discord: string | null
+    website: string
     medium: string | null
-    telegram: string | null
-    x: string | null
+    telegram: string
+    x: string
   }
   projectTeamAndAdvisors: {
     name: string

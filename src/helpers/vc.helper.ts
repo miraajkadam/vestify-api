@@ -1,18 +1,17 @@
+import { VCSocial } from '@prisma/client'
 import type { Decimal } from '@prisma/client/runtime/library'
 
-import { isValidGuid } from '@/utils/common'
-import { VCSocial } from '@prisma/client'
-import {
-  isValidXLink,
-  isValidTwitterLink,
-  isValidInstagramLink,
-  isValidDiscordLink,
-  isValidTelegramLink,
-  isValidMediumLink,
-  isValidYouTubeLink,
-  isValidLinkedinLink,
-} from '@/utils/socialsValidator'
 import { VCProfileResponse } from '@/types/VC'
+import { isValidGuid } from '@/utils/common'
+import {
+  isValidDiscordLink,
+  isValidMediumLink,
+  isValidTelegramLink,
+  isValidTwitterLink,
+  isValidWebsiteUrl,
+  isValidXLink,
+  isValidYouTubeLink,
+} from '@/utils/socialsValidator'
 
 /**
  * Validates if the provided payload values meet the expected criteria for an AddNewVCPayload.
@@ -24,13 +23,12 @@ import { VCProfileResponse } from '@/types/VC'
  * @param {string[]} tags - An array of tags associated with the VC, where each tag should be a non-empty string.
  * @param {boolean} kycDone - A boolean indicating whether KYC (Know Your Customer) verification is completed.
  * @param {Object} socials - The social media links associated with the VC.
- * @param {string|null} [socials.x] - Additional info (optional).
- * @param {string|null} [socials.instagram] - Instagram link (optional).
+ * @param {string} [socials.x] - X Link.
  * @param {string|null} [socials.discord] - Discord link (optional).
- * @param {string|null} [socials.telegram] - Telegram link (optional).
+ * @param {string} [socials.telegram] - Telegram link.
  * @param {string|null} [socials.medium] - Medium link (optional).
  * @param {string|null} [socials.youtube] - YouTube channel link (optional).
- * @param {string|null} [socials.linkedin] - Linkedin profile link (optional).
+ * @param {string} [socials.website] - Website link.
  *
  * @returns {boolean} Returns `true` if all parameters meet their respective validation criteria, otherwise `false`.
  *
@@ -44,12 +42,11 @@ import { VCProfileResponse } from '@/types/VC'
  *   true,
  *   {
  *     x: "Additional info",
- *     instagram: "https://instagram.com/sample_vc",
  *     discord: null,
  *     telegram: "https://t.me/sample_vc",
  *     medium: "https://medium.com/@sample_vc",
  *     youtube: "",
- *     linkedin: "https://www.linkedin.com/in/firstname-lastname",
+ *     website: "https://www.website.com/in/firstname-lastname",
  *   }
  * );
  */
@@ -86,12 +83,11 @@ export const isAddNewVCPayloadValid = (
   // Check if social links are valid
   const socialFields: (keyof Socials)[] = [
     'x',
-    'instagram',
     'discord',
     'telegram',
     'medium',
     'youtube',
-    'linkedin',
+    'website',
   ]
 
   for (const field of socialFields) {
@@ -101,13 +97,13 @@ export const isAddNewVCPayloadValid = (
       return false
   }
 
-  if (socials.x && !isValidXLink(socials.x) && !isValidTwitterLink(socials.x)) return false
-  if (socials.instagram && !isValidInstagramLink(socials.instagram)) return false
+  if (!socials.x || (!isValidXLink(socials.x) && !isValidTwitterLink(socials.x))) return false
+  if (!socials.website || !isValidWebsiteUrl(socials.website)) return false
+  if (!socials.telegram || !isValidTelegramLink(socials.telegram)) return false
+
   if (socials.discord && !isValidDiscordLink(socials.discord)) return false
-  if (socials.telegram && !isValidTelegramLink(socials.telegram)) return false
-  if (socials.medium && !isValidMediumLink(socials.medium)) return false
   if (socials.youtube && !isValidYouTubeLink(socials.youtube)) return false
-  if (socials.linkedin && !isValidLinkedinLink(socials.linkedin)) return false
+  if (socials.medium && !isValidMediumLink(socials.medium)) return false
 
   return true
 }
@@ -117,10 +113,10 @@ export const sanitizeVCProfileForResponse = (vcDetails: {
   id: string
   name: string
   VCSocial: {
-    x: string | null
+    x: string
     discord: string | null
-    telegram: string | null
-    linkedin: string | null
+    telegram: string
+    website: string
   }
   description: string
   logoBase64: string
@@ -134,11 +130,10 @@ export const sanitizeVCProfileForResponse = (vcDetails: {
   return { ...rest, social: VCSocial, vcId: vcDetails.id } // Rename and return
 }
 interface Socials {
-  x?: string | null
-  instagram?: string | null
+  x: string
+  website: string
+  telegram: string
   discord?: string | null
-  telegram?: string | null
   medium?: string | null
   youtube?: string | null
-  linkedin?: string | null
 }

@@ -39,24 +39,6 @@ export const isValidTwitterLink = (url: string): boolean => {
 }
 
 /**
- * Validates if a given URL is a valid Instagram link.
- *
- * @param {string} url - The URL to validate.
- * @returns {boolean} True if the URL is a valid Instagram link, false otherwise.
- *
- * @example
- * isValidInstagramLink("https://instagram.com/username"); // returns true
- * isValidInstagramLink("https://www.instagram.com/username/"); // returns true
- * isValidInstagramLink("https://instagram.com/p/ABC123xyz/"); // returns true
- * isValidInstagramLink("https://example.com/user/username"); // returns false
- */
-export const isValidInstagramLink = (url: string): boolean => {
-  const regex = /^(https?:\/\/)?(www\.)?(instagram\.com\/[a-zA-Z0-9._]+|p\/[a-zA-Z0-9._-]+)\/?$/
-
-  return regex.test(url)
-}
-
-/**
  * Validates if a given URL is a valid Discord link.
  *
  * @param {string} url - The URL to validate.
@@ -133,20 +115,26 @@ export const isValidYouTubeLink = (url: string): boolean => {
 }
 
 /**
- * Validates if a given URL is a valid LinkedIn profile link.
+ * Validates if a given string is a valid website link.
  *
- * @param {string} url - The URL to validate.
- * @returns {boolean} True if the URL is a valid LinkedIn profile link, false otherwise.
+ * @param {string} url - The URL string to validate.
+ * @returns {boolean} Returns true if the URL is valid; otherwise, false.
  *
  * @example
- * isValidLinkedinLink("https://www.linkedin.com/in/jane-doe/"); // returns true
- * isValidLinkedinLink("https://linkedin.com/company/openai/"); // returns true
- * isValidLinkedinLink("https://linkedin.com/"); // returns false
- * isValidLinkedinLink("https://example.com/user/username"); // returns false
+ * isValidWebsiteUrl("https://www.example.com"); // returns true
+ * isValidWebsiteUrl("http://example.com/path/to/page"); // returns true
+ * isValidWebsiteUrl("https://example.org"); // returns true
+ * isValidWebsiteUrl("www.example.net"); // returns true
+ * isValidWebsiteUrl("example.com"); // returns true
+ * isValidWebsiteUrl("ftp://example.com"); // returns false
+ * isValidWebsiteUrl("invalid-url"); // returns false
+ * isValidWebsiteUrl("https://example"); // returns false
+ * isValidWebsiteUrl("http://example.c"); // returns false
+ * isValidWebsiteUrl("https://subdomain.example.com"); // returns true
+ * isValidWebsiteUrl("https://example.com?query=string"); // returns true
  */
-export const isValidLinkedinLink = (url: string): boolean => {
-  const regex =
-    /((https?:\/\/)?((www|\w\w)\.)?linkedin\.com\/)((([\w]{2,3})?)|([^\/]+\/(([\w|\d-&#?=])+\/?){1,}))$/
+export const isValidWebsiteUrl = (url: string): boolean => {
+  const regex = /^(https?:\/\/)?(www\.)?([a-z0-9-]+\.[a-z]{2,})(\/[^\s]*)?$/i
 
   return regex.test(url)
 }
