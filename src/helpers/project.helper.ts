@@ -9,7 +9,6 @@ import {
 import { isValidDate, isValidGuid } from '@/utils/common'
 import {
   isValidDiscordLink,
-  isValidInstagramLink,
   isValidMediumLink,
   isValidTelegramLink,
   isValidTwitterLink,
@@ -216,8 +215,6 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload) => {
   if (!payload.projectSocials.website || !isValidWebsiteUrl(payload.projectSocials.website))
     return false
 
-  if (payload.projectSocials.instagram && !isValidInstagramLink(payload.projectSocials.instagram))
-    return false
   if (payload.projectSocials.discord && !isValidDiscordLink(payload.projectSocials.discord))
     return false
   if (payload.projectSocials.medium && !isValidMediumLink(payload.projectSocials.medium))

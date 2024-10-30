@@ -32,7 +32,6 @@ export default class VCService {
    * @param {boolean} kycDone - Indicates whether Know Your Customer (KYC) verification has been completed for the venture capitalist.
    * @param {Object} socials - The social media links associated with the VC.
    * @param {string|null} [socials.x] - X Link.
-   * @param {string|null} [socials.instagram] - Instagram link (optional).
    * @param {string|null} [socials.discord] - Discord link (optional).
    * @param {string|null} [socials.telegram] - Telegram link.
    * @param {string|null} [socials.medium] - Medium link (optional).
@@ -65,7 +64,6 @@ export default class VCService {
         VCSocial: {
           update: {
             discord: socials.discord,
-            instagram: socials.instagram,
             medium: socials.medium,
             telegram: socials.telegram,
             x: socials.x,

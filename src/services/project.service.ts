@@ -49,7 +49,6 @@ export default class ProjectService {
         data: {
           id: uniqueId,
           x: newProject.projectSocials.x,
-          instagram: newProject.projectSocials.instagram,
           discord: newProject.projectSocials.discord,
           telegram: newProject.projectSocials.telegram,
           medium: newProject.projectSocials.medium,

@@ -47,15 +47,6 @@ type PartnerAndInvestor = {
   name: string
 }
 
-type ProjectSocials = {
-  x: string | null
-  instagram: string | null
-  discord: string | null
-  telegram: string | null
-  medium: string | null
-  youtube: string | null
-}
-
 export type AddProjectApiPayload = {
   info: ProjectInfo
   tokenMetrics: TokenMetric[]

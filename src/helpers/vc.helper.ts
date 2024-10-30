@@ -5,7 +5,6 @@ import { VCProfileResponse } from '@/types/VC'
 import { isValidGuid } from '@/utils/common'
 import {
   isValidDiscordLink,
-  isValidInstagramLink,
   isValidMediumLink,
   isValidTelegramLink,
   isValidTwitterLink,
@@ -25,7 +24,6 @@ import {
  * @param {boolean} kycDone - A boolean indicating whether KYC (Know Your Customer) verification is completed.
  * @param {Object} socials - The social media links associated with the VC.
  * @param {string} [socials.x] - X Link.
- * @param {string|null} [socials.instagram] - Instagram link (optional).
  * @param {string|null} [socials.discord] - Discord link (optional).
  * @param {string} [socials.telegram] - Telegram link.
  * @param {string|null} [socials.medium] - Medium link (optional).
@@ -44,7 +42,6 @@ import {
  *   true,
  *   {
  *     x: "Additional info",
- *     instagram: "https://instagram.com/sample_vc",
  *     discord: null,
  *     telegram: "https://t.me/sample_vc",
  *     medium: "https://medium.com/@sample_vc",
@@ -86,7 +83,6 @@ export const isAddNewVCPayloadValid = (
   // Check if social links are valid
   const socialFields: (keyof Socials)[] = [
     'x',
-    'instagram',
     'discord',
     'telegram',
     'medium',
@@ -105,7 +101,6 @@ export const isAddNewVCPayloadValid = (
   if (!socials.website || !isValidWebsiteUrl(socials.website)) return false
   if (!socials.telegram || !isValidTelegramLink(socials.telegram)) return false
 
-  if (socials.instagram && !isValidInstagramLink(socials.instagram)) return false
   if (socials.discord && !isValidDiscordLink(socials.discord)) return false
   if (socials.youtube && !isValidYouTubeLink(socials.youtube)) return false
   if (socials.medium && !isValidMediumLink(socials.medium)) return false
@@ -138,7 +133,6 @@ interface Socials {
   x: string
   website: string
   telegram: string
-  instagram?: string | null
   discord?: string | null
   medium?: string | null
   youtube?: string | null

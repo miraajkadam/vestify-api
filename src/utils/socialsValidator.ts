@@ -39,24 +39,6 @@ export const isValidTwitterLink = (url: string): boolean => {
 }
 
 /**
- * Validates if a given URL is a valid Instagram link.
- *
- * @param {string} url - The URL to validate.
- * @returns {boolean} True if the URL is a valid Instagram link, false otherwise.
- *
- * @example
- * isValidInstagramLink("https://instagram.com/username"); // returns true
- * isValidInstagramLink("https://www.instagram.com/username/"); // returns true
- * isValidInstagramLink("https://instagram.com/p/ABC123xyz/"); // returns true
- * isValidInstagramLink("https://example.com/user/username"); // returns false
- */
-export const isValidInstagramLink = (url: string): boolean => {
-  const regex = /^(https?:\/\/)?(www\.)?(instagram\.com\/[a-zA-Z0-9._]+|p\/[a-zA-Z0-9._-]+)\/?$/
-
-  return regex.test(url)
-}
-
-/**
  * Validates if a given URL is a valid Discord link.
  *
  * @param {string} url - The URL to validate.

@@ -35,7 +35,6 @@ export default class AuthService {
                   create: {
                     id,
                     discord: '',
-                    instagram: '',
                     medium: '',
                     telegram: '',
                     x: '',

@@ -160,10 +160,6 @@ const projectRouter = Router()
  *                     type: string
  *                     description: Twitter/X handle or URL.
  *                     example: "https://twitter.com/username"
- *                   instagram:
- *                     type: string
- *                     description: Instagram handle or URL.
- *                     example: "https://instagram.com/project_handle"
  *                   discord:
  *                     type: string
  *                     description: Discord handle or URL.

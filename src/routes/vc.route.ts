@@ -53,9 +53,6 @@ const vcRouter = Router()
  *                   x:
  *                     type: string
  *                     example: "https://twitter.com/username"
- *                   instagram:
- *                     type: string
- *                     example: "https://instagram.com/project_handle"
  *                   discord:
  *                     type: string
  *                     example: "https://discord.gg/project_invite"
