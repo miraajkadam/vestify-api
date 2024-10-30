@@ -40,6 +40,7 @@ export default class AuthService {
                     telegram: '',
                     x: '',
                     youtube: '',
+                    website: '',
                   },
                 },
               },

@@ -54,6 +54,7 @@ export default class ProjectService {
           telegram: newProject.projectSocials.telegram,
           medium: newProject.projectSocials.medium,
           youtube: newProject.projectSocials.youtube,
+          website: newProject.projectSocials.website,
         },
         select: { id: true },
       }),

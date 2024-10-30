@@ -161,6 +161,10 @@ const projectRouter = Router()
  *                     type: string
  *                     description: YouTube channel or video URL.
  *                     example: "https://youtube.com/channel/project_channel"
+ *                   website:
+ *                     type: string
+ *                     description: Website link.
+ *                     example: "https://website.com/profile/"
  *     responses:
  *       200:
  *         description: Successfully added a new project and returned the project ID.

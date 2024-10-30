@@ -13,6 +13,7 @@ import {
   isValidMediumLink,
   isValidTelegramLink,
   isValidTwitterLink,
+  isValidWebsiteUrl,
   isValidXLink,
   isValidYouTubeLink,
 } from '@/utils/socialsValidator'
@@ -211,16 +212,18 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload) => {
   if (!payload.projectSocials || typeof payload.projectSocials !== 'object') return false
 
   if (
-    payload.projectSocials.x &&
-    !isValidXLink(payload.projectSocials.x) &&
-    !isValidTwitterLink(payload.projectSocials.x)
+    !payload.projectSocials.x ||
+    (!isValidXLink(payload.projectSocials.x) && !isValidTwitterLink(payload.projectSocials.x))
   )
     return false
+  if (!payload.projectSocials.telegram || !isValidTelegramLink(payload.projectSocials.telegram))
+    return false
+  if (!payload.projectSocials.website || !isValidWebsiteUrl(payload.projectSocials.website))
+    return false
+
   if (payload.projectSocials.instagram && !isValidInstagramLink(payload.projectSocials.instagram))
     return false
   if (payload.projectSocials.discord && !isValidDiscordLink(payload.projectSocials.discord))
-    return false
-  if (payload.projectSocials.telegram && !isValidTelegramLink(payload.projectSocials.telegram))
     return false
   if (payload.projectSocials.medium && !isValidMediumLink(payload.projectSocials.medium))
     return false
