@@ -397,23 +397,26 @@ projectRouter.get('/getAll', getAllProjects)
  *                 data:
  *                   type: object
  *                   properties:
- *                     info:
+ *                     project:
  *                       type: object
  *                       properties:
  *                         name:
  *                           type: string
- *                           example: "Project Name"
+ *                           example: "Bitcoin"
  *                         description:
  *                           type: string
- *                           example: "Project Description"
+ *                           example: "Bitcoin is a leading cryptocurrency with significant market potential."
  *                         round:
  *                           type: string
- *                           example: "Seed"
+ *                           example: "PRE_SEED"
  *                         categories:
  *                           type: array
  *                           items:
  *                             type: string
  *                           example: ["Tech", "DEFI", "Crypto"]
+ *                         tokensReceived:
+ *                           type: string
+ *                           example: "0/0"
  *                     tokenMetrics:
  *                       type: array
  *                       items:
@@ -499,10 +502,10 @@ projectRouter.get('/getAll', getAllProjects)
  *                         properties:
  *                           name:
  *                             type: string
- *                             example: "Investor Name"
+ *                             example: "Venture Capital Inc."
  *                           logoBase64:
  *                             type: string
- *                             example: "data:image/png;base64,..."
+ *                             example: "b21hZSB3YSBtb3Ugc2hpbmRlaXJ1"
  *       400:
  *         description: Invalid project ID.
  *         content:

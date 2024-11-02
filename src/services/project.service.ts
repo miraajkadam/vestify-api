@@ -207,6 +207,7 @@ export default class ProjectService {
           select: {
             name: true,
             imgBase64: true,
+            title: true,
           },
         },
         projectPartnersAndInvestors: {
