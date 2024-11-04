@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node src/server.ts",
-    "build": "npx prisma generate && tsc",
+    "build": "tsc",
     "dev": "npx nodemon src/server.ts",
     "dev:debug": "npx nodemon --inspect src/server.ts",
     "prisma:generate": "npx prisma generate",
