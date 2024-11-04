@@ -7,6 +7,7 @@ import swaggerUi from 'swagger-ui-express'
 
 import { authRouter, projectRouter, userRouter, vcRouter } from '@/routes'
 import passport from '@/utils/passport'
+import { PORT } from './utils/env'
 
 const app = express()
 app.use(
@@ -47,7 +48,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: `http://localhost:${process.env.PORT || 3000}`,
+        url: `http://localhost:${PORT}`,
       },
     ],
   },
@@ -77,8 +78,6 @@ app.use('/api/user', userRouter)
 app.get('/health', (req, res) => {
   res.status(200).send('server is running')
 })
-
-const PORT = process.env.PORT ?? 3000
 
 app.listen(PORT, () => {
   console.log(`server is listing on port ${PORT}`)
