@@ -1,3 +1,4 @@
+require('module-alias/register')
 import { apiReference } from '@scalar/express-api-reference'
 import cors from 'cors'
 import express from 'express'
