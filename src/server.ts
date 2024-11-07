@@ -8,7 +8,9 @@ import swaggerUi from 'swagger-ui-express'
 
 import { authRouter, projectRouter, userRouter, vcRouter } from '@/routes'
 import passport from '@/utils/passport'
-import { PORT } from './utils/env'
+import { NODE_ENV, PORT } from './utils/env'
+
+console.log('Started 1')
 
 const app = express()
 app.use(
@@ -19,6 +21,8 @@ app.use(
   })
 )
 const JWT_SECRET = process.env.JWT_SECRET as string
+
+console.log('Started 2')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -76,6 +80,8 @@ app.use('/api/project', projectRouter)
 app.use('/api/vc', vcRouter)
 app.use('/api/user', userRouter)
 
+console.log('Started 3')
+
 app.get('/health', (req, res) => {
   res.status(200).send('server is running')
 })
@@ -84,3 +90,7 @@ app.listen(PORT, () => {
   console.log(`server is listing on port ${PORT}`)
   console.log(`API Documentation available at http://localhost:${PORT}/api-docs`)
 })
+
+console.log('Started 4')
+console.log('PORT = ' + PORT)
+console.log('NODE ENV = ' + NODE_ENV)
