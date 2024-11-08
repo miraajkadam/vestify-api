@@ -14,7 +14,7 @@ const app = express()
 app.use(
   cors({
     /** here you will add the url at which your front end is running  */
-    origin: 'http://localhost:3001',
+    origin: '*',
     credentials: true,
   })
 )
