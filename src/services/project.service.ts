@@ -1,7 +1,8 @@
-import { PrismaClient, ProjectRound } from '@prisma/client'
+import { ProjectRound } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 import { v4 as uuid } from 'uuid'
 
+import prisma from '@/db'
 import type { AddProjectApiPayload } from '@/types/Project'
 
 /**
@@ -10,18 +11,6 @@ import type { AddProjectApiPayload } from '@/types/Project'
  * @class
  */
 export default class ProjectService {
-  private readonly prisma: PrismaClient
-
-  /**
-   * Constructs a new ProjectService instance.
-   * Initializes a PrismaClient instance for database interactions.
-   *
-   * @constructor
-   */
-  constructor() {
-    this.prisma = new PrismaClient()
-  }
-
   /**
    * Adds a new project to the database.
    *
@@ -33,7 +22,7 @@ export default class ProjectService {
     const uniqueId = uuid()
 
     await Promise.all([
-      this.prisma.projectDeals.create({
+      prisma.projectDeals.create({
         data: {
           id: uniqueId,
           endDate: newProject.deals.endDate,
@@ -45,7 +34,7 @@ export default class ProjectService {
         },
         select: { id: true },
       }),
-      this.prisma.projectSocials.create({
+      prisma.projectSocials.create({
         data: {
           id: uniqueId,
           x: newProject.projectSocials.x,
@@ -59,7 +48,7 @@ export default class ProjectService {
       }),
     ])
 
-    await this.prisma.projects.create({
+    await prisma.projects.create({
       data: {
         id: uniqueId,
         name: newProject.info.name,
@@ -96,7 +85,7 @@ export default class ProjectService {
    * @returns {Promise<{id: string}>} - A promise that resolves to an object containing the ID of the deleted project.
    */
   deleteProjectFromDb = async (projectId: string): Promise<{ id: string }> =>
-    await this.prisma.projects.delete({
+    await prisma.projects.delete({
       where: {
         id: projectId,
       },
@@ -134,7 +123,7 @@ export default class ProjectService {
     }))
 
   private readonly getAllProjectsFromDb = async () =>
-    await this.prisma.projects.findMany({
+    await prisma.projects.findMany({
       select: {
         name: true,
         description: true,
@@ -155,7 +144,7 @@ export default class ProjectService {
    * @returns {Promise<boolean>} - A promise that resolves to `true` if the project exists, otherwise `false`.
    */
   checkProjectExistenceInDb = async (id: string): Promise<boolean> => {
-    const entity = await this.prisma.projects.findUnique({
+    const entity = await prisma.projects.findUnique({
       where: { id },
     })
 
@@ -179,7 +168,7 @@ export default class ProjectService {
    *                 from the database.
    */
   getProjectByIdFromDb = async (id: string) => {
-    const project = await this.prisma.projects.findUnique({
+    const project = await prisma.projects.findUnique({
       where: { id },
       select: {
         name: true,
@@ -265,7 +254,7 @@ export default class ProjectService {
    * @throws {Error} Throws an error if there is an issue retrieving the total investment amount from the database.
    */
   private readonly getTotInvestedAmtInProj = async (projectId: string) =>
-    await this.prisma.usersInvestedProjects.aggregate({
+    await prisma.usersInvestedProjects.aggregate({
       _sum: {
         amount: true,
       },
@@ -307,7 +296,7 @@ export default class ProjectService {
       poolFee: Decimal
     }
   }> =>
-    await this.prisma.projects.findUniqueOrThrow({
+    await prisma.projects.findUniqueOrThrow({
       where: {
         id: projectId,
       },
