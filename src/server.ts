@@ -8,13 +8,13 @@ import swaggerUi from 'swagger-ui-express'
 
 import { authRouter, projectRouter, userRouter, vcRouter } from '@/routes'
 import passport from '@/utils/passport'
-import { PORT } from './utils/env'
+import { ACCESS_CONTROL_ALLOW_ORIGINS, PORT } from './utils/env'
 
 const app = express()
 app.use(
   cors({
     /** here you will add the url at which your front end is running  */
-    origin: '*',
+    origin: ACCESS_CONTROL_ALLOW_ORIGINS,
     credentials: true,
   })
 )
