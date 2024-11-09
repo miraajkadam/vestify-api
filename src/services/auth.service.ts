@@ -1,19 +1,15 @@
-import { AccountType, PrismaClient } from '@prisma/client'
+import { AccountType } from '@prisma/client'
+
+import prisma from '@/db'
 
 export default class AuthService {
-  private readonly prisma: PrismaClient
-
-  constructor() {
-    this.prisma = new PrismaClient()
-  }
-
   createNewAccountInDb = async (
     username: string,
     email: string,
     password: string,
     accountType: AccountType
   ) => {
-    const { id } = await this.prisma.accounts.create({
+    const { id } = await prisma.accounts.create({
       data: { username, email, password, accountType },
       select: {
         id: true,
@@ -47,7 +43,7 @@ export default class AuthService {
           }
         : { user: { create: {} } }
 
-    await this.prisma.accounts.update({
+    await prisma.accounts.update({
       where: { id },
       data: relatedData,
     })
@@ -56,7 +52,7 @@ export default class AuthService {
   }
 
   getEncPassIdByEmlFrmDb = async (email: string) => {
-    const user = await this.prisma.accounts.findFirst({
+    const user = await prisma.accounts.findFirst({
       where: {
         email,
       },
@@ -70,7 +66,7 @@ export default class AuthService {
   }
 
   getUserById = async (id: string) => {
-    const user = await this.prisma.accounts.findUnique({
+    const user = await prisma.accounts.findUnique({
       where: {
         id,
       },

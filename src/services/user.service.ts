@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client'
-
 import { Decimal } from '@prisma/client/runtime/library'
+
+import prisma from '@/db'
 
 /**
  * Service class for managing users in the database.
@@ -9,18 +9,6 @@ import { Decimal } from '@prisma/client/runtime/library'
  * @class UserService
  */
 export default class UserService {
-  private readonly prisma: PrismaClient
-
-  /**
-   * Constructs a new UserService instance.
-   * Initializes a PrismaClient instance for database interactions.
-   *
-   * @constructor
-   */
-  constructor() {
-    this.prisma = new PrismaClient()
-  }
-
   /**
    * Records a user's capital investment in a venture capital fund.
    *
@@ -30,7 +18,7 @@ export default class UserService {
    * @returns {Promise<{  vcId: string; userId: string; joinedAt: Date; }>} A promise that resolves when the investment is recorded.
    */
   addUserCapitalInvestmentInDb = async (userId: string, vcId: string) =>
-    await this.prisma.usersJoinedCapitals.create({
+    await prisma.usersJoinedCapitals.create({
       data: {
         userId,
         vcId,
@@ -47,7 +35,7 @@ export default class UserService {
    * @returns {Promise<boolean>} - Returns true if the user has joined the VC, otherwise false.
    */
   checkIfUserJoinedVCAlready = async (userId: string, vcId: string) => {
-    const entity = await this.prisma.usersJoinedCapitals.findFirst({
+    const entity = await prisma.usersJoinedCapitals.findFirst({
       where: {
         userId,
         vcId,
@@ -70,7 +58,7 @@ export default class UserService {
    * @throws Will throw an error if the user is not found.
    */
   getUserJoinedCapitalsFromDb = async (userId: string) => {
-    const usersCapitalsList = await this.prisma.users.findUniqueOrThrow({
+    const usersCapitalsList = await prisma.users.findUniqueOrThrow({
       where: {
         id: userId,
       },
@@ -125,7 +113,7 @@ export default class UserService {
     toWalletKey: string,
     transactionId: string
   ) =>
-    await this.prisma.usersInvestedProjects.create({
+    await prisma.usersInvestedProjects.create({
       data: {
         userId,
         projectId,
