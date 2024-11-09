@@ -1,6 +1,7 @@
-import { PrismaClient, ProjectRound, VCSocial } from '@prisma/client'
+import { ProjectRound, VCSocial } from '@prisma/client'
 import type { Decimal } from '@prisma/client/runtime/library'
 
+import prisma from '@/db'
 import { VCProjectsResponse } from '@/types/VC.d'
 
 /**
@@ -9,17 +10,6 @@ import { VCProjectsResponse } from '@/types/VC.d'
  * @class
  */
 export default class VCService {
-  private readonly prisma: PrismaClient
-
-  /**
-   * Creates an instance of VCService and initializes PrismaClient.
-   *
-   * @constructor
-   */
-  constructor() {
-    this.prisma = new PrismaClient()
-  }
-
   /**
    * Creates a new venture capitalist record in the database.
    *
@@ -50,7 +40,7 @@ export default class VCService {
     kycDone: boolean,
     socials: Omit<VCSocial, 'id' | 'vcId'>
   ) => {
-    await this.prisma.vC.update({
+    await prisma.vC.update({
       where: {
         id: accountId,
       },
@@ -100,7 +90,7 @@ export default class VCService {
    * @throws {Error} Throws an error if the database query fails.
    */
   getVCDetailsFromDB = async (id: string) => {
-    const vcDetails = await this.prisma.vC.findUnique({
+    const vcDetails = await prisma.vC.findUnique({
       where: { id },
       select: {
         id: true,
@@ -147,7 +137,7 @@ export default class VCService {
    * @throws {Error} Throws an error if the database query fails.
    */
   getVCProjectsByIdFromDB = async (id: string): Promise<VCProjectsResponse | undefined> => {
-    const vcProjects = await this.prisma.vC.findUnique({
+    const vcProjects = await prisma.vC.findUnique({
       where: { id },
       select: {
         id: true,
@@ -196,7 +186,7 @@ export default class VCService {
    * @throws {Error} Throws an error if the database query fails.
    */
   checkVCExistByIdInDb = async (id: string): Promise<boolean> => {
-    const entity = await this.prisma.vC.findUnique({
+    const entity = await prisma.vC.findUnique({
       where: { id },
     })
 
@@ -230,7 +220,7 @@ export default class VCService {
       }>
     | undefined
   > => {
-    const vcs = await this.prisma.vC.findMany({
+    const vcs = await prisma.vC.findMany({
       select: {
         name: true,
         description: true,
