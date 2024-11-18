@@ -209,4 +209,15 @@ enum Interval {
   ANUALLY   @map("ANUALLY")
 }
 
+enum Release {
+  LINEAR    @map("LINEAR")
+  QUARTERLY @map("QUARTERLY")
+  YEARLY    @map("YEARLY")
+}
+
+enum Chain {
+  EVM    @map("EVM")
+  SOLANA @map("SOLANA")
+}
+
 // endregion
