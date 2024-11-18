@@ -206,7 +206,7 @@ enum ProjectRound {
 enum Interval {
   MONTHLY   @map("MONTHLY")
   QUARTERLY @map("QUARTERLY")
-  ANUALLY   @map("ANUALLY")
+  ANNUALLY  @map("ANNUALLY")
 }
 
 enum Release {
