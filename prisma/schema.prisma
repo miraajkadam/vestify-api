@@ -46,7 +46,8 @@ model UsersJoinedCapitals {
   user   Users  @relation(fields: [userId], references: [id], onDelete: NoAction)
   userId String @map("UserId")
 
-  joinedAt DateTime @default(now()) @map("joined_at")
+  joinedAt  DateTime @map("joined_at")
+  renewedAt DateTime @default(now()) @map("renewed_at")
 
   @@id([userId, vcId])
 }
@@ -76,13 +77,14 @@ model UsersInvestedProjects {
 // region VC
 
 model VC {
-  id              String   @id @unique @map("Id")
-  name            String   @map("Name")
-  description     String   @map("Description")
-  logoBase64      String   @map("LogoBase64")
-  subscriptionFee Decimal  @map("SubscriptionFee")
-  tags            String[] @map("Tags")
-  kycDone         Boolean  @map("KYCDone")
+  id                          String   @id @unique @map("Id")
+  name                        String   @map("Name")
+  description                 String   @map("Description")
+  logoBase64                  String   @map("LogoBase64")
+  subscriptionFee             Decimal  @map("SubscriptionFee")
+  subscriptionRenewalInterval Interval @map("SubscriptionRenewalInterval")
+  tags                        String[] @map("Tags")
+  kycDone                     Boolean  @map("KYCDone")
 
   account     Accounts              @relation(fields: [id], references: [id], onDelete: Cascade)
   projects    Projects[]
@@ -199,6 +201,12 @@ enum ProjectRound {
   PRIVATE_2 @map("PRIVATE 2")
   PRIVATE_3 @map("PRIVATE 3")
   PUBLIC    @map("PUBLIC")
+}
+
+enum Interval {
+  MONTHLY   @map("MONTHLY")
+  QUARTERLY @map("QUARTERLY")
+  ANUALLY   @map("ANUALLY")
 }
 
 // endregion
