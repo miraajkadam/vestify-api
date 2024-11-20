@@ -2,6 +2,7 @@ import { type Request, type Response } from 'express'
 
 import {
   formatResponse,
+  preChkFrUsrProjInv,
   SampleUserProfileResponse,
   validateProjectInvestmentPayload,
 } from '@/helpers/user.helper'
@@ -68,6 +69,14 @@ export const investInProject = async (
     )
 
     if (!isValidPayload) return apiResponse.error('Invalid payload')
+
+    const preChecks = await preChkFrUsrProjInv(userId, projectId)
+
+    if (preChecks.error) {
+      const { httpMessage, httpStatusCode } = preChecks
+
+      return apiResponse.error(httpMessage, httpStatusCode)
+    }
 
     const userService = new UserService()
 

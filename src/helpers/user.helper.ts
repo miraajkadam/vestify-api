@@ -1,5 +1,7 @@
 import { Decimal } from '@prisma/client/runtime/library'
 
+import { ProjectService, UserService } from '@/services'
+import { PreChecks } from '@/types'
 import { isValidGuid } from '@/utils/common'
 
 /**
@@ -192,4 +194,69 @@ export const SampleUserProfileResponse = {
       },
     },
   ],
+}
+
+/**
+ * Performs pre-checks for a user before allowing investment in a project.
+ * This function validates if the user exists, if the project exists,
+ * and if the user has joined the venture capital associated with the project.
+ *
+ * @param {string} userId - The ID of the user attempting to invest.
+ * @param {string} projectId - The ID of the project in which the user wants to invest.
+ *
+ * @returns {Promise<PreChecks>} A promise that resolves to an object containing:
+ *   - {boolean} error - Indicates if there was an error during the checks.
+ *   - {string} httpMessage - A message describing the result of the checks.
+ *   - {number} httpStatusCode - The HTTP status code corresponding to the result.
+ *   If no errors occurred, the error property will be false.
+ */
+export const preChkFrUsrProjInv = async (userId: string, projectId: string): Promise<PreChecks> => {
+  const userService = new UserService()
+  const projectService = new ProjectService()
+
+  // check if user exists
+  const isUserExists = await userService.checkIfUserExists(userId)
+
+  if (!isUserExists)
+    return {
+      error: true,
+      httpMessage: "User does't exist",
+      httpStatusCode: 400,
+    }
+
+  // check if project exists
+  const isProjectExists = await projectService.checkProjectExistenceInDb(projectId)
+
+  if (!isProjectExists)
+    return {
+      error: true,
+      httpMessage: "Project does't exist",
+      httpStatusCode: 400,
+    }
+
+  // check if user has joined the vc of the given project
+  const vcId = await projectService.getVCIdViaProjId(projectId)
+
+  if (!vcId) {
+    return {
+      error: true,
+      httpMessage: 'Unable to get the VC associated with the project',
+      httpStatusCode: 400,
+    }
+  }
+
+  // Check if user has joined the VC associated of the project
+  const usrJoinedVC = await userService.checkIfUserJoinedVCAlready(userId, vcId)
+
+  if (!usrJoinedVC) {
+    return {
+      error: true,
+      httpMessage: 'You have not joined the project VC yet',
+      httpStatusCode: 400,
+    }
+  }
+
+  return {
+    error: false,
+  }
 }
