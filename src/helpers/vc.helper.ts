@@ -1,4 +1,4 @@
-import { VCSocial } from '@prisma/client'
+import { Interval, VCSocial } from '@prisma/client'
 import type { Decimal } from '@prisma/client/runtime/library'
 
 import { VCProfileResponse } from '@/types/VC'
@@ -56,6 +56,7 @@ export const isAddNewVCPayloadValid = (
   description: string,
   logoBase64: string,
   subscriptionFee: Decimal,
+  payloadSubscriptionRenewalInterval: Interval,
   tags: string[],
   kycDone: boolean,
   socials: Omit<VCSocial, 'id' | 'vcId'>
@@ -72,6 +73,9 @@ export const isAddNewVCPayloadValid = (
 
   // Check if subscriptionFee is a non-negative number
   if (typeof subscriptionFee !== 'number' || subscriptionFee < 0) return false
+
+  // Check if subscriptionRenewalInterval is one of the allowed values: 'MONTHLY', 'QUARTERLY', 'ANNUALLY'
+  if (!subscriptionRenewalIntervals.includes(payloadSubscriptionRenewalInterval)) return false
 
   // Check if tags is an array of non-empty strings
   if (!Array.isArray(tags) || !tags.every(tag => typeof tag === 'string' && tag.trim().length > 0))
@@ -137,3 +141,5 @@ interface Socials {
   medium?: string | null
   youtube?: string | null
 }
+
+export const subscriptionRenewalIntervals = ['MONTHLY', 'QUARTERLY', 'ANNUALLY'] as const
