@@ -39,6 +39,13 @@ const vcRouter = Router()
  *                 type: number
  *                 format: float
  *                 example: 5000.00
+ *               subscriptionRenewalInterval:
+ *                 type: string
+ *                 enum:
+ *                   - "MONTHLY"
+ *                   - "QUARTERLY"
+ *                   - "ANNUALLY"
+ *                 example: "MONTHLY"
  *               tags:
  *                 type: array
  *                 items:
@@ -74,6 +81,7 @@ const vcRouter = Router()
  *               - description
  *               - logoBase64
  *               - subscriptionFee
+ *               - subscriptionRenewalInterval
  *               - tags
  *               - kycDone
  *     responses:

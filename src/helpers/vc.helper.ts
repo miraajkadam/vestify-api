@@ -38,6 +38,7 @@ import {
  *   "This is a sample VC",
  *   "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
  *   99.99,
+ *   "MONTHLY",
  *   ["tag1", "tag2"],
  *   true,
  *   {
