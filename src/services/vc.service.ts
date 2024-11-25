@@ -232,4 +232,32 @@ export default class VCService {
 
     return vcs
   }
+
+  /**
+   * Retrieves the subscription renewal frequency for a specific venture capital (VC) by its ID.
+   *
+   * This function fetches the `subscriptionRenewalInterval` value from the `vC` table in the database
+   * based on the provided VC ID. The `subscriptionRenewalInterval` indicates the frequency at which
+   * the VC's subscription is renewed (e.g., either of "MONTHLY"/"QUARTERLY"/"ANNUALLY"). If no VC with the
+   * given ID exists, an error is thrown.
+   *
+   * @async
+   * @function getRenewalFreq
+   * @param {string} vcId - The unique identifier of the venture capital.
+   * @returns {Promise<string>} The subscription renewal interval (e.g., "MONTHLY"/"QUARTERLY"/"ANNUALLY").
+   *
+   * @throws {Error} If the VC with the given ID is not found or if the database query fails.
+   */
+  getRenewalFreq = async (vcId: string): Promise<string> => {
+    const { subscriptionRenewalInterval } = await prisma.vC.findUniqueOrThrow({
+      where: {
+        id: vcId,
+      },
+      select: {
+        subscriptionRenewalInterval: true,
+      },
+    })
+
+    return subscriptionRenewalInterval
+  }
 }
