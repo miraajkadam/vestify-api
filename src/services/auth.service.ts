@@ -1,4 +1,4 @@
-import { AccountType } from '@prisma/client'
+import { AccountType, Interval } from '@prisma/client'
 
 import prisma from '@/db'
 
@@ -25,6 +25,7 @@ export default class AuthService {
                 description: '',
                 logoBase64: '',
                 subscriptionFee: -1,
+                subscriptionRenewalInterval: Interval.MONTHLY,
                 tags: [],
                 kycDone: false,
                 VCSocial: {

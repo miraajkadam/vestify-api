@@ -1,6 +1,9 @@
+import { Interval } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 
+import VCService from '@/services/vc.service'
 import { isValidGuid } from '@/utils/common'
+import { isOlderThanOneMonth, isOlderThanOneQuarter, isOlderThanOneYear } from '@/utils/date'
 
 /**
  * Formats the response from the database to a simplified structure for venture capitals.
@@ -192,4 +195,44 @@ export const SampleUserProfileResponse = {
       },
     },
   ],
+}
+
+/**
+ * Checks if the subscription of a VC (Venture Capital) has expired based on the renewal date and frequency.
+ *
+ * @param {string} vcId - The ID of the VC whose subscription needs to be checked.
+ * @param {Date} subRenewDate - The date when the VC's subscription was last renewed.
+ *
+ * @returns {Promise<boolean>} - A promise that resolves to a boolean indicating whether the subscription has expired (`true` if expired, `false` otherwise).
+ *
+ * @throws {Error} If the renewal frequency cannot be determined or there is an issue with the VC service.
+ */
+export const checkVCSubExpired = async (vcId: string, subRenewDate: Date) => {
+  const vcService = new VCService()
+
+  const renewalFreq = await vcService.getRenewalFreq(vcId)
+
+  let isSubExpired = false
+
+  switch (renewalFreq) {
+    case Interval.MONTHLY: {
+      isSubExpired = isOlderThanOneMonth(subRenewDate)
+
+      break
+    }
+
+    case Interval.QUARTERLY: {
+      isSubExpired = isOlderThanOneQuarter(subRenewDate)
+
+      break
+    }
+
+    case Interval.ANNUALLY: {
+      isSubExpired = isOlderThanOneYear(subRenewDate)
+
+      break
+    }
+  }
+
+  return isSubExpired
 }
