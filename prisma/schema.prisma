@@ -135,15 +135,15 @@ model Projects {
 }
 
 model ProjectRoundDetails {
-  id               String   @id @unique @map("Id")
-  acceptedTokens   String   @map("AcceptedTokens")
-  startDate        DateTime @map("StartDate")
-  endDate          DateTime @map("EndDate")
-  amountToBeRaised Decimal  @map("AmountToBeRaised")
-  maximum          Decimal  @map("Maximum")
-  minimum          Decimal  @map("Minimum")
-  tokenTicker      String   @map("TokenTicker")
-  poolFee          Decimal  @map("PoolFee")
+  id             String   @id @unique @map("Id")
+  acceptedTokens String   @map("AcceptedTokens")
+  startDate      DateTime @map("StartDate")
+  endDate        DateTime @map("EndDate")
+  raiseAmount    Decimal  @map("RaiseAmount")
+  maximum        Decimal  @map("Maximum")
+  minimum        Decimal  @map("Minimum")
+  tokenTicker    String   @map("TokenTicker")
+  poolFee        Decimal  @map("PoolFee")
 
   Projects Projects?
 }
@@ -151,8 +151,8 @@ model ProjectRoundDetails {
 model CurrentProjectTokenMetrics {
   id            String       @id @unique @map("Id")
   round         ProjectRound @map("Round")
-  fdv           String       @map("FDV")
-  price         String       @map("Price")
+  fdv           Decimal      @map("FDV")
+  price         Decimal      @map("Price")
   tgeUnlock     Decimal      @map("TgeUnlock")
   tge           DateTime     @map("TGE")
   lockupPeriod  Int          @map("lockupPeriod")
@@ -167,7 +167,7 @@ model PastProjectTokenMetrics {
   Project       Projects     @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId     String       @default(uuid()) @map("ProjectId")
   round         ProjectRound @map("Round")
-  price         String       @map("Price")
+  price         Decimal      @map("Price")
   lockupPeriod  Int          @map("lockupPeriod")
   releaseType   Release      @map("ReleaseType")
   releaseMonths Int          @map("ReleaseMonths")
@@ -198,7 +198,6 @@ model ProjectSocials {
   website  String  @map("Website")
   discord  String? @map("Discord")
   medium   String? @map("Medium")
-  youtube  String? @map("Youtube")
 
   Projects Projects?
 }
