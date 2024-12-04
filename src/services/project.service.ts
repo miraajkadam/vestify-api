@@ -22,15 +22,17 @@ export default class ProjectService {
     const uniqueId = uuid()
 
     await Promise.all([
-      prisma.projectDeals.create({
+      prisma.projectRoundDetails.create({
         data: {
           id: uniqueId,
-          endDate: newProject.deals.endDate,
-          startDate: newProject.deals.startDate,
-          maximum: newProject.deals.maximum,
-          minimum: newProject.deals.minimum,
-          acceptedTokens: newProject.deals.acceptedTokens,
-          poolFee: newProject.deals.poolFee,
+          endDate: newProject.roundDetails.endDate,
+          startDate: newProject.roundDetails.startDate,
+          maximum: newProject.roundDetails.maximum,
+          minimum: newProject.roundDetails.minimum,
+          acceptedTokens: newProject.roundDetails.acceptedTokens,
+          poolFee: newProject.roundDetails.poolFee,
+          raiseAmount: newProject.roundDetails.raiseAmount,
+          tokenTicker: newProject.roundDetails.tokenTicker,
         },
         select: { id: true },
       }),
@@ -41,10 +43,22 @@ export default class ProjectService {
           discord: newProject.projectSocials.discord,
           telegram: newProject.projectSocials.telegram,
           medium: newProject.projectSocials.medium,
-          youtube: newProject.projectSocials.youtube,
           website: newProject.projectSocials.website,
         },
         select: { id: true },
+      }),
+      prisma.currentProjectTokenMetrics.create({
+        data: {
+          id: uniqueId,
+          round: newProject.curProjTokenMetrics.round,
+          fdv: newProject.curProjTokenMetrics.fdv,
+          price: newProject.curProjTokenMetrics.price,
+          tgeUnlock: newProject.curProjTokenMetrics.tgeUnlock,
+          tge: newProject.curProjTokenMetrics.tge,
+          lockupPeriod: newProject.curProjTokenMetrics.lockupPeriod,
+          releaseType: newProject.curProjTokenMetrics.releaseType,
+          releaseMonths: newProject.curProjTokenMetrics.releaseMonths,
+        },
       }),
     ])
 
@@ -55,9 +69,9 @@ export default class ProjectService {
         categories: newProject.info.categories,
         description: newProject.info.description,
         vcId: newProject.info.vcId,
-        projectTokenMetrics: {
+        pastProjectTokenMetrics: {
           createMany: {
-            data: newProject.tokenMetrics,
+            data: newProject.pastProjTokenMetrics,
           },
         },
         projectTeamAndAdvisors: {
@@ -105,30 +119,18 @@ export default class ProjectService {
   > => {
     const allProjectsResp = await this.getAllProjectsFromDb()
 
-    return this.strAllProjectsResp(allProjectsResp)
-  }
-
-  private readonly strAllProjectsResp = (
-    projects: {
-      name: string
-      description: string
-      projectTokenMetrics: {
-        round: ProjectRound
-      }[]
-    }[]
-  ) =>
-    projects.map(({ projectTokenMetrics, ...rest }) => ({
-      ...rest,
-      round: projectTokenMetrics[0].round,
+    return allProjectsResp.map(item => ({
+      ...item,
+      round: item.currentProjectTokenMetrics.round,
     }))
+  }
 
   private readonly getAllProjectsFromDb = async () =>
     await prisma.projects.findMany({
       select: {
         name: true,
         description: true,
-        projectTokenMetrics: {
-          take: 1,
+        currentProjectTokenMetrics: {
           select: {
             round: true,
           },
@@ -174,13 +176,12 @@ export default class ProjectService {
         name: true,
         description: true,
         categories: true,
-        projectTokenMetrics: {
+        currentProjectTokenMetrics: {
           select: {
             tge: true,
             tgeUnlock: true,
             price: true,
             round: true,
-            tgeSummary: true,
             fdv: true,
           },
         },
@@ -234,7 +235,7 @@ export default class ProjectService {
     const response = {
       projDet: {
         ...projDet,
-        projectTokenMetrics: projDet.projectTokenMetrics[0],
+        projectTokenMetrics: projDet.currentProjectTokenMetrics,
       },
       totInvestedAmt: totInvestedAmt._sum.amount || 0,
     }
@@ -276,8 +277,8 @@ export default class ProjectService {
    * - name: The name of the project.
    * - round: The round in which the project is (e.g., Seed, Series A).
    * - categories: The categories of the project.
-   * - projectTokenMetrics: An object containing token metrics (e.g., price).
-   * - projectDeals: An object containing deal information (e.g., accepted tokens, maximum and minimum amounts).
+   * - currentProjectTokenMetrics: An object containing current project token metrics (e.g., price).
+   * - projectRoundDetails: An object containing round information (e.g., accepted tokens, maximum and minimum amounts).
    * @throws {Error} Throws an error if no project is found with the given ID.
    */
   private readonly getProjDet = async (
@@ -285,11 +286,11 @@ export default class ProjectService {
   ): Promise<{
     name: string
     categories: string[]
-    projectTokenMetrics: {
+    currentProjectTokenMetrics: {
       round: ProjectRound
-      price: string
-    }[]
-    projectDeals: {
+      price: Decimal
+    }
+    projectRoundDetails: {
       maximum: Decimal
       minimum: Decimal
       acceptedTokens: string
@@ -303,14 +304,13 @@ export default class ProjectService {
       select: {
         name: true,
         categories: true,
-        projectTokenMetrics: {
+        currentProjectTokenMetrics: {
           select: {
             price: true,
             round: true,
           },
-          take: 1,
         },
-        projectDeals: {
+        projectRoundDetails: {
           select: {
             acceptedTokens: true,
             maximum: true,

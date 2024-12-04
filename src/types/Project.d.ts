@@ -1,56 +1,74 @@
 import type {
+  CurrentProjectTokenMetrics,
+  PastProjectTokenMetrics,
   ProjectDeals,
   ProjectPartnersAndInvestors,
   ProjectRound,
+  ProjectRoundDetails,
   Projects,
   ProjectSocials,
   ProjectTeamAndAdvisors,
   ProjectTokenMetrics,
+  VC,
 } from '@prisma/client'
+import { Decimal } from '@prisma/client/runtime/library'
 
 // region AddProject
 
 type ProjectInfo = {
-  name: string
-  categories: string[]
-  description: string
-  vcId: string
+  name: Projects['name']
+  categories: Projects['categories']
+  description: Projects['description']
+  vcId: VC['id']
 }
 
-type TokenMetric = {
-  fdv: string
-  price: string
-  tgeUnlock: ProjectTokenMetrics['tgeUnlock']
-  tge: string // ISO 8601 date string
-  round: ProjectRound
-  tgeSummary: string
+type CurProjTokenMetrics = {
+  round: CurrentProjectTokenMetrics['round']
+  fdv: CurrentProjectTokenMetrics['fdv']
+  price: CurrentProjectTokenMetrics['price']
+  tgeUnlock: CurrentProjectTokenMetrics['tgeUnlock']
+  tge: CurrentProjectTokenMetrics['tge']
+  lockupPeriod: CurrentProjectTokenMetrics['lockupPeriod']
+  releaseType: CurrentProjectTokenMetrics['releaseType']
+  releaseMonths: CurrentProjectTokenMetrics['releaseMonths']
 }
 
-type Deals = {
-  maximum: number
-  minimum: number
-  acceptedTokens: string
-  poolFee: number
-  startDate: string // ISO 8601 date string
-  endDate: string // ISO 8601 date string
+type PstProjectTokenMetrics = {
+  round: PastProjectTokenMetrics['round']
+  price: PastProjectTokenMetrics['price']
+  lockupPeriod: PastProjectTokenMetrics['lockupPeriod']
+  releaseType: PastProjectTokenMetrics['releaseType']
+  releaseMonths: PastProjectTokenMetrics['releaseMonths']
+}
+
+type RoundDetails = {
+  maximum: ProjectRoundDetails['maximum']
+  minimum: ProjectRoundDetails['minimum']
+  acceptedTokens: ProjectRoundDetails['acceptedTokens']
+  poolFee: ProjectRoundDetails['poolFee']
+  startDate: ProjectRoundDetails['startDate']
+  endDate: ProjectRoundDetails['endDate']
+  raiseAmount: ProjectDetailsResponse['raiseAmount']
+  tokenTicker: ProjectDetailsResponse['tokenTicker']
 }
 
 type TeamAndAdvisor = {
-  description: string
-  name: string
-  title: string
-  imgBase64: string
+  description: ProjectTeamAndAdvisors['description']
+  name: ProjectTeamAndAdvisors['name']
+  title: ProjectTeamAndAdvisors['title']
+  imgBase64: ProjectTeamAndAdvisors['imgBase64']
 }
 
 type PartnerAndInvestor = {
-  logoBase64: string
-  name: string
+  logoBase64: ProjectPartnersAndInvestors['logoBase64']
+  name: ProjectPartnersAndInvestors['name']
 }
 
 export type AddProjectApiPayload = {
   info: ProjectInfo
-  tokenMetrics: TokenMetric[]
-  deals: Deals
+  roundDetails: RoundDetails
+  pastProjTokenMetrics: PastProjectTokenMetrics[]
+  curProjTokenMetrics: CurrentProjectTokenMetrics
   teamAndAdvisors: TeamAndAdvisor[]
   partnersAndInvestors: PartnerAndInvestor[]
   projectSocials: ProjectSocials
@@ -94,18 +112,16 @@ export type ProjectProfileResponse = {
 }
 
 export type ProjectProfileDbResponse = {
-  name: string
-  description: string
-  categories: string[]
-  projectTokenMetrics: {
+  name: Projects['name']
+  description: Projects['description']
+  categories: Projects['categories']
+  currentProjectTokenMetrics: {
     tge: Date
     tgeUnlock: ProjectTokenMetrics['tgeUnlock']
-    price: string
+    price: Decimal
     round: ProjectRound
-    tgeSummary: string
-    fdv: string
-  }[]
-
+    fdv: Decimal
+  }
   projectSocials: {
     website: string
     medium: string | null

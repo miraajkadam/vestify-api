@@ -6,7 +6,7 @@ import {
   ProjectDetailsResponse,
   ProjectProfileDbResponse,
 } from '@/types/Project'
-import { isValidDate, isValidGuid } from '@/utils/common'
+import { isValidDateObj, isValidGuid } from '@/utils/common'
 import {
   isValidDiscordLink,
   isValidMediumLink,
@@ -14,7 +14,6 @@ import {
   isValidTwitterLink,
   isValidWebsiteUrl,
   isValidXLink,
-  isValidYouTubeLink,
 } from '@/utils/socialsValidator'
 
 /**
@@ -28,11 +27,11 @@ export const strProjForResponse = (projectProfile: ProjectProfileDbResponse) => 
   project: {
     name: projectProfile.name,
     description: projectProfile.description,
-    round: projectProfile.projectTokenMetrics[0].round,
+    round: projectProfile.currentProjectTokenMetrics.round,
     categories: projectProfile.categories,
     tokensReceived: '0/0',
   },
-  tokenMetrics: projectProfile.projectTokenMetrics,
+  tokenMetrics: projectProfile.currentProjectTokenMetrics,
   socialLink: {
     medium: projectProfile?.projectSocials?.medium,
     website: projectProfile?.projectSocials?.website,
@@ -86,11 +85,11 @@ export const strRespFrInvestmentStats = (prjStats: {
   projDet: {
     projectTokenMetrics: {
       round: ProjectRound
-      price: string
+      price: Decimal
     }
     name: string
     categories: string[]
-    projectDeals: {
+    projectRoundDetails: {
       maximum: Decimal
       minimum: Decimal
       acceptedTokens: string
@@ -113,68 +112,135 @@ export const strRespFrInvestmentStats = (prjStats: {
     price: prjStats.projDet.projectTokenMetrics.price,
   },
   invest: {
-    maximumAmount: prjStats.projDet.projectDeals.maximum,
-    minimumAmount: prjStats.projDet.projectDeals.minimum,
-    poolFee: prjStats.projDet.projectDeals.poolFee,
-    acceptedTokens: prjStats.projDet.projectDeals.acceptedTokens,
+    maximumAmount: prjStats.projDet.projectRoundDetails.maximum,
+    minimumAmount: prjStats.projDet.projectRoundDetails.minimum,
+    poolFee: prjStats.projDet.projectRoundDetails.poolFee,
+    acceptedTokens: prjStats.projDet.projectRoundDetails.acceptedTokens,
   },
 })
 
-export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload) => {
+/**
+ * Validates the structure and data types of the provided `AddProjectApiPayload` object.
+ *
+ * This function checks that all required fields in the `payload` object conform to expected types,
+ * that nested objects and arrays contain valid values, and that the project-specific values are valid
+ * (e.g., checking if the dates are in the correct format, ensuring that fields like `fdv`, `price`, etc. are numbers, etc.).
+ * If any of the fields are invalid, the function returns `false`. If all checks pass, it returns `true`.
+ *
+ * @param {AddProjectApiPayload} payload - The payload object to be validated. This object should conform to the structure defined in the `AddProjectApiPayload` type.
+ *
+ * @returns {boolean} `true` if the `payload` is valid, `false` otherwise.
+ *
+ * @throws {Error} Throws an error if the payload object does not conform to the expected structure or contains invalid data.
+ *
+ * @example
+ * const validPayload = {
+ *   info: {
+ *     name: 'New Project',
+ *     categories: ['Tech', 'Blockchain'],
+ *     description: 'A great project.',
+ *     vcId: 'some-vc-id'
+ *   },
+ *   roundDetails: {
+ *     maximum: 1000000,
+ *     minimum: 50000,
+ *     acceptedTokens: 'ETH',
+ *     poolFee: 1.5,
+ *     startDate: '2024-12-01',
+ *     endDate: '2024-12-31',
+ *     raiseAmount: 500000,
+ *     tokenTicker: 'NP'
+ *   },
+ *   pastProjTokenMetrics: [...],
+ *   curProjTokenMetrics: { ... },
+ *   teamAndAdvisors: [...],
+ *   partnersAndInvestors: [...],
+ *   projectSocials: { ... }
+ * };
+ *
+ * console.log(isAddNewProjectPayloadValid(validPayload));  // true
+ *
+ * const invalidPayload = { ... }; // An invalid payload with incorrect data
+ * console.log(isAddNewProjectPayloadValid(invalidPayload));  // false
+ */
+export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload): boolean => {
   // Check 'info' object
   if (!payload.info || typeof payload.info !== 'object') return false
 
   const { name, categories, description, vcId } = payload.info
 
+  // Validate info object fields
   if (
     typeof name !== 'string' ||
     !Array.isArray(categories) ||
     categories.length === 0 ||
+    !categories.every(cat => typeof cat === 'string') || // Ensure all categories are strings
     typeof description !== 'string' ||
     !isValidGuid(vcId)
   )
     return false
 
-  // Validate categories
-  if (!categories.every(cat => typeof cat === 'string')) return false
+  // Validate 'roundDetails' object
+  if (!payload.roundDetails || typeof payload.roundDetails !== 'object') return false
 
-  // Check 'tokenMetrics' array
-  if (!Array.isArray(payload.tokenMetrics) || !payload.tokenMetrics.length) return false
-
-  for (const tokenMetric of payload.tokenMetrics) {
-    if (typeof tokenMetric !== 'object' || !tokenMetric) return false
-
-    const { fdv, price, tgeUnlock, tge, round, tgeSummary } = tokenMetric
-
-    if (
-      typeof fdv !== 'string' ||
-      typeof price !== 'string' ||
-      typeof tgeUnlock !== 'number' ||
-      tgeUnlock < 0 ||
-      tgeUnlock > 100 ||
-      !isValidDate(tge) ||
-      typeof round !== 'string' ||
-      typeof tgeSummary !== 'string'
-    )
-      return false
-  }
-
-  // Check 'deals' object
-  if (!payload.deals || typeof payload.deals !== 'object') return false
-
-  const { maximum, minimum, acceptedTokens, poolFee, startDate, endDate } = payload.deals
+  const {
+    maximum,
+    minimum,
+    acceptedTokens,
+    poolFee,
+    startDate,
+    endDate,
+    raiseAmount,
+    tokenTicker,
+  } = payload.roundDetails
 
   if (
     typeof maximum !== 'number' ||
     typeof minimum !== 'number' ||
     typeof acceptedTokens !== 'string' ||
     typeof poolFee !== 'number' ||
-    !isValidDate(startDate) ||
-    !isValidDate(endDate)
+    !isValidDateObj(startDate) ||
+    !isValidDateObj(endDate) ||
+    typeof raiseAmount !== 'number' || // raiseAmount should be a number
+    typeof tokenTicker !== 'string' // tokenTicker should be a string
   )
     return false
 
-  // Check 'teamAndAdvisors' array
+  // Validate 'pastProjTokenMetrics' array
+  if (!Array.isArray(payload.pastProjTokenMetrics)) return false
+
+  for (const tokenMetric of payload.pastProjTokenMetrics) {
+    if (typeof tokenMetric !== 'object' || !tokenMetric) return false
+
+    const { round, price, lockupPeriod, releaseType, releaseMonths } = tokenMetric
+
+    if (
+      typeof round !== 'string' ||
+      typeof price !== 'number' ||
+      typeof lockupPeriod !== 'number' ||
+      typeof releaseType !== 'string' ||
+      typeof releaseMonths !== 'number'
+    )
+      return false
+  }
+
+  // Validate 'curProjTokenMetrics' object
+  if (!payload.curProjTokenMetrics || typeof payload.curProjTokenMetrics !== 'object') return false
+
+  const { fdv, price, tgeUnlock, tge, round } = payload.curProjTokenMetrics
+
+  if (
+    typeof fdv !== 'number' ||
+    typeof price !== 'number' ||
+    typeof tgeUnlock !== 'number' ||
+    tgeUnlock < 0 ||
+    tgeUnlock > 100 ||
+    !isValidDateObj(tge) ||
+    typeof round !== 'string'
+  )
+    return false
+
+  // Validate 'teamAndAdvisors' array
   if (!Array.isArray(payload.teamAndAdvisors)) return false
 
   for (const member of payload.teamAndAdvisors) {
@@ -191,7 +257,7 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload) => {
       return false
   }
 
-  // Check 'partnersAndInvestors' array
+  // Validate 'partnersAndInvestors' array
   if (!Array.isArray(payload.partnersAndInvestors)) return false
 
   for (const partner of payload.partnersAndInvestors) {
@@ -202,24 +268,21 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload) => {
     if (typeof logoBase64 !== 'string' || typeof name !== 'string') return false
   }
 
-  // Check 'projectSocials' object
+  // Validate 'projectSocials' object
   if (!payload.projectSocials || typeof payload.projectSocials !== 'object') return false
 
-  if (
-    !payload.projectSocials.x ||
-    (!isValidXLink(payload.projectSocials.x) && !isValidTwitterLink(payload.projectSocials.x))
-  )
-    return false
-  if (!payload.projectSocials.telegram || !isValidTelegramLink(payload.projectSocials.telegram))
-    return false
-  if (!payload.projectSocials.website || !isValidWebsiteUrl(payload.projectSocials.website))
-    return false
+  const { x, telegram, website, discord, medium } = payload.projectSocials
 
-  if (payload.projectSocials.discord && !isValidDiscordLink(payload.projectSocials.discord))
-    return false
-  if (payload.projectSocials.medium && !isValidMediumLink(payload.projectSocials.medium))
-    return false
-  if (payload.projectSocials.youtube && !isValidYouTubeLink(payload.projectSocials.youtube))
+  if (
+    !x ||
+    (!isValidXLink(x) && !isValidTwitterLink(x)) || // Assuming isValidXLink and isValidTwitterLink are defined
+    !telegram ||
+    !isValidTelegramLink(telegram) || // Assuming isValidTelegramLink is defined
+    !website ||
+    !isValidWebsiteUrl(website) || // Assuming isValidWebsiteUrl is defined
+    (discord && !isValidDiscordLink(discord)) || // Assuming isValidDiscordLink is defined
+    (medium && !isValidMediumLink(medium)) // Assuming isValidMediumLink is defined
+  )
     return false
 
   return true // If all checks passed

@@ -146,20 +146,19 @@ export default class VCService {
             id: true,
             name: true,
             description: true,
-            projectTokenMetrics: {
+            currentProjectTokenMetrics: {
               select: {
                 round: true,
               },
-              take: 1,
             },
           },
         },
       },
     })
 
-    const restProjects = vcProjects?.projects.map(({ projectTokenMetrics, ...rest }) => ({
+    const restProjects = vcProjects?.projects.map(({ currentProjectTokenMetrics, ...rest }) => ({
       ...rest,
-      round: projectTokenMetrics[0].round,
+      round: currentProjectTokenMetrics.round,
     })) as {
       round: ProjectRound
       id: string
