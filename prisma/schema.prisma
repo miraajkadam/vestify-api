@@ -163,7 +163,7 @@ model CurrentProjectTokenMetrics {
 }
 
 model PastProjectTokenMetrics {
-  id            String       @id @unique @map("Id")
+  id            String       @id @default(uuid()) @map("Id")
   round         ProjectRound @map("Round")
   price         Decimal      @map("Price")
   lockupPeriod  Int          @map("lockupPeriod")
@@ -175,21 +175,23 @@ model PastProjectTokenMetrics {
 }
 
 model ProjectTeamAndAdvisors {
-  id          String   @id @default(uuid()) @map("Id")
-  Project     Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId   String   @default(uuid()) @map("ProjectId")
-  name        String   @map("Name")
-  title       String   @map("Title")
-  description String   @map("Description")
-  imgBase64   String?  @map("ImageBase64")
+  id          String  @id @default(uuid()) @map("Id")
+  name        String  @map("Name")
+  title       String  @map("Title")
+  description String  @map("Description")
+  imgBase64   String? @map("ImageBase64")
+
+  Project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String   @default(uuid()) @map("ProjectId")
 }
 
 model ProjectPartnersAndInvestors {
-  id         String   @id @default(uuid()) @map("Id")
-  Project    Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId  String   @default(uuid()) @map("ProjectId")
-  name       String   @map("Name")
-  logoBase64 String?  @map("LogoBase64")
+  id         String  @id @default(uuid()) @map("Id")
+  name       String  @map("Name")
+  logoBase64 String? @map("LogoBase64")
+
+  Project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String   @default(uuid()) @map("ProjectId")
 }
 
 model ProjectSocials {

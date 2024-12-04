@@ -6,7 +6,7 @@ import {
   ProjectDetailsResponse,
   ProjectProfileDbResponse,
 } from '@/types/Project'
-import { isValidDateObj, isValidGuid } from '@/utils/common'
+import { isValidDateStr, isValidGuid } from '@/utils/common'
 import {
   isValidDiscordLink,
   isValidMediumLink,
@@ -199,8 +199,8 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload): bool
     typeof minimum !== 'number' ||
     typeof acceptedTokens !== 'string' ||
     typeof poolFee !== 'number' ||
-    !isValidDateObj(startDate) ||
-    !isValidDateObj(endDate) ||
+    !isValidDateStr(startDate) ||
+    !isValidDateStr(endDate) ||
     typeof raiseAmount !== 'number' || // raiseAmount should be a number
     typeof tokenTicker !== 'string' // tokenTicker should be a string
   )
@@ -227,7 +227,8 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload): bool
   // Validate 'curProjTokenMetrics' object
   if (!payload.curProjTokenMetrics || typeof payload.curProjTokenMetrics !== 'object') return false
 
-  const { fdv, price, tgeUnlock, tge, round } = payload.curProjTokenMetrics
+  const { fdv, price, tgeUnlock, tge, round, lockupPeriod, releaseType, releaseMonths } =
+    payload.curProjTokenMetrics
 
   if (
     typeof fdv !== 'number' ||
@@ -235,8 +236,11 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload): bool
     typeof tgeUnlock !== 'number' ||
     tgeUnlock < 0 ||
     tgeUnlock > 100 ||
-    !isValidDateObj(tge) ||
-    typeof round !== 'string'
+    !isValidDateStr(tge) ||
+    typeof round !== 'string' ||
+    typeof lockupPeriod !== 'number' ||
+    typeof releaseType !== 'string' ||
+    typeof releaseMonths !== 'number'
   )
     return false
 

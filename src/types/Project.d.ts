@@ -27,7 +27,7 @@ type CurProjTokenMetrics = {
   fdv: CurrentProjectTokenMetrics['fdv']
   price: CurrentProjectTokenMetrics['price']
   tgeUnlock: CurrentProjectTokenMetrics['tgeUnlock']
-  tge: CurrentProjectTokenMetrics['tge']
+  tge: string // ISO Date Strings
   lockupPeriod: CurrentProjectTokenMetrics['lockupPeriod']
   releaseType: CurrentProjectTokenMetrics['releaseType']
   releaseMonths: CurrentProjectTokenMetrics['releaseMonths']
@@ -46,8 +46,8 @@ type RoundDetails = {
   minimum: ProjectRoundDetails['minimum']
   acceptedTokens: ProjectRoundDetails['acceptedTokens']
   poolFee: ProjectRoundDetails['poolFee']
-  startDate: ProjectRoundDetails['startDate']
-  endDate: ProjectRoundDetails['endDate']
+  startDate: string // ISO Date Strings
+  endDate: string // ISO Date Strings
   raiseAmount: ProjectDetailsResponse['raiseAmount']
   tokenTicker: ProjectDetailsResponse['tokenTicker']
 }
@@ -67,8 +67,8 @@ type PartnerAndInvestor = {
 export type AddProjectApiPayload = {
   info: ProjectInfo
   roundDetails: RoundDetails
-  pastProjTokenMetrics: PastProjectTokenMetrics[]
-  curProjTokenMetrics: CurrentProjectTokenMetrics
+  pastProjTokenMetrics: PstProjectTokenMetrics[]
+  curProjTokenMetrics: CurProjTokenMetrics
   teamAndAdvisors: TeamAndAdvisor[]
   partnersAndInvestors: PartnerAndInvestor[]
   projectSocials: ProjectSocials
