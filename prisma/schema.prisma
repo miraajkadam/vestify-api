@@ -125,6 +125,7 @@ model Projects {
   projectTeamAndAdvisors      ProjectTeamAndAdvisors[]
   projectPartnersAndInvestors ProjectPartnersAndInvestors[]
   projectSocials              ProjectSocials                @relation(fields: [id], references: [id], onDelete: Cascade, map: "ProjectSocials_Project_Id")
+  projectWallet               ProjectWallet                 @relation(fields: [id], references: [id], onDelete: Cascade, map: "ProjectWallet_Project_Id")
 
   VC   VC     @relation(fields: [vcId], references: [id], onDelete: Cascade)
   vcId String @default(uuid()) @map("VCId")
@@ -201,6 +202,14 @@ model ProjectSocials {
   website  String  @map("Website")
   discord  String? @map("Discord")
   medium   String? @map("Medium")
+
+  Projects Projects?
+}
+
+model ProjectWallet {
+  id            String  @id @unique @map("Id")
+  chain         Chain   @map("Chain")
+  walletAddress Decimal @map("WalletAddress")
 
   Projects Projects?
 }
