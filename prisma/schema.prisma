@@ -207,9 +207,9 @@ model ProjectSocials {
 }
 
 model ProjectWallet {
-  id            String  @id @unique @map("Id")
-  chain         Chain   @map("Chain")
-  walletAddress Decimal @map("WalletAddress")
+  id            String @id @unique @map("Id")
+  chain         Chain  @map("Chain")
+  walletAddress String @map("WalletAddress")
 
   Projects Projects?
 }

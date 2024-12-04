@@ -60,6 +60,13 @@ export default class ProjectService {
           releaseMonths: newProject.curProjTokenMetrics.releaseMonths,
         },
       }),
+      prisma.projectWallet.create({
+        data: {
+          id: uniqueId,
+          chain: newProject.projectWallet.chain,
+          walletAddress: newProject.projectWallet.walletAddress,
+        },
+      }),
     ])
 
     await prisma.projects.create({
@@ -119,9 +126,9 @@ export default class ProjectService {
   > => {
     const allProjectsResp = await this.getAllProjectsFromDb()
 
-    return allProjectsResp.map(item => ({
-      ...item,
-      round: item.currentProjectTokenMetrics.round,
+    return allProjectsResp.map(({ currentProjectTokenMetrics, ...items }) => ({
+      ...items,
+      round: currentProjectTokenMetrics.round,
     }))
   }
 

@@ -9,6 +9,7 @@ import type {
   ProjectSocials,
   ProjectTeamAndAdvisors,
   ProjectTokenMetrics,
+  ProjectWallet,
   VC,
 } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
@@ -52,6 +53,11 @@ type RoundDetails = {
   tokenTicker: ProjectDetailsResponse['tokenTicker']
 }
 
+type ProjWalletSetup = {
+  chain: ProjectWallet['chain']
+  walletAddress: ProjectWallet['walletAddress']
+}
+
 type TeamAndAdvisor = {
   description: ProjectTeamAndAdvisors['description']
   name: ProjectTeamAndAdvisors['name']
@@ -72,6 +78,7 @@ export type AddProjectApiPayload = {
   teamAndAdvisors: TeamAndAdvisor[]
   partnersAndInvestors: PartnerAndInvestor[]
   projectSocials: ProjectSocials
+  projectWallet: ProjWalletSetup
 }
 
 // endregion
