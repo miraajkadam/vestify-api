@@ -119,12 +119,13 @@ model Projects {
   description String   @map("Description")
   categories  String[] @map("Categories")
 
-  projectTokenMetrics         ProjectTokenMetrics[]
+  projectRoundDetails         ProjectRoundDetails           @relation(fields: [id], references: [id], onDelete: Cascade, map: "ProjectRoundDetails_Project_Id")
+  currentProjectTokenMetrics  CurrentProjectTokenMetrics    @relation(fields: [id], references: [id], onDelete: Cascade, map: "CurrentProjectTokenMetrics_Project_Id")
+  pastProjectTokenMetrics     PastProjectTokenMetrics[]
   projectTeamAndAdvisors      ProjectTeamAndAdvisors[]
   projectPartnersAndInvestors ProjectPartnersAndInvestors[]
-
-  projectDeals   ProjectDeals   @relation(fields: [id], references: [id], onDelete: Cascade, map: "ProjectDeals_Project_Id")
-  projectSocials ProjectSocials @relation(fields: [id], references: [id], onDelete: Cascade, map: "ProjectSocials_Project_Id")
+  projectSocials              ProjectSocials                @relation(fields: [id], references: [id], onDelete: Cascade, map: "ProjectSocials_Project_Id")
+  projectWallet               ProjectWallet                 @relation(fields: [id], references: [id], onDelete: Cascade, map: "ProjectWallet_Project_Id")
 
   VC   VC     @relation(fields: [vcId], references: [id], onDelete: Cascade)
   vcId String @default(uuid()) @map("VCId")
@@ -134,46 +135,64 @@ model Projects {
   investedUsers UsersInvestedProjects[]
 }
 
-model ProjectTokenMetrics {
-  id         String       @id @default(uuid()) @map("Id")
-  Project    Projects     @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId  String       @default(uuid()) @map("ProjectId")
-  round      ProjectRound @map("Round")
-  fdv        String       @map("FDV")
-  price      String       @map("Price")
-  tgeUnlock  Decimal      @map("TgeUnlock")
-  tge        DateTime     @map("TGE")
-  tgeSummary String       @map("TgeSummary")
-}
-
-model ProjectDeals {
+model ProjectRoundDetails {
   id             String   @id @unique @map("Id")
-  maximum        Decimal  @map("Maximum")
-  minimum        Decimal  @map("Minimum")
   acceptedTokens String   @map("AcceptedTokens")
-  poolFee        Decimal  @map("PoolFee")
   startDate      DateTime @map("StartDate")
   endDate        DateTime @map("EndDate")
+  raiseAmount    Decimal  @map("RaiseAmount")
+  maximum        Decimal  @map("Maximum")
+  minimum        Decimal  @map("Minimum")
+  tokenTicker    String   @map("TokenTicker")
+  poolFee        Decimal  @map("PoolFee")
 
   Projects Projects?
 }
 
+model CurrentProjectTokenMetrics {
+  id            String       @id @unique @map("Id")
+  round         ProjectRound @map("Round")
+  fdv           Decimal      @map("FDV")
+  price         Decimal      @map("Price")
+  tgeUnlock     Decimal      @map("TgeUnlock")
+  tge           DateTime     @map("TGE")
+  lockupPeriod  Int          @map("lockupPeriod")
+  releaseType   Release      @map("ReleaseType")
+  releaseMonths Int          @map("ReleaseMonths")
+
+  Projects Projects?
+}
+
+model PastProjectTokenMetrics {
+  id            String       @id @default(uuid()) @map("Id")
+  round         ProjectRound @map("Round")
+  price         Decimal      @map("Price")
+  lockupPeriod  Int          @map("lockupPeriod")
+  releaseType   Release      @map("ReleaseType")
+  releaseMonths Int          @map("ReleaseMonths")
+
+  Project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String   @default(uuid()) @map("ProjectId")
+}
+
 model ProjectTeamAndAdvisors {
-  id          String   @id @default(uuid()) @map("Id")
-  Project     Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId   String   @default(uuid()) @map("ProjectId")
-  name        String   @map("Name")
-  title       String   @map("Title")
-  description String   @map("Description")
-  imgBase64   String?  @map("ImageBase64")
+  id          String  @id @default(uuid()) @map("Id")
+  name        String  @map("Name")
+  title       String  @map("Title")
+  description String  @map("Description")
+  imgBase64   String? @map("ImageBase64")
+
+  Project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String   @default(uuid()) @map("ProjectId")
 }
 
 model ProjectPartnersAndInvestors {
-  id         String   @id @default(uuid()) @map("Id")
-  Project    Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId  String   @default(uuid()) @map("ProjectId")
-  name       String   @map("Name")
-  logoBase64 String?  @map("LogoBase64")
+  id         String  @id @default(uuid()) @map("Id")
+  name       String  @map("Name")
+  logoBase64 String? @map("LogoBase64")
+
+  Project   Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String   @default(uuid()) @map("ProjectId")
 }
 
 model ProjectSocials {
@@ -183,7 +202,14 @@ model ProjectSocials {
   website  String  @map("Website")
   discord  String? @map("Discord")
   medium   String? @map("Medium")
-  youtube  String? @map("Youtube")
+
+  Projects Projects?
+}
+
+model ProjectWallet {
+  id            String @id @unique @map("Id")
+  chain         Chain  @map("Chain")
+  walletAddress String @map("WalletAddress")
 
   Projects Projects?
 }
