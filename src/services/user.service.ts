@@ -17,11 +17,52 @@ export default class UserService {
    *
    * @returns {Promise<{  vcId: string; userId: string; joinedAt: Date; }>} A promise that resolves when the investment is recorded.
    */
-  addUserCapitalInvestmentInDb = async (userId: string, vcId: string) =>
-    await prisma.usersJoinedCapitals.create({
+  addUserCapitalInvestmentInDb = async (userId: string, vcId: string) => {
+    const dateNow = new Date()
+
+    return await prisma.usersJoinedCapitals.create({
       data: {
         userId,
         vcId,
+        joinedAt: dateNow,
+        renewedAt: dateNow,
+      },
+      select: {
+        userId: true,
+        vcId: true,
+      },
+    })
+  }
+
+  /**
+   * Updates the 'renewedAt' field for a user's capital investment in a specific venture capital (VC) in the database.
+   *
+   * This function updates the 'renewedAt' timestamp for the specified user and VC in the 'usersJoinedCapitals' table
+   * of the database. The function expects the combination of `userId` and `vcId` to uniquely identify the record
+   * to be updated. The timestamp is set to the current date and time.
+   *
+   * @async
+   * @function updateUserCapitalInvestmentInDb
+   * @param {string} userId - The unique identifier of the user.
+   * @param {string} vcId - The unique identifier of the venture capital.
+   * @returns {Promise<{  vcId: string; userId: string; joinedAt: Date; }>} The updated user and VC combination with the fields `userId` and `vcId`.
+   *
+   * @throws {Error} If the update operation fails or if invalid parameters are provided.
+   */
+  updateUserCapitalInvestmentInDb = async (userId: string, vcId: string) =>
+    await prisma.usersJoinedCapitals.update({
+      where: {
+        userId_vcId: {
+          userId,
+          vcId,
+        },
+      },
+      data: {
+        renewedAt: new Date(),
+      },
+      select: {
+        userId: true,
+        vcId: true,
       },
     })
 
@@ -32,7 +73,7 @@ export default class UserService {
    * @function checkIfUserJoinedVCAlready
    * @param {string} userId - The ID of the user to check.
    * @param {string} vcId - The ID of the venture capital to check against.
-   * @returns {Promise<boolean>} - Returns true if the user has joined the VC, otherwise false.
+   * @returns {Promise<{joinedAt: Date} | null>} - Returns true if the user has joined the VC, otherwise false.
    */
   checkIfUserJoinedVCAlready = async (userId: string, vcId: string) => {
     const entity = await prisma.usersJoinedCapitals.findFirst({
@@ -41,11 +82,11 @@ export default class UserService {
         vcId,
       },
       select: {
-        joinedAt: true,
+        renewedAt: true,
       },
     })
 
-    return entity !== null
+    return entity
   }
 
   /**

@@ -25,6 +25,7 @@ export const addNewVC = async (
       logoBase64,
       name,
       subscriptionFee,
+      subscriptionRenewalInterval,
       tags,
       id: accountId,
       socials,
@@ -37,6 +38,7 @@ export const addNewVC = async (
         description,
         logoBase64,
         subscriptionFee,
+        subscriptionRenewalInterval,
         tags,
         kycDone,
         socials

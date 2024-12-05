@@ -1,4 +1,4 @@
-import type { ProjectRound, VCSocial } from '@prisma/client'
+import type { Interval, ProjectRound, VCSocial } from '@prisma/client'
 import type { Decimal } from '@prisma/client/runtime/library'
 
 export type AddNewVCPayload = {
@@ -7,6 +7,7 @@ export type AddNewVCPayload = {
   description: string
   logoBase64: string
   subscriptionFee: Decimal
+  subscriptionRenewalInterval: Interval
   tags: string[]
   kycDone: boolean
   socials: Omit<VCSocial, 'id' | 'vcId'>

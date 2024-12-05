@@ -35,8 +35,27 @@ export const isValidGuid = (id: string): boolean => {
  *
  * @returns {boolean} - Returns true if the date string is valid; otherwise, false.
  */
-export const isValidDate = (dateString: string): boolean => {
+export const isValidDateStr = (dateString: string): boolean => {
   const date = new Date(dateString)
 
   return date instanceof Date && !isNaN(date.getTime())
 }
+
+/**
+ * Checks if the given value is a valid JavaScript `Date` object.
+ *
+ * A valid `Date` object is one that represents a real date and not an invalid date (e.g., `new Date('invalid-date')`).
+ * The function checks if the input is an instance of the `Date` class and if its `getTime()` method returns a valid number (not `NaN`).
+ *
+ * @param {Date} date - The value to be checked.
+ * @returns {boolean} `true` if the input is a valid `Date` object, `false` otherwise.
+ *
+ * @example
+ * const validDate = new Date('2024-12-01');
+ * console.log(isValidDateObj(validDate));  // true
+ *
+ * const invalidDate = new Date('invalid-date');
+ * console.log(isValidDateObj(invalidDate));  // false
+ */
+export const isValidDateObj = (date: Date): boolean =>
+  date instanceof Date && !isNaN(date.getTime())

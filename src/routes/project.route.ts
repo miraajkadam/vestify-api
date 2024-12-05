@@ -43,56 +43,68 @@ const projectRouter = Router()
  *                   vcId:
  *                     type: string
  *                     description: The ID of the venture capital firm associated with the project.
- *                     example: "7242012c-511a-410a-b99b-7f2ecf0d238b"
- *               tokenMetrics:
+ *                     example: "1c30cc8e-ad15-480e-9593-82a3a8ecc82c"
+ *               curProjTokenMetrics:
+ *                 type: object
+ *                 properties:
+ *                   round:
+ *                     type: string
+ *                     description: The funding round for the token metrics.
+ *                     example: "SEED"
+ *                   price:
+ *                     type: number
+ *                     description: Price of the token.
+ *                     example: 1.23
+ *                   tgeUnlock:
+ *                     type: number
+ *                     description: Token Generation Event unlock percentage. (must be between 0-100)
+ *                     example: 60
+ *                   tge:
+ *                     type: string
+ *                     description: Date and time of the Token Generation Event.
+ *                     example: "2024-08-28T12:20:13.264Z"
+ *                   lockupPeriod:
+ *                     type: number
+ *                     description: Lockup period in days.
+ *                     example: 180
+ *                   releaseType:
+ *                     type: string
+ *                     description: The release type for the token (e.g., "QUARTERLY").
+ *                     example: "QUARTERLY"
+ *                   releaseMonths:
+ *                     type: number
+ *                     description: Number of months between each release.
+ *                     example: 3
+ *                   fdv:
+ *                     type: number
+ *                     description: Fully Diluted Valuation.
+ *                     example: 1000000000
+ *               pastProjTokenMetrics:
  *                 type: array
  *                 items:
  *                   type: object
  *                   properties:
- *                     fdv:
- *                       type: string
- *                       description: Fully Diluted Valuation.
- *                       example: "1000000000"
  *                     price:
- *                       type: string
- *                       description: Price of the token.
- *                       example: "1.23"
- *                     tgeUnlock:
  *                       type: number
- *                       description: Token Generation Event unlock percentage. (must be between 0-100)
- *                       example: 80
- *                     tge:
+ *                       description: Price of the token for the past round.
+ *                       example: 1.23
+ *                     lockupPeriod:
+ *                       type: number
+ *                       description: Lockup period in days.
+ *                       example: 180
+ *                     releaseMonths:
+ *                       type: number
+ *                       description: Number of months between each release.
+ *                       example: 3
+ *                     releaseType:
  *                       type: string
- *                       description: Date and time of the Token Generation Event.
- *                       example: "2024-08-28T12:20:13.264Z"
+ *                       description: The release type for the token (e.g., "QUARTERLY").
+ *                       example: "QUARTERLY"
  *                     round:
  *                       type: string
  *                       description: The funding round for the token metrics.
- *                       example: "PRE_SEED"
- *                     tgeSummary:
- *                       type: string
- *                       description: Summary of the Token Generation Event.
- *                       example: "This is TGE Summary"
- *                 example:
- *                   - fdv: "1000000000"
- *                     price: "1.23"
- *                     tgeUnlock: 80
- *                     tge: "2024-08-28T12:20:13.264Z"
- *                     round: "PRE_SEED"
- *                     tgeSummary: "This is TGE Summary for Pre Seed round"
- *                   - fdv: "2000000000"
- *                     price: "2.45"
- *                     tgeUnlock: 70
- *                     tge: "2024-09-15T10:00:00.000Z"
- *                     round: "SEED"
- *                     tgeSummary: "This is TGE Summary for Seed round"
- *                   - fdv: "1500000000"
- *                     price: "1.75"
- *                     tgeUnlock: 60
- *                     tge: "2024-10-05T14:30:00.000Z"
- *                     round: "PRIVATE_1"
- *                     tgeSummary: "Summary for the Series A round"
- *               deals:
+ *                       example: "PRIVATE_3"
+ *               roundDetails:
  *                 type: object
  *                 properties:
  *                   maximum:
@@ -119,6 +131,14 @@ const projectRouter = Router()
  *                     type: string
  *                     description: End date of the deal.
  *                     example: "2024-08-28T12:20:13.264Z"
+ *                   raiseAmount:
+ *                     type: number
+ *                     description: Amount to raise in the deal.
+ *                     example: 123123123123
+ *                   tokenTicker:
+ *                     type: string
+ *                     description: Token ticker for the project.
+ *                     example: "FOMO"
  *               teamAndAdvisors:
  *                 type: array
  *                 items:
@@ -159,7 +179,7 @@ const projectRouter = Router()
  *                   x:
  *                     type: string
  *                     description: Twitter/X handle or URL.
- *                     example: "https://twitter.com/username"
+ *                     example: "https://x.com/project_handle"
  *                   discord:
  *                     type: string
  *                     description: Discord handle or URL.
@@ -172,14 +192,21 @@ const projectRouter = Router()
  *                     type: string
  *                     description: Medium blog or URL.
  *                     example: "https://medium.com/@project_blog"
- *                   youtube:
- *                     type: string
- *                     description: YouTube channel or video URL.
- *                     example: "https://youtube.com/channel/project_channel"
  *                   website:
  *                     type: string
  *                     description: Website link.
- *                     example: "https://website.com/profile/"
+ *                     example: "https://www.example.com"
+ *               projectWallet:
+ *                 type: object
+ *                 properties:
+ *                   chain:
+ *                     type: string
+ *                     description: Blockchain chain (e.g., "EVM").
+ *                     example: "EVM"
+ *                   walletAddress:
+ *                     type: string
+ *                     description: Wallet address for the project.
+ *                     example: "0x32Be343B94f860124dC4fEe278FDCBD38C102D88"
  *     responses:
  *       200:
  *         description: Successfully added a new project and returned the project ID.
@@ -193,7 +220,7 @@ const projectRouter = Router()
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: New project was added successfully
+ *                   example: "New project was added successfully"
  *                 data:
  *                   type: string
  *                   description: The ID of the newly added project.
@@ -210,7 +237,7 @@ const projectRouter = Router()
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: Invalid input data
+ *                   example: "Invalid input data"
  *       500:
  *         description: Server error while adding the project.
  *         content:
@@ -223,7 +250,7 @@ const projectRouter = Router()
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: Unable to add new project
+ *                   example: "Unable to add new project"
  */
 projectRouter.post('/new', addNewProject)
 

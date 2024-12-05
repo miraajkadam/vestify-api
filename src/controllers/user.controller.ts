@@ -1,6 +1,7 @@
 import { type Request, type Response } from 'express'
 
 import {
+  checkVCSubExpired,
   formatResponse,
   SampleUserProfileResponse,
   validateProjectInvestmentPayload,
@@ -28,11 +29,19 @@ export const joinVC = async (
 
     const isJoinedVCAlready = await userService.checkIfUserJoinedVCAlready(userId, vcId)
 
-    if (isJoinedVCAlready) return apiResponse.error('You have already joined this capital', 406)
+    if (isJoinedVCAlready) {
+      const isVCSubExpired = await checkVCSubExpired(vcId, isJoinedVCAlready.renewedAt)
 
-    await userService.addUserCapitalInvestmentInDb(userId, vcId)
+      if (!isVCSubExpired) return apiResponse.error('You still have a valid subscription', 406)
 
-    return apiResponse.successWithData(null, 'Successfully joined the capital')
+      await userService.updateUserCapitalInvestmentInDb(userId, vcId)
+
+      return apiResponse.successWithData(null, 'Successfully updated the subscription')
+    } else {
+      await userService.addUserCapitalInvestmentInDb(userId, vcId)
+
+      return apiResponse.successWithData(null, 'Successfully joined the capital')
+    }
   } catch (ex: unknown) {
     const error = ex as Error
 
