@@ -1,6 +1,5 @@
 import { ProjectRound } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
-import { v4 as uuid } from 'uuid'
 
 import prisma from '@/db'
 import type { AddProjectApiPayload } from '@/types/Project'
@@ -18,13 +17,13 @@ export default class ProjectService {
    * @param {AddProjectApiPayload} newProject - The payload containing project details to be added.
    * @returns {Promise<{id: string}>} - A promise that resolves to an object containing the ID of the newly created project.
    */
-  addProjectToDb = async (newProject: AddProjectApiPayload): Promise<{ id: string }> => {
-    const uniqueId = uuid()
+  addProjectToDb = async (newProject: AddProjectApiPayload): Promise<void> => {
+    const id = newProject.onChain.projectId
 
     await Promise.all([
       prisma.projectRoundDetails.create({
         data: {
-          id: uniqueId,
+          id,
           endDate: newProject.roundDetails.endDate,
           startDate: newProject.roundDetails.startDate,
           maximum: newProject.roundDetails.maximum,
@@ -38,7 +37,7 @@ export default class ProjectService {
       }),
       prisma.projectSocials.create({
         data: {
-          id: uniqueId,
+          id,
           x: newProject.projectSocials.x,
           discord: newProject.projectSocials.discord,
           telegram: newProject.projectSocials.telegram,
@@ -49,7 +48,7 @@ export default class ProjectService {
       }),
       prisma.currentProjectTokenMetrics.create({
         data: {
-          id: uniqueId,
+          id,
           round: newProject.curProjTokenMetrics.round,
           fdv: newProject.curProjTokenMetrics.fdv,
           price: newProject.curProjTokenMetrics.price,
@@ -62,7 +61,7 @@ export default class ProjectService {
       }),
       prisma.projectWallet.create({
         data: {
-          id: uniqueId,
+          id,
           chain: newProject.projectWallet.chain,
           walletAddress: newProject.projectWallet.walletAddress,
         },
@@ -71,7 +70,7 @@ export default class ProjectService {
 
     await prisma.projects.create({
       data: {
-        id: uniqueId,
+        id,
         name: newProject.info.name,
         categories: newProject.info.categories,
         description: newProject.info.description,
@@ -94,8 +93,6 @@ export default class ProjectService {
       },
       select: { id: true },
     })
-
-    return { id: uniqueId }
   }
 
   /**

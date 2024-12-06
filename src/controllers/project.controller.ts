@@ -27,10 +27,12 @@ export const addNewProject = async (
 
     const ps = new ProjectService()
 
-    const { id } = await ps.addProjectToDb(req.body)
+    await ps.addProjectToDb(req.body)
 
-    console.log(`New project {${id}} added successfully under VC {${req.body.info.vcId}} `)
-    return apiResponse.successWithData(id, 'new project was added successfully')
+    console.log(
+      `New project {${req.body.onChain.projectId}} added successfully under VC {${req.body.info.vcId}} `
+    )
+    return apiResponse.success('new project was added successfully')
   } catch (ex: unknown) {
     const error = ex as Error
 
