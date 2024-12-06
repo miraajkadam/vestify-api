@@ -165,6 +165,12 @@ export const strRespFrInvestmentStats = (prjStats: {
  * console.log(isAddNewProjectPayloadValid(invalidPayload));  // false
  */
 export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload): boolean => {
+  // check on chain projectId
+  if (!payload.onChain || typeof payload.onChain !== 'object') return false
+
+  const { projectId } = payload.onChain
+  if (!projectId || typeof projectId !== 'string') return false
+
   // Check 'info' object
   if (!payload.info || typeof payload.info !== 'object') return false
 
