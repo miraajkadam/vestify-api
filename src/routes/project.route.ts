@@ -228,10 +228,6 @@ const projectRouter = Router()
  *                 message:
  *                   type: string
  *                   example: "New project was added successfully"
- *                 data:
- *                   type: string
- *                   description: The ID of the newly added project.
- *                   example: "7242012c-511a-410a-b99b-7f2ecf0d238n"
  *       400:
  *         description: Bad request due to invalid payload or missing fields.
  *         content:
