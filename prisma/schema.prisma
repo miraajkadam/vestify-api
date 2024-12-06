@@ -114,7 +114,7 @@ model VCSocial {
 // region Project
 
 model Projects {
-  id          String   @id @default(uuid()) @map("Id")
+  id          String   @id @unique @map("Id")
   name        String   @map("Name")
   description String   @map("Description")
   categories  String[] @map("Categories")
@@ -128,7 +128,7 @@ model Projects {
   projectWallet               ProjectWallet                 @relation(fields: [id], references: [id], onDelete: Cascade, map: "ProjectWallet_Project_Id")
 
   VC   VC     @relation(fields: [vcId], references: [id], onDelete: Cascade)
-  vcId String @default(uuid()) @map("VCId")
+  vcId String @map("VCId")
 
   createdAt DateTime @default(now()) @map("created_at")
 

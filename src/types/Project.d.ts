@@ -70,6 +70,10 @@ type PartnerAndInvestor = {
   name: ProjectPartnersAndInvestors['name']
 }
 
+type OnChainProjectData = {
+  projectId: string
+}
+
 export type AddProjectApiPayload = {
   info: ProjectInfo
   roundDetails: RoundDetails
@@ -79,6 +83,7 @@ export type AddProjectApiPayload = {
   partnersAndInvestors: PartnerAndInvestor[]
   projectSocials: ProjectSocials
   projectWallet: ProjWalletSetup
+  onChain: OnChainProjectData
 }
 
 // endregion

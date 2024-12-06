@@ -207,6 +207,13 @@ const projectRouter = Router()
  *                     type: string
  *                     description: Wallet address for the project.
  *                     example: "0x32Be343B94f860124dC4fEe278FDCBD38C102D88"
+ *               onChain:
+ *                 type: object
+ *                 properties:
+ *                   projectId:
+ *                     type: string
+ *                     description: The unique project ID on the blockchain.
+ *                     example: "bdcdfb7e-379e-4d55-8fac-212422f61220"
  *     responses:
  *       200:
  *         description: Successfully added a new project and returned the project ID.
@@ -221,10 +228,6 @@ const projectRouter = Router()
  *                 message:
  *                   type: string
  *                   example: "New project was added successfully"
- *                 data:
- *                   type: string
- *                   description: The ID of the newly added project.
- *                   example: "7242012c-511a-410a-b99b-7f2ecf0d238n"
  *       400:
  *         description: Bad request due to invalid payload or missing fields.
  *         content:
