@@ -15,7 +15,7 @@ import {
   isValidWebsiteUrl,
   isValidXLink,
 } from '@/utils/socialsValidator'
-import { isValidEthereumAddress, isValidSolanaAddress } from '@/utils/web3'
+import { isValidWalletAddress } from '@/utils/web3'
 
 /**
  * Transforms a project profile from the database into the expected API response format.
@@ -300,16 +300,7 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload): bool
   if (!payload.projectWallet || typeof payload.projectWallet !== 'object') return false
 
   const { chain, walletAddress } = payload.projectWallet
-
-  // Validate 'chain' property
-  const validChains = ['EVM', 'SOLANA']
-  if (!validChains.includes(chain)) return false
-
-  if (typeof walletAddress !== 'string' || walletAddress.trim() === '') return false
-
-  if (chain === 'EVM' && !isValidEthereumAddress(walletAddress)) return false
-
-  if (chain === 'SOLANA' && !isValidSolanaAddress(walletAddress)) return false
+  if (!isValidWalletAddress(chain, walletAddress)) return false
 
   return true
 }
