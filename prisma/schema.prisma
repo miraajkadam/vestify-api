@@ -21,9 +21,18 @@ model Accounts {
   email       String      @unique @map("Email")
   password    String      @map("Password")
   accountType AccountType @default(USER) @map("AccountType")
+  wallets     Wallet[]
 
   user Users?
   vc   VC?
+}
+
+model Wallet {
+  address String @unique @map("Address")
+  chain   Chain  @map("Chain")
+
+  Accounts   Accounts? @relation(fields: [accountsId], references: [id], onDelete: Cascade)
+  accountsId String?
 }
 
 // endregion
