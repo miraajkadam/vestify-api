@@ -96,7 +96,7 @@ accountRouter.post('/addWallet', addWallet)
 
 /**
  * @swagger
- * /api/account/{accountId}/getWallets:
+ * /api/account/{accountId}/wallets:
  *   get:
  *     summary: Get all linked wallets for an account
  *     description: This endpoint retrieves all wallets that are linked to the specified account. The `accountId` is passed as a URL parameter.
@@ -184,6 +184,6 @@ accountRouter.post('/addWallet', addWallet)
  *                   type: string
  *                   example: "Critical error"
  */
-accountRouter.get('/:accountId/getWallets', getWallets)
+accountRouter.get('/:accountId/wallets', getWallets)
 
 export default accountRouter
