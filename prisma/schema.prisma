@@ -102,7 +102,8 @@ model VC {
   projects    Projects[]
   joinedUsers UsersJoinedCapitals[]
 
-  VCSocial VCSocial @relation(fields: [id], references: [id], onDelete: Cascade, map: "VCSocial_VC_ID")
+  VCSocial          VCSocial           @relation(fields: [id], references: [id], onDelete: Cascade, map: "VCSocial_VC_ID")
+  DistributionPools DistributionPool[]
 }
 
 model VCSocial {
@@ -116,6 +117,18 @@ model VCSocial {
   youtube  String? @map("Youtube")
 
   VC VC?
+}
+
+model DistributionPool {
+  id            String   @id @default(uuid()) @map("Id")
+  name          String   @map("Name")
+  addresses     String[] @map("Addresses")
+  fee           Decimal  @map("Fee")
+  maxAllocation Decimal  @map("MaxAllocation")
+  minAllocation Decimal  @map("MinAllocation")
+
+  VC   VC?     @relation(fields: [vCId], references: [id], onDelete: Cascade)
+  vCId String? @map("VcId")
 }
 
 // endregion
