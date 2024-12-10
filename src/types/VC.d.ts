@@ -1,4 +1,4 @@
-import type { Interval, ProjectRound, VCSocial } from '@prisma/client'
+import type { Interval, ProjectRound, VC, VCSocial } from '@prisma/client'
 import type { Decimal } from '@prisma/client/runtime/library'
 
 export type AddNewVCPayload = {

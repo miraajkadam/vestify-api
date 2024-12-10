@@ -1,13 +1,18 @@
 import { type Request, type Response } from 'express'
 
 import {
+  getProjectDistributionPools,
   isAddNewProjectPayloadValid,
   strProjForResponse,
   strRespFrInvestmentStats,
+  validateAddDistributionPoolPayload,
 } from '@/helpers/project.helper'
 import { ProjectService } from '@/services'
 import {
+  AddDistributionPoolPayload,
+  AddDistributionPoolResponse,
   AddProjectApiPayload,
+  AddressGroups,
   DeleteProjectApiPayload,
   ProjectDetailsResponse,
   ProjectListResponse,
@@ -143,5 +148,78 @@ export const getInvestmentStatsForProject = async (
     const error = ex as Error
 
     return apiResponse.critical('Unable to fetch the project', error)
+  }
+}
+
+export const addPool = async (
+  req: Request<null, ApiResponse<AddDistributionPoolResponse>, AddDistributionPoolPayload>,
+  res: Response<ApiResponse<AddDistributionPoolResponse>>
+) => {
+  const apiResponse = new ApiResponse<AddDistributionPoolResponse>(res)
+
+  try {
+    const { name, addresses, fee, maxAllocation, minAllocation, projectId } = req.body
+
+    const isValidPayload = validateAddDistributionPoolPayload(
+      name,
+      addresses,
+      fee,
+      maxAllocation,
+      minAllocation,
+      projectId
+    )
+
+    if (!isValidPayload) return apiResponse.error('Invalid payload')
+
+    const pService = new ProjectService()
+
+    const isProjExist = await pService.checkProjectExistenceInDb(projectId)
+    if (!isProjExist) return apiResponse.error('Project not found', 404)
+
+    const id = await pService.addDistributionPoolInDb(
+      projectId,
+      name,
+      addresses,
+      fee,
+      maxAllocation,
+      minAllocation
+    )
+
+    if (!id) return apiResponse.error('Unable to add distribution pool in db')
+
+    return apiResponse.successWithData(id, 'Distribution pool added')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('Unable to add distribution pool', error)
+  }
+}
+
+export const getProjectDistPools = async (
+  req: Request<{ projectId: string }, ApiResponse<AddressGroups>, null>,
+  res: Response<ApiResponse<AddressGroups>>
+) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const apiResponse = new ApiResponse<AddressGroups>(res)
+
+  try {
+    const { projectId } = req.params
+
+    const invalidPId = !projectId || typeof projectId !== 'string'
+
+    if (invalidPId) return apiResponse.error('Invalid project Id')
+
+    const pService = new ProjectService()
+
+    const isProjExist = await pService.checkProjectExistenceInDb(projectId)
+    if (!isProjExist) return apiResponse.error('Project not found', 404)
+
+    const projDistPools = (await getProjectDistributionPools(projectId)) as AddressGroups
+
+    return apiResponse.successWithData(projDistPools, 'Distribution pool added')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('Unable to add distribution pool', error)
   }
 }

@@ -118,6 +118,18 @@ model VCSocial {
   VC VC?
 }
 
+model DistributionPool {
+  id            String   @id @default(uuid()) @map("Id")
+  name          String   @map("Name")
+  addresses     String[] @map("Addresses")
+  fee           Decimal  @map("Fee")
+  maxAllocation Decimal  @map("MaxAllocation")
+  minAllocation Decimal  @map("MinAllocation")
+
+  Projects   Projects? @relation(fields: [projectsId], references: [id], onDelete: Cascade)
+  projectsId String?
+}
+
 // endregion
 
 // region Project
@@ -141,7 +153,8 @@ model Projects {
 
   createdAt DateTime @default(now()) @map("created_at")
 
-  investedUsers UsersInvestedProjects[]
+  investedUsers     UsersInvestedProjects[]
+  DistributionPools DistributionPool[]
 }
 
 model ProjectRoundDetails {

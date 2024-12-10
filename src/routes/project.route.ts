@@ -2,10 +2,12 @@ import { Router } from 'express'
 
 import {
   addNewProject,
+  addPool,
   deleteProject,
   getAllProjects,
   getInvestmentStatsForProject,
   getProjectByProjectId,
+  getProjectDistPools,
 } from '@/controllers/project.controller'
 
 const projectRouter = Router()
@@ -702,5 +704,187 @@ projectRouter.get('/:projectId', getProjectByProjectId)
  *                   example: "Unable to fetch the project"
  */
 projectRouter.get('/:projectId/investmentStats', getInvestmentStatsForProject)
+
+/**
+ * @swagger
+ * /api/project/addPool:
+ *   post:
+ *     summary: Add a new distribution pool to a project
+ *     description: This endpoint allows the creation of a new distribution pool associated with a project.
+ *     tags: [Project]
+ *     requestBody:
+ *       description: Payload to add a new distribution pool
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Global Fund Pool"
+ *               addresses:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   pattern: '^0x[a-fA-F0-9]{40}$'
+ *                 example: ["0x1234abcd5678efgh", "0x9876zyxw4321kjl"]
+ *               fee:
+ *                 type: number
+ *                 format: float
+ *                 example: 0.05
+ *               maxAllocation:
+ *                 type: number
+ *                 format: float
+ *                 example: 1000000.00
+ *               minAllocation:
+ *                 type: number
+ *                 format: float
+ *                 example: 50000.00
+ *               projectId:
+ *                 type: string
+ *                 example: "c87b0321-f22e-4bc6-929d-3a42fec2e227"
+ *             required:
+ *               - name
+ *               - addresses
+ *               - fee
+ *               - maxAllocation
+ *               - minAllocation
+ *               - projectId
+ *     responses:
+ *       '200':
+ *         description: Distribution pool successfully added
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Distribution pool added"
+ *                 data:
+ *                   type: string
+ *                   example: "c87b0321-f22e-4bc6-929d-3a42fec2e227"
+ *       '400':
+ *         description: Invalid payload
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid payload"
+ *       '404':
+ *         description: Project not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Project not found"
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to add distribution pool"
+ */
+projectRouter.post('/addPool', addPool)
+
+/**
+ * @swagger
+ * /api/project/{projectId}/distPools:
+ *   get:
+ *     summary: Get the distribution pools of a project
+ *     description: Retrieve the distribution pools associated with a specific project using the projectId.
+ *     tags: [Project]
+ *     parameters:
+ *       - name: projectId
+ *         in: path
+ *         description: The unique ID of the project to get distribution pools for.
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "c87b0321-f22e-4bc6-929d-3a42fec2e227"
+ *     responses:
+ *       '200':
+ *         description: Successfully retrieved the distribution pools for the project
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   name:
+ *                     type: string
+ *                     example: "Global Fund Pool"
+ *                   addresses:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                       example: "0x1234abcd5678efgh"
+ *                   id:
+ *                     type: string
+ *                     example: "abc123"
+ *       '400':
+ *         description: Invalid project ID format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid project Id"
+ *       '404':
+ *         description: Project not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Project not found"
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to retrieve distribution pools"
+ */
+projectRouter.get('/:projectId/distPools', getProjectDistPools)
 
 export default projectRouter

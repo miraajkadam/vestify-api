@@ -1,8 +1,11 @@
 import { ProjectRound } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 
+import { ProjectService } from '@/services'
 import {
+  AddDistributionPoolPayload,
   AddProjectApiPayload,
+  AddressGroup,
   ProjectDetailsResponse,
   ProjectProfileDbResponse,
 } from '@/types/Project'
@@ -304,3 +307,105 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload): bool
 
   return true
 }
+
+// #region distribution pools
+/**
+ * Validates the payload for adding a new distribution pool.
+ *
+ * This function checks the following conditions:
+ * 1. `name` must be a non-empty string.
+ * 2. `addresses` must be an array of non-empty strings.
+ * 3. `fee`, `maxAllocation`, and `minAllocation` must be valid numbers.
+ * 4. `fee` must be a non-negative number.
+ * 5. `maxAllocation` and `minAllocation` must be positive numbers, and `maxAllocation` must be greater than `minAllocation`.
+ *
+ * @param {Object} payload - The payload containing the distribution pool data.
+ * @param {string} payload.name - The name of the distribution pool.
+ * @param {string[]} payload.addresses - The list of addresses associated with the pool.
+ * @param {number} payload.fee - The fee for the distribution pool (must be a non-negative number).
+ * @param {number} payload.maxAllocation - The maximum allocation allowed for the pool (must be a positive number).
+ * @param {number} payload.minAllocation - The minimum allocation allowed for the pool (must be a positive number).
+ * @param {string} payload.pId - The ID of the Project associated with the pool.
+ *
+ * @returns {boolean} - Returns `true` if the payload is valid, otherwise `false`.
+ */
+export const validateAddDistributionPoolPayload = (
+  name: AddDistributionPoolPayload['name'],
+  addresses: AddDistributionPoolPayload['addresses'],
+  fee: AddDistributionPoolPayload['fee'],
+  maxAllocation: AddDistributionPoolPayload['maxAllocation'],
+  minAllocation: AddDistributionPoolPayload['minAllocation'],
+  pId: AddDistributionPoolPayload['projectId']
+): boolean => {
+  // Check if name is a non-empty string
+  if (typeof name !== 'string' || name.trim().length === 0) return false
+
+  // Check if addresses is an array of non-empty strings
+  if (
+    !Array.isArray(addresses) ||
+    !addresses.every(address => typeof address === 'string' && address.trim().length > 0)
+  )
+    return false
+
+  // Check if fee, maxAllocation, and minAllocation are valid numbers
+  if (typeof fee !== 'number' || isNaN(fee)) return false
+  if (typeof maxAllocation !== 'number' || isNaN(maxAllocation)) return false
+  if (typeof minAllocation !== 'number' || isNaN(minAllocation)) return false
+
+  // Check if fee is non-negative
+  if (fee < 0) return false
+
+  // Check if maxAllocation and minAllocation are positive numbers and maxAllocation is greater than minAllocation
+  if (maxAllocation <= 0 || minAllocation <= 0) return false
+  if (maxAllocation < minAllocation) return false
+
+  // check P ID
+  if (!pId || typeof pId !== 'string') return false
+
+  return true
+}
+
+/**
+ * Retrieves the distribution pools for a project, including main investors' wallets.
+ *
+ * This function fetches the distribution pools and project investors (main investors) from the database,
+ * then merges the main investors' wallet addresses with the distribution pools. It returns an array of
+ * address groups containing the addresses of the main investors and any distribution pools associated with
+ * the given project.
+ *
+ * @async
+ * @function getProjectDistributionPools
+ * @param {string} projectId - The unique identifier of the project.
+ * @returns {Promise<AddressGroup[]>} - A promise that resolves to an array of address groups, each containing a list of wallet addresses and their associated pool names.
+ *
+ * @example
+ * // Example usage
+ * const projectId = 'c87b0321-f22e-4bc6-929d-3a42fec2e227';
+ * const distributionPools = await getProjectDistributionPools(projectId);
+ * console.log(distributionPools);
+ *
+ * @throws {Error} Throws an error if there is an issue retrieving data from the database or merging the data.
+ */
+export const getProjectDistributionPools = async (projectId: string): Promise<AddressGroup[]> => {
+  const pService = new ProjectService()
+
+  const [distPools, mainInvPool] = await Promise.all([
+    pService.getDistributionPoolsFromDb(projectId),
+    await pService.getProjectInvestors(projectId),
+  ])
+
+  const flattenedAddresses = mainInvPool.flatMap(item =>
+    item.user.account.wallets.map(wallet => wallet.address)
+  )
+
+  const merge = {
+    ...distPools,
+    mains: { name: 'Main Investors', addresses: flattenedAddresses },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any
+
+  console.log(merge)
+
+  return Object.values(merge)
+}
+// #endregion
