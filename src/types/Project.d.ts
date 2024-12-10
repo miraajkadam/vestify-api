@@ -194,4 +194,13 @@ export type AddDistributionPoolPayload = {
 }
 
 export type AddDistributionPoolResponse = DistributionPool['id']
+
+type AddressGroup = {
+  addresses: string[]
+  name: string
+  id?: string
+}
+
+type AddressGroups = AddressGroup[]
+
 // #endregion

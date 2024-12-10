@@ -55,7 +55,7 @@ export const validateProjectInvestmentPayload = (
 ): boolean => {
   if (!isValidGuid(userId)) return false
 
-  if (!isValidGuid(projectId)) return false
+  if (!projectId || typeof projectId !== 'string') return false
 
   if (typeof amount !== 'number') return false
 

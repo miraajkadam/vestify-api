@@ -1,9 +1,11 @@
 import { ProjectRound } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 
+import { ProjectService } from '@/services'
 import {
   AddDistributionPoolPayload,
   AddProjectApiPayload,
+  AddressGroup,
   ProjectDetailsResponse,
   ProjectProfileDbResponse,
 } from '@/types/Project'
@@ -361,5 +363,49 @@ export const validateAddDistributionPoolPayload = (
   if (!pId || typeof pId !== 'string') return false
 
   return true
+}
+
+/**
+ * Retrieves the distribution pools for a project, including main investors' wallets.
+ *
+ * This function fetches the distribution pools and project investors (main investors) from the database,
+ * then merges the main investors' wallet addresses with the distribution pools. It returns an array of
+ * address groups containing the addresses of the main investors and any distribution pools associated with
+ * the given project.
+ *
+ * @async
+ * @function getProjectDistributionPools
+ * @param {string} projectId - The unique identifier of the project.
+ * @returns {Promise<AddressGroup[]>} - A promise that resolves to an array of address groups, each containing a list of wallet addresses and their associated pool names.
+ *
+ * @example
+ * // Example usage
+ * const projectId = 'c87b0321-f22e-4bc6-929d-3a42fec2e227';
+ * const distributionPools = await getProjectDistributionPools(projectId);
+ * console.log(distributionPools);
+ *
+ * @throws {Error} Throws an error if there is an issue retrieving data from the database or merging the data.
+ */
+export const getProjectDistributionPools = async (projectId: string): Promise<AddressGroup[]> => {
+  const pService = new ProjectService()
+
+  const [distPools, mainInvPool] = await Promise.all([
+    pService.getDistributionPoolsFromDb(projectId),
+    await pService.getProjectInvestors(projectId),
+  ])
+
+  const flattenedAddresses = mainInvPool.flatMap(item =>
+    item.user.account.wallets.map(wallet => wallet.address)
+  )
+
+  const merge = {
+    ...distPools,
+    mains: { name: 'Main Investors', addresses: flattenedAddresses },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any
+
+  console.log(merge)
+
+  return Object.values(merge)
 }
 // #endregion

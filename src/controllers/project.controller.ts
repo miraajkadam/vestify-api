@@ -1,6 +1,7 @@
 import { type Request, type Response } from 'express'
 
 import {
+  getProjectDistributionPools,
   isAddNewProjectPayloadValid,
   strProjForResponse,
   strRespFrInvestmentStats,
@@ -11,6 +12,7 @@ import {
   AddDistributionPoolPayload,
   AddDistributionPoolResponse,
   AddProjectApiPayload,
+  AddressGroups,
   DeleteProjectApiPayload,
   ProjectDetailsResponse,
   ProjectListResponse,
@@ -172,7 +174,7 @@ export const addPool = async (
     const pService = new ProjectService()
 
     const isProjExist = await pService.checkProjectExistenceInDb(projectId)
-    if (!isProjExist) return apiResponse.error('VC not found', 404)
+    if (!isProjExist) return apiResponse.error('Project not found', 404)
 
     const id = await pService.addDistributionPoolInDb(
       projectId,
@@ -186,6 +188,35 @@ export const addPool = async (
     if (!id) return apiResponse.error('Unable to add distribution pool in db')
 
     return apiResponse.successWithData(id, 'Distribution pool added')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('Unable to add distribution pool', error)
+  }
+}
+
+export const getProjectDistPools = async (
+  req: Request<{ projectId: string }, ApiResponse<AddressGroups>, null>,
+  res: Response<ApiResponse<AddressGroups>>
+) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const apiResponse = new ApiResponse<AddressGroups>(res)
+
+  try {
+    const { projectId } = req.params
+
+    const invalidPId = !projectId || typeof projectId !== 'string'
+
+    if (invalidPId) return apiResponse.error('Invalid project Id')
+
+    const pService = new ProjectService()
+
+    const isProjExist = await pService.checkProjectExistenceInDb(projectId)
+    if (!isProjExist) return apiResponse.error('Project not found', 404)
+
+    const projDistPools = (await getProjectDistributionPools(projectId)) as AddressGroups
+
+    return apiResponse.successWithData(projDistPools, 'Distribution pool added')
   } catch (ex: unknown) {
     const error = ex as Error
 

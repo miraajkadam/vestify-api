@@ -364,4 +364,75 @@ export default class ProjectService {
 
     return id
   }
+
+  /**
+   * Fetches the distribution pools for a given project from the database.
+   *
+   * This function queries the database for all distribution pools associated with the given project ID.
+   * It returns a list of distribution pools with the pool's `addresses`, `name`, and `id`.
+   *
+   * @async
+   * @function getDistributionPoolsFromDb
+   * @param {string} pid - The unique identifier for the project.
+   * @returns {Promise<DistributionPool[]>} - A promise that resolves to an array of distribution pool objects. Each object contains:
+   *   - `id`: The unique identifier of the distribution pool.
+   *   - `name`: The name of the distribution pool.
+   *   - `addresses`: An array of addresses associated with the pool.
+   *
+   * @example
+   * const projectId = 'c87b0321-f22e-4bc6-929d-3a42fec2e227';
+   * const pools = await getDistributionPoolsFromDb(projectId);
+   * console.log(pools);
+   */
+  getDistributionPoolsFromDb = async (pid: string) =>
+    await prisma.distributionPool.findMany({
+      where: {
+        projectsId: pid,
+      },
+      select: {
+        addresses: true,
+        name: true,
+        id: true,
+      },
+    })
+
+  /**
+   * Retrieves the main investors' wallet addresses for a given project.
+   *
+   * This function queries the database for users who have invested in the specified project and
+   * extracts their wallet addresses from the associated user data. It returns a list of wallet addresses
+   * for all the main investors in the project.
+   *
+   * @async
+   * @function getProjectInvestors
+   * @param {string} pid - The unique identifier for the project.
+   * @returns {Promise<UsersInvestedProjects[]>} - A promise that resolves to an array of users' wallet addresses:
+   *   Each user has an array of `wallets` containing their respective wallet addresses.
+   *
+   * @example
+   * const projectId = 'c87b0321-f22e-4bc6-929d-3a42fec2e227';
+   * const investors = await getProjectInvestors(projectId);
+   * console.log(investors);
+   */
+  getProjectInvestors = async (pid: string) =>
+    await prisma.usersInvestedProjects.findMany({
+      where: {
+        projectId: pid,
+      },
+      select: {
+        user: {
+          select: {
+            account: {
+              select: {
+                wallets: {
+                  select: {
+                    address: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    })
 }
