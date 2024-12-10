@@ -1,4 +1,4 @@
-import type { DistributionPool, Interval, ProjectRound, VC, VCSocial } from '@prisma/client'
+import type { Interval, ProjectRound, VC, VCSocial } from '@prisma/client'
 import type { Decimal } from '@prisma/client/runtime/library'
 
 export type AddNewVCPayload = {
@@ -49,16 +49,3 @@ export type AllVCResponse = Pick<
   VC,
   'name' | 'description' | 'logoBase64' | 'subscriptionFee' | 'id'
 >[]
-
-// #region Distribution pools
-export type AddDistributionPoolPayload = {
-  name: DistributionPool['name']
-  addresses: DistributionPool['addresses']
-  fee: DistributionPool['fee']
-  maxAllocation: DistributionPool['maxAllocation']
-  minAllocation: DistributionPool['minAllocation']
-  vcId: VC['id']
-}
-
-export type AddDistributionPoolResponse = DistributionPool['id']
-// #endregion

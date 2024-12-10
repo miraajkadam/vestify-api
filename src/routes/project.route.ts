@@ -2,6 +2,7 @@ import { Router } from 'express'
 
 import {
   addNewProject,
+  addPool,
   deleteProject,
   getAllProjects,
   getInvestmentStatsForProject,
@@ -702,5 +703,7 @@ projectRouter.get('/:projectId', getProjectByProjectId)
  *                   example: "Unable to fetch the project"
  */
 projectRouter.get('/:projectId/investmentStats', getInvestmentStatsForProject)
+
+projectRouter.post('/addPool', addPool)
 
 export default projectRouter

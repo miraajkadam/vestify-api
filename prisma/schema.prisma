@@ -102,8 +102,7 @@ model VC {
   projects    Projects[]
   joinedUsers UsersJoinedCapitals[]
 
-  VCSocial          VCSocial           @relation(fields: [id], references: [id], onDelete: Cascade, map: "VCSocial_VC_ID")
-  DistributionPools DistributionPool[]
+  VCSocial VCSocial @relation(fields: [id], references: [id], onDelete: Cascade, map: "VCSocial_VC_ID")
 }
 
 model VCSocial {
@@ -127,8 +126,8 @@ model DistributionPool {
   maxAllocation Decimal  @map("MaxAllocation")
   minAllocation Decimal  @map("MinAllocation")
 
-  VC   VC?     @relation(fields: [vCId], references: [id], onDelete: Cascade)
-  vCId String? @map("VcId")
+  Projects   Projects? @relation(fields: [projectsId], references: [id], onDelete: Cascade)
+  projectsId String?
 }
 
 // endregion
@@ -154,7 +153,8 @@ model Projects {
 
   createdAt DateTime @default(now()) @map("created_at")
 
-  investedUsers UsersInvestedProjects[]
+  investedUsers     UsersInvestedProjects[]
+  DistributionPools DistributionPool[]
 }
 
 model ProjectRoundDetails {

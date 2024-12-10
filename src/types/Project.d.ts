@@ -1,5 +1,6 @@
 import type {
   CurrentProjectTokenMetrics,
+  DistributionPool,
   PastProjectTokenMetrics,
   ProjectDeals,
   ProjectPartnersAndInvestors,
@@ -181,3 +182,16 @@ type ProjectDetailsResponse = {
   invest: InvestmentDetails
 }
 //#endregion
+
+// #region Distribution pools
+export type AddDistributionPoolPayload = {
+  name: DistributionPool['name']
+  addresses: DistributionPool['addresses']
+  fee: DistributionPool['fee']
+  maxAllocation: DistributionPool['maxAllocation']
+  minAllocation: DistributionPool['minAllocation']
+  projectId: Projects['id']
+}
+
+export type AddDistributionPoolResponse = DistributionPool['id']
+// #endregion

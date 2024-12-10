@@ -2,6 +2,7 @@ import { ProjectRound } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 
 import {
+  AddDistributionPoolPayload,
   AddProjectApiPayload,
   ProjectDetailsResponse,
   ProjectProfileDbResponse,
@@ -304,3 +305,61 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload): bool
 
   return true
 }
+
+// #region distribution pools
+/**
+ * Validates the payload for adding a new distribution pool.
+ *
+ * This function checks the following conditions:
+ * 1. `name` must be a non-empty string.
+ * 2. `addresses` must be an array of non-empty strings.
+ * 3. `fee`, `maxAllocation`, and `minAllocation` must be valid numbers.
+ * 4. `fee` must be a non-negative number.
+ * 5. `maxAllocation` and `minAllocation` must be positive numbers, and `maxAllocation` must be greater than `minAllocation`.
+ *
+ * @param {Object} payload - The payload containing the distribution pool data.
+ * @param {string} payload.name - The name of the distribution pool.
+ * @param {string[]} payload.addresses - The list of addresses associated with the pool.
+ * @param {number} payload.fee - The fee for the distribution pool (must be a non-negative number).
+ * @param {number} payload.maxAllocation - The maximum allocation allowed for the pool (must be a positive number).
+ * @param {number} payload.minAllocation - The minimum allocation allowed for the pool (must be a positive number).
+ * @param {string} payload.pId - The ID of the Project associated with the pool.
+ *
+ * @returns {boolean} - Returns `true` if the payload is valid, otherwise `false`.
+ */
+export const validateAddDistributionPoolPayload = (
+  name: AddDistributionPoolPayload['name'],
+  addresses: AddDistributionPoolPayload['addresses'],
+  fee: AddDistributionPoolPayload['fee'],
+  maxAllocation: AddDistributionPoolPayload['maxAllocation'],
+  minAllocation: AddDistributionPoolPayload['minAllocation'],
+  pId: AddDistributionPoolPayload['projectId']
+): boolean => {
+  // Check if name is a non-empty string
+  if (typeof name !== 'string' || name.trim().length === 0) return false
+
+  // Check if addresses is an array of non-empty strings
+  if (
+    !Array.isArray(addresses) ||
+    !addresses.every(address => typeof address === 'string' && address.trim().length > 0)
+  )
+    return false
+
+  // Check if fee, maxAllocation, and minAllocation are valid numbers
+  if (typeof fee !== 'number' || isNaN(fee)) return false
+  if (typeof maxAllocation !== 'number' || isNaN(maxAllocation)) return false
+  if (typeof minAllocation !== 'number' || isNaN(minAllocation)) return false
+
+  // Check if fee is non-negative
+  if (fee < 0) return false
+
+  // Check if maxAllocation and minAllocation are positive numbers and maxAllocation is greater than minAllocation
+  if (maxAllocation <= 0 || minAllocation <= 0) return false
+  if (maxAllocation < minAllocation) return false
+
+  // check P ID
+  if (!pId || typeof pId !== 'string') return false
+
+  return true
+}
+// #endregion

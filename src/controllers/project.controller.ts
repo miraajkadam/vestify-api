@@ -4,9 +4,12 @@ import {
   isAddNewProjectPayloadValid,
   strProjForResponse,
   strRespFrInvestmentStats,
+  validateAddDistributionPoolPayload,
 } from '@/helpers/project.helper'
 import { ProjectService } from '@/services'
 import {
+  AddDistributionPoolPayload,
+  AddDistributionPoolResponse,
   AddProjectApiPayload,
   DeleteProjectApiPayload,
   ProjectDetailsResponse,
@@ -143,5 +146,49 @@ export const getInvestmentStatsForProject = async (
     const error = ex as Error
 
     return apiResponse.critical('Unable to fetch the project', error)
+  }
+}
+
+export const addPool = async (
+  req: Request<null, ApiResponse<AddDistributionPoolResponse>, AddDistributionPoolPayload>,
+  res: Response<ApiResponse<AddDistributionPoolResponse>>
+) => {
+  const apiResponse = new ApiResponse<AddDistributionPoolResponse>(res)
+
+  try {
+    const { name, addresses, fee, maxAllocation, minAllocation, projectId } = req.body
+
+    const isValidPayload = validateAddDistributionPoolPayload(
+      name,
+      addresses,
+      fee,
+      maxAllocation,
+      minAllocation,
+      projectId
+    )
+
+    if (!isValidPayload) return apiResponse.error('Invalid payload')
+
+    const pService = new ProjectService()
+
+    const isProjExist = await pService.checkProjectExistenceInDb(projectId)
+    if (!isProjExist) return apiResponse.error('VC not found', 404)
+
+    const id = await pService.addDistributionPoolInDb(
+      projectId,
+      name,
+      addresses,
+      fee,
+      maxAllocation,
+      minAllocation
+    )
+
+    if (!id) return apiResponse.error('Unable to add distribution pool in db')
+
+    return apiResponse.successWithData(id, 'Distribution pool added')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('Unable to add distribution pool', error)
   }
 }

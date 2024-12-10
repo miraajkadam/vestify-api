@@ -2,7 +2,6 @@ import { Router } from 'express'
 
 import {
   addNewVC,
-  addPool,
   getAllVC,
   getVCProfileById,
   getVCProjectsById,
@@ -522,7 +521,5 @@ vcRouter.get('/:vcId/profile', getVCProfileById)
  *       - VC
  */
 vcRouter.get('/:vcId/projects', getVCProjectsById)
-
-vcRouter.post('/addPool', addPool)
 
 export default vcRouter

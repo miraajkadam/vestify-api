@@ -1,14 +1,8 @@
 import { type Request, type Response } from 'express'
 
-import {
-  isAddNewVCPayloadValid,
-  sanitizeVCProfileForResponse,
-  isAddDistributionPoolPayloadValid as validateAddDistributionPoolPayloadValid,
-} from '@/helpers/vc.helper'
+import { isAddNewVCPayloadValid, sanitizeVCProfileForResponse } from '@/helpers/vc.helper'
 import VCService from '@/services/vc.service'
 import type {
-  AddDistributionPoolPayload,
-  AddDistributionPoolResponse,
   AddNewVCPayload,
   AllVCResponse,
   GetVCProfileById,
@@ -164,49 +158,5 @@ export const getAllVC = async (
     const error = ex as Error
 
     return apiResponse.critical('Unable to get all VCs', error)
-  }
-}
-
-export const addPool = async (
-  req: Request<null, ApiResponse<AddDistributionPoolResponse>, AddDistributionPoolPayload>,
-  res: Response<ApiResponse<AddDistributionPoolResponse>>
-) => {
-  const apiResponse = new ApiResponse<AddDistributionPoolResponse>(res)
-
-  try {
-    const { name, addresses, fee, maxAllocation, minAllocation, vcId } = req.body
-
-    const isValidPayload = validateAddDistributionPoolPayloadValid(
-      name,
-      addresses,
-      fee,
-      maxAllocation,
-      minAllocation,
-      vcId
-    )
-
-    if (!isValidPayload) return apiResponse.error('Invalid payload')
-
-    const vcService = new VCService()
-
-    const isVCExist = await vcService.checkVCExistByIdInDb(vcId)
-    if (!isVCExist) return apiResponse.error('VC not found', 404)
-
-    const id = await vcService.addDistributionPoolInDb(
-      vcId,
-      name,
-      addresses,
-      fee,
-      maxAllocation,
-      minAllocation
-    )
-
-    if (!id) return apiResponse.error('Unable to add distribution pool in db')
-
-    return apiResponse.successWithData(id, 'VCs list fetch successfully')
-  } catch (ex: unknown) {
-    const error = ex as Error
-
-    return apiResponse.critical('Unable to add distribution pool', error)
   }
 }

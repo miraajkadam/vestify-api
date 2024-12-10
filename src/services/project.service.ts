@@ -2,7 +2,7 @@ import { ProjectRound } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 
 import prisma from '@/db'
-import type { AddProjectApiPayload } from '@/types/Project'
+import type { AddDistributionPoolPayload, AddProjectApiPayload } from '@/types/Project'
 
 /**
  * Service class for managing projects in the database.
@@ -324,4 +324,44 @@ export default class ProjectService {
         },
       },
     })
+
+  /**
+   * Adds a new distribution pool to the database.
+   *
+   * This function creates a new record in the `distributionPool` table with the provided details,
+   * and returns the `id` of the newly created distribution pool.
+   *
+   * @param {string} pid - The ID of the Project associated with the distribution pool.
+   * @param {string} name - The name of the distribution pool.
+   * @param {string[]} addresses - An array of addresses associated with the distribution pool.
+   * @param {number} fee - The fee for the distribution pool (a non-negative number).
+   * @param {number} maxAllocation - The maximum allocation allowed for the pool (a positive number).
+   * @param {number} minAllocation - The minimum allocation allowed for the pool (a positive number).
+   *
+   * @returns {Promise<string>} - A promise that resolves to the `id` of the newly created distribution pool.
+   */
+  addDistributionPoolInDb = async (
+    pid: AddDistributionPoolPayload['projectId'],
+    name: AddDistributionPoolPayload['name'],
+    addresses: AddDistributionPoolPayload['addresses'],
+    fee: AddDistributionPoolPayload['fee'],
+    maxAllocation: AddDistributionPoolPayload['maxAllocation'],
+    minAllocation: AddDistributionPoolPayload['minAllocation']
+  ): Promise<string> => {
+    const { id } = await prisma.distributionPool.create({
+      data: {
+        projectsId: pid,
+        name,
+        addresses,
+        fee,
+        maxAllocation,
+        minAllocation,
+      },
+      select: {
+        id: true,
+      },
+    })
+
+    return id
+  }
 }

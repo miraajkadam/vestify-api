@@ -2,7 +2,7 @@ import { ProjectRound, VCSocial } from '@prisma/client'
 import type { Decimal } from '@prisma/client/runtime/library'
 
 import prisma from '@/db'
-import { AddDistributionPoolPayload, VCProjectsResponse } from '@/types/VC.d'
+import { VCProjectsResponse } from '@/types/VC.d'
 
 /**
  * Service class for managing Venture Capitalists (VCs) in the database.
@@ -258,45 +258,5 @@ export default class VCService {
     })
 
     return subscriptionRenewalInterval
-  }
-
-  /**
-   * Adds a new distribution pool to the database.
-   *
-   * This function creates a new record in the `distributionPool` table with the provided details,
-   * and returns the `id` of the newly created distribution pool.
-   *
-   * @param {string} vcId - The ID of the VC (Venture Capital) associated with the distribution pool.
-   * @param {string} name - The name of the distribution pool.
-   * @param {string[]} addresses - An array of addresses associated with the distribution pool.
-   * @param {number} fee - The fee for the distribution pool (a non-negative number).
-   * @param {number} maxAllocation - The maximum allocation allowed for the pool (a positive number).
-   * @param {number} minAllocation - The minimum allocation allowed for the pool (a positive number).
-   *
-   * @returns {Promise<string>} - A promise that resolves to the `id` of the newly created distribution pool.
-   */
-  addDistributionPoolInDb = async (
-    vcId: AddDistributionPoolPayload['vcId'],
-    name: AddDistributionPoolPayload['name'],
-    addresses: AddDistributionPoolPayload['addresses'],
-    fee: AddDistributionPoolPayload['fee'],
-    maxAllocation: AddDistributionPoolPayload['maxAllocation'],
-    minAllocation: AddDistributionPoolPayload['minAllocation']
-  ): Promise<string> => {
-    const { id } = await prisma.distributionPool.create({
-      data: {
-        vCId: vcId,
-        name,
-        addresses,
-        fee,
-        maxAllocation,
-        minAllocation,
-      },
-      select: {
-        id: true,
-      },
-    })
-
-    return id
   }
 }
