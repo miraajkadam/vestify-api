@@ -6,7 +6,7 @@ import session from 'express-session'
 import swaggerJsdoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
 
-import { authRouter, projectRouter, userRouter, vcRouter } from '@/routes'
+import { accountRouter, authRouter, projectRouter, userRouter, vcRouter } from '@/routes'
 import passport from '@/utils/passport'
 import { ACCESS_CONTROL_ALLOW_ORIGINS, PORT } from './utils/env'
 
@@ -75,6 +75,7 @@ app.use('/api/auth', authRouter)
 app.use('/api/project', projectRouter)
 app.use('/api/vc', vcRouter)
 app.use('/api/user', userRouter)
+app.use('/api/account', accountRouter)
 
 app.get('/health', (req, res) => {
   res.status(200).send('server is running')

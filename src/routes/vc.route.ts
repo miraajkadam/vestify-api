@@ -5,6 +5,7 @@ import {
   getAllVC,
   getVCProfileById,
   getVCProjectsById,
+  getVCSubscribers,
 } from '@/controllers/vc.controller'
 
 const vcRouter = Router()
@@ -521,5 +522,84 @@ vcRouter.get('/:vcId/profile', getVCProfileById)
  *       - VC
  */
 vcRouter.get('/:vcId/projects', getVCProjectsById)
+
+/**
+ * @swagger
+ * /api/vc/{vcId}/subscribers:
+ *   get:
+ *     summary: Retrieve Subscribers associated with a VC by VC ID
+ *     description: Fetches a list of subscribers associated with the specified VC (Venture Capital) ID.
+ *     operationId: getVCSubscribers
+ *     parameters:
+ *       - name: vcId
+ *         in: path
+ *         description: The unique identifier of the VC whose subscribers are to be retrieved. Must be a valid GUID.
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *           example: "4b509982-5dc0-4999-8fe7-e347f9764288"
+ *     responses:
+ *       '200':
+ *         description: Successfully retrieved the list of subscribers associated with the VC ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "VC subscribers fetch successful."
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                     example: "0x5e2c12098f76e5437d8304b3fa35b2d5297a2596"
+ *       '400':
+ *         description: Bad request if the VC ID is invalid or missing.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid VC Id"
+ *       '404':
+ *         description: Not Found if no subscribers are found for the given VC ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "VC profile not found"
+ *       '500':
+ *         description: Internal server error when unable to fetch the subscribers.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to fetch VC subscribers"
+ *     tags:
+ *       - VC
+ */
+vcRouter.get('/:vcId/subscribers', getVCSubscribers)
 
 export default vcRouter

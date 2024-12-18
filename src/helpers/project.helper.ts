@@ -404,8 +404,6 @@ export const getProjectDistributionPools = async (projectId: string): Promise<Ad
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any
 
-  console.log(merge)
-
   return Object.values(merge)
 }
 // #endregion
