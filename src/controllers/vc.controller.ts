@@ -1,6 +1,10 @@
 import { type Request, type Response } from 'express'
 
-import { isAddNewVCPayloadValid, sanitizeVCProfileForResponse } from '@/helpers/vc.helper'
+import {
+  flatMapVCSubs,
+  isAddNewVCPayloadValid,
+  sanitizeVCProfileForResponse,
+} from '@/helpers/vc.helper'
 import VCService from '@/services/vc.service'
 import type {
   AddNewVCPayload,
@@ -158,5 +162,34 @@ export const getAllVC = async (
     const error = ex as Error
 
     return apiResponse.critical('Unable to get all VCs', error)
+  }
+}
+
+export const getVCSubscribers = async (
+  req: Request<{ vcId: string }, ApiResponse<string[]>>,
+  res: Response<ApiResponse<string[]>>
+) => {
+  const apiResponse = new ApiResponse<string[]>(res)
+
+  try {
+    const { vcId } = req.params
+
+    if (!isValidGuid(vcId)) return apiResponse.error('invalid VC Id')
+
+    const vcService = new VCService()
+
+    const isVCExist = await vcService.checkVCExistByIdInDb(vcId)
+
+    if (!isVCExist) return apiResponse.error('VC profile not found', 404)
+
+    const joinedSubs = await vcService.getVCSubscribers(vcId)
+
+    const subsFlatAr = flatMapVCSubs(joinedSubs)
+
+    return apiResponse.successWithData(subsFlatAr, 'VC subscribers fetch successful')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('Unable to fetch VC Subs', error)
   }
 }

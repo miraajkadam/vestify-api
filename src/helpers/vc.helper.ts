@@ -1,7 +1,7 @@
 import { Interval, VCSocial } from '@prisma/client'
 import type { Decimal } from '@prisma/client/runtime/library'
 
-import { VCProfileResponse } from '@/types/VC'
+import { VCProfileResponse, VCSubsDbResponse } from '@/types/VC'
 import { isValidGuid } from '@/utils/common'
 import {
   isValidDiscordLink,
@@ -134,6 +134,49 @@ export const sanitizeVCProfileForResponse = (vcDetails: {
 
   return { ...rest, social: VCSocial, vcId: vcDetails.id } // Rename and return
 }
+
+/**
+ * Flattens and extracts wallet addresses from the list of VC subscribers.
+ *
+ * This function takes an object representing a list of VC subscribers, each containing user account information and wallet data.
+ * It extracts and returns an array of wallet addresses, flattening any nested structures in the process.
+ *
+ * @param {VCSubsDbResponse} data - The data containing information about VC subscribers.
+ *
+ * @returns {string[]} An array of wallet addresses extracted from the list of subscribers.
+ *
+ * @throws {Error} Throws an error if the input data structure is invalid or if there is an issue during the flattening process.
+ *
+ * @example
+ * const subscribersData = {
+ *   joinedUsers: [
+ *     {
+ *       user: {
+ *         account: {
+ *           wallets: [
+ *             { address: '0x123', chain: 'ETH', accountsId: 'acc1' },
+ *             { address: '0x456', chain: 'ETH', accountsId: 'acc2' }
+ *           ]
+ *         }
+ *       }
+ *     },
+ *     {
+ *       user: {
+ *         account: {
+ *           wallets: [
+ *             { address: '0x789', chain: 'BSC', accountsId: null }
+ *           ]
+ *         }
+ *       }
+ *     }
+ *   ]
+ * };
+ * const walletAddresses = flatMapVCSubs(subscribersData);
+ * console.log(walletAddresses); // Output: ['0x123', '0x456', '0x789']
+ */
+export const flatMapVCSubs = (data: VCSubsDbResponse): string[] =>
+  data.joinedUsers.flatMap(user => user.user.account.wallets.map(wallet => wallet.address))
+
 interface Socials {
   x: string
   website: string

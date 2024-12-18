@@ -2,7 +2,7 @@ import { ProjectRound, VCSocial } from '@prisma/client'
 import type { Decimal } from '@prisma/client/runtime/library'
 
 import prisma from '@/db'
-import { VCProjectsResponse } from '@/types/VC.d'
+import { VCProjectsResponse, VCSubsDbResponse } from '@/types/VC.d'
 
 /**
  * Service class for managing Venture Capitalists (VCs) in the database.
@@ -259,4 +259,49 @@ export default class VCService {
 
     return subscriptionRenewalInterval
   }
+
+  /**
+   * Retrieves a list of subscribers (users who have joined the VC) for a specific venture capitalist (VC).
+   *
+   * This method queries the database to find all users who are subscribed to the given VC by its ID.
+   * It returns the associated user wallet information for each subscriber.
+   *
+   * @async
+   * @param {string} vcId - The unique identifier of the venture capitalist (VC). Must be a valid GUID.
+   *
+   * @returns {Promise<Array<{ user: { account: { wallets: Array<string> } } }>>}
+   * A promise that resolves to an array of subscriber data, where each item includes:
+   *   - `user`: An object containing user details.
+   *     - `account`: An object containing account information.
+   *       - `wallets`: An array of wallet addresses associated with the user.
+   *
+   * @throws {Error} Throws an error if the database query fails or if no VC with the given ID is found.
+   *
+   * @example
+   * const vcId = '4b509982-5dc0-4999-8fe7-e347f9764288';
+   * const subscribers = await getVCSubscribers(vcId);
+   * console.log(subscribers);
+   */
+
+  getVCSubscribers = async (vcId: string): Promise<VCSubsDbResponse> =>
+    await prisma.vC.findUniqueOrThrow({
+      where: {
+        id: vcId,
+      },
+      select: {
+        joinedUsers: {
+          select: {
+            user: {
+              select: {
+                account: {
+                  select: {
+                    wallets: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    })
 }
