@@ -45,6 +45,20 @@ export type VCProjectsResponse = {
   }[]
 }
 
+export type VCSubsDbResponse = {
+  joinedUsers: {
+    user: {
+      account: {
+        wallets: {
+          address: string
+          chain: Chain
+          accountsId: string | null
+        }[]
+      }
+    }
+  }[]
+}
+
 export type AllVCResponse = Pick<
   VC,
   'name' | 'description' | 'logoBase64' | 'subscriptionFee' | 'id'
