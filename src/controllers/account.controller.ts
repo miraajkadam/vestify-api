@@ -55,8 +55,6 @@ export const getWallets = async (
 
     const linkedWallets = await accountService.getLinkdWalletsFromDb(accountId)
 
-    if (!linkedWallets.length) return apiResponse.error('No linked wallets')
-
     return apiResponse.successWithData(linkedWallets, 'Attached wallets fetched successful')
   } catch (ex: unknown) {
     const error = ex as Error
