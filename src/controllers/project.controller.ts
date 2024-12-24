@@ -54,7 +54,7 @@ export const deleteProject = async (
   try {
     const { id } = req.body
 
-    if (!isValidGuid(id)) return apiResponse.error('Invalid project ID')
+    if (!id || typeof id !== 'string') return apiResponse.error('Invalid project ID')
 
     const ps = new ProjectService()
 
@@ -100,7 +100,7 @@ export const getProjectByProjectId = async (
   try {
     const { projectId: id } = req.params
 
-    if (!isValidGuid(id)) return apiResponse.error('Invalid project ID')
+    if (!id || typeof id !== 'string') return apiResponse.error('Invalid project ID')
 
     const ps = new ProjectService()
 
@@ -131,7 +131,7 @@ export const getInvestmentStatsForProject = async (
   try {
     const { projectId: id } = req.params
 
-    if (!isValidGuid(id)) return apiResponse.error('Invalid project ID')
+    if (!id || typeof id !== 'string') return apiResponse.error('Invalid project ID')
 
     const ps = new ProjectService()
 
