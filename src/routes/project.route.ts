@@ -5,6 +5,8 @@ import {
   addPool,
   addVestingScheduleCon,
   deleteProject,
+  deleteVestingSchedule,
+  editVestingSchedule,
   getAllProjects,
   getInvestmentStatsForProject,
   getProjectByProjectId,
@@ -706,6 +708,7 @@ projectRouter.get('/:projectId', getProjectByProjectId)
  */
 projectRouter.get('/:projectId/investmentStats', getInvestmentStatsForProject)
 
+// #region distribution pools
 /**
  * @swagger
  * /api/project/addPool:
@@ -887,7 +890,14 @@ projectRouter.post('/addPool', addPool)
  *                   example: "Unable to retrieve distribution pools"
  */
 projectRouter.get('/:projectId/distPools', getProjectDistPools)
+// #endregion
 
+// #region Vesting schedules
 projectRouter.post('/:projectId/addVestingSchedule', addVestingScheduleCon)
+
+projectRouter.delete('/:projectId/deleteVestingSchedule', deleteVestingSchedule)
+
+projectRouter.put('/:projectId/editVestingSchedule', editVestingSchedule)
+// #endregion
 
 export default projectRouter

@@ -153,6 +153,7 @@ export const getInvestmentStatsForProject = async (
   }
 }
 
+// #region Distribution pools
 export const addPool = async (
   req: Request<null, ApiResponse<AddDistributionPoolResponse>, AddDistributionPoolPayload>,
   res: Response<ApiResponse<AddDistributionPoolResponse>>
@@ -225,7 +226,9 @@ export const getProjectDistPools = async (
     return apiResponse.critical('Unable to add distribution pool', error)
   }
 }
+// #endregion
 
+// #region Vesting schedules
 export const addVestingScheduleCon = async (
   req: Request<{ projectId: string }, ApiResponse<null>, AddVestingSchedule, null>,
   res: Response<ApiResponse<null>>
@@ -247,6 +250,9 @@ export const addVestingScheduleCon = async (
     const isProjExist = await pService.checkProjectExistenceInDb(projectId)
     if (!isProjExist) return apiResponse.error('Project not found', 404)
 
+    const isExistingSchedule = await pService.checkExistingVestingScheduleInDb(projectId)
+    if (isExistingSchedule) return apiResponse.error('Schedule already created for the project')
+
     await pService.addVestingScheduleInDB(projectId, req.body)
 
     return apiResponse.success('Added vesting schedule')
@@ -256,3 +262,69 @@ export const addVestingScheduleCon = async (
     return apiResponse.critical('Unable to add vesting schedule', error)
   }
 }
+
+export const deleteVestingSchedule = async (
+  req: Request<{ projectId: string }, ApiResponse<null>>,
+  res: Response<ApiResponse<null>>
+) => {
+  const apiResponse = new ApiResponse<null>(res)
+
+  try {
+    const { projectId } = req.params
+
+    const validPId = validateProjectId(projectId)
+
+    if (!validPId) return apiResponse.error('Invalid project Id')
+
+    const pService = new ProjectService()
+
+    const isProjExist = await pService.checkProjectExistenceInDb(projectId)
+    if (!isProjExist) return apiResponse.error('Project not found', 404)
+
+    const isExistingSchedule = await pService.checkExistingVestingScheduleInDb(projectId)
+    if (!isExistingSchedule) return apiResponse.error(`Schedule doesn't exist`)
+
+    await pService.deleteVestingScheduleFromDb(projectId)
+
+    return apiResponse.success('Successfully deleted vesting schedule')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('Unable to delete vesting schedule', error)
+  }
+}
+
+export const editVestingSchedule = async (
+  req: Request<{ projectId: string }, ApiResponse<null>, AddVestingSchedule, null>,
+  res: Response<ApiResponse<null>>
+) => {
+  const apiResponse = new ApiResponse<null>(res)
+
+  try {
+    const { projectId } = req.params
+
+    const validPId = validateProjectId(projectId)
+
+    if (!validPId) return apiResponse.error('Invalid project Id')
+
+    const isValidPayload = isVestingScheduleValid(req.body)
+    if (!isValidPayload) return apiResponse.error('Invalid payload')
+
+    const pService = new ProjectService()
+
+    const isProjExist = await pService.checkProjectExistenceInDb(projectId)
+    if (!isProjExist) return apiResponse.error('Project not found', 404)
+
+    const isExistingSchedule = await pService.checkExistingVestingScheduleInDb(projectId)
+    if (!isExistingSchedule) return apiResponse.error(`Schedule doesn't exist`)
+
+    await pService.editVestingScheduleInDb(projectId, req.body)
+
+    return apiResponse.success('Edited vesting schedule')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('Unable to edit vesting schedule', error)
+  }
+}
+// #endregion
