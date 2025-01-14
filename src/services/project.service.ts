@@ -1,4 +1,4 @@
-import { ProjectRound } from '@prisma/client'
+import { Interval, ProjectRound } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 
 import prisma from '@/db'
@@ -537,7 +537,7 @@ export default class ProjectService {
    *
    * @async
    * @param {string} projectId - The unique identifier of the project whose vesting schedule is to be fetched.
-   * @returns {Promise<{ batchInterval: string, vestingBatch: { name: string, date: Date, percentage: Decimal }[] }>}
+   * @returns {Promise<{ batchInterval: string, vestingBatches: { name: string, date: Date, percentage: Decimal }[] }>}
    *          A promise that resolves to an object containing:
    *          - `batchInterval`: The interval between vesting batches (e.g., "MONTHLY").
    *          - `vestingBatch`: An array of vesting batches, each containing:
@@ -546,7 +546,12 @@ export default class ProjectService {
    *            - `percentage`: The percentage of the total allocation for the batch.
    * @throws {Error} Throws an error if the vesting schedule for the given project ID is not found.
    */
-  getVestingScheduleFromDB = async (projectId: string) => {
+  getVestingScheduleFromDB = async (
+    projectId: string
+  ): Promise<{
+    batchInterval: Interval
+    vestingBatches: { name: string; date: Date; percentage: Decimal }[]
+  }> => {
     const vestingSchedule = await prisma.vestingSchedule.findUniqueOrThrow({
       where: {
         projectsId: projectId,
@@ -566,7 +571,7 @@ export default class ProjectService {
     // Rename the 'VestingBatch' field to 'vestingBatch'
     return {
       batchInterval: vestingSchedule.batchInterval,
-      vestingBatch: vestingSchedule.VestingBatch,
+      vestingBatches: vestingSchedule.VestingBatch,
     }
   }
 

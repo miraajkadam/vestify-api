@@ -13,6 +13,7 @@ import type {
   ProjectTokenMetrics,
   ProjectWallet,
   VC,
+  VestingBatch,
 } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 
@@ -210,13 +211,18 @@ type AddressGroups = AddressGroup[]
 
 type AddVestingSchedule = {
   batchInterval: Interval
-  vestingBatches: VestingBatches[]
+  vestingBatches: VestingBatches<string>[]
 }
 
-type VestingBatches = {
-  name: string
-  date: string
-  percentage: number
+type VestingBatches<T extends string | Date = string> = {
+  name: VestingBatch['name']
+  date: T // Use the generic type for date, default is string
+  percentage: VestingBatch['percentage']
+}
+
+type GetVestingSchedule = {
+  batchInterval: Interval
+  vestingBatches: VestingBatches<Date>[]
 }
 
 // #endregion

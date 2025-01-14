@@ -17,6 +17,7 @@ import {
   AddressGroups,
   AddVestingSchedule,
   DeleteProjectApiPayload,
+  GetVestingSchedule,
   ProjectDetailsResponse,
   ProjectListResponse,
   ProjectProfileResponse,
@@ -325,6 +326,37 @@ export const editVestingSchedule = async (
     const error = ex as Error
 
     return apiResponse.critical('Unable to edit vesting schedule', error)
+  }
+}
+
+export const getVestingSchedule = async (
+  req: Request<{ projectId: string }, ApiResponse<GetVestingSchedule>>,
+  res: Response<ApiResponse<GetVestingSchedule>>
+) => {
+  const apiResponse = new ApiResponse<GetVestingSchedule>(res)
+
+  try {
+    const { projectId } = req.params
+
+    const validPId = validateProjectId(projectId)
+
+    if (!validPId) return apiResponse.error('Invalid project Id')
+
+    const pService = new ProjectService()
+
+    const isProjExist = await pService.checkProjectExistenceInDb(projectId)
+    if (!isProjExist) return apiResponse.error('Project not found', 404)
+
+    const isExistingSchedule = await pService.getVestingScheduleFromDB(projectId)
+    if (!isExistingSchedule) return apiResponse.error(`Schedule doesn't exist`)
+
+    const vestingSch = await pService.getVestingScheduleFromDB(projectId)
+
+    return apiResponse.successWithData(vestingSch, 'Fetched vesting schedule')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('Unable to fetch vesting schedule', error)
   }
 }
 // #endregion
