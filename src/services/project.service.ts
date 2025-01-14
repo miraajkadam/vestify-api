@@ -1,8 +1,12 @@
-import { ProjectRound } from '@prisma/client'
+import { Interval, ProjectRound } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 
 import prisma from '@/db'
-import type { AddDistributionPoolPayload, AddProjectApiPayload } from '@/types/Project'
+import type {
+  AddDistributionPoolPayload,
+  AddProjectApiPayload,
+  AddVestingSchedule,
+} from '@/types/Project'
 
 /**
  * Service class for managing projects in the database.
@@ -325,6 +329,7 @@ export default class ProjectService {
       },
     })
 
+  // #region distribution pools
   /**
    * Adds a new distribution pool to the database.
    *
@@ -396,6 +401,8 @@ export default class ProjectService {
       },
     })
 
+  // #endregion
+
   /**
    * Retrieves the main investors' wallet addresses for a given project.
    *
@@ -435,4 +442,183 @@ export default class ProjectService {
         },
       },
     })
+
+  // #region vesting schedule
+  /**
+   * Adds a new vesting schedule to the database for a specific project.
+   *
+   * This function creates a vesting schedule linked to a project and adds vesting batches
+   * to the schedule. Each vesting batch specifies a batch date and other relevant information.
+   *
+   * @async
+   * @param {string} projectId - The unique identifier of the project for which the vesting schedule is being added.
+   * @param {AddVestingSchedule} schedule - The vesting schedule data that includes the batch interval and vesting batches.
+   * @returns {Promise<void>} - A promise that resolves once the vesting schedule and its batches have been successfully created.
+   * @throws {Error} Throws an error if there is an issue adding the vesting schedule to the database.
+   */
+  addVestingScheduleInDB = async (
+    projectId: string,
+    schedule: AddVestingSchedule
+  ): Promise<void> => {
+    await prisma.vestingSchedule.create({
+      data: {
+        batchInterval: schedule.batchInterval,
+        Projects: {
+          connect: {
+            id: projectId,
+          },
+        },
+        VestingBatch: {
+          createMany: {
+            data: schedule.vestingBatches.map(item => ({
+              ...item,
+              date: new Date(item.date),
+            })),
+          },
+        },
+      },
+    })
+  }
+
+  /**
+   * Checks if a vesting schedule already exists for a given project.
+   *
+   * This function queries the database to see if a vesting schedule has been created
+   * for the specified project. It returns a boolean indicating whether a vesting schedule
+   * already exists for the project.
+   *
+   * @async
+   * @param {string} projectId - The unique identifier of the project to check for an existing vesting schedule.
+   * @returns {Promise<boolean>} - A promise that resolves to `true` if a vesting schedule exists for the project,
+   *                                otherwise `false`.
+   * @throws {Error} Throws an error if there is an issue checking the vesting schedule existence in the database.
+   *
+   * @example
+   * const exists = await checkExistingVestingScheduleInDb('0xf9492e17a');
+   * console.log(exists); // true or false
+   */
+  checkExistingVestingScheduleInDb = async (projectId: string): Promise<boolean> => {
+    const isExisting = await prisma.vestingSchedule.findUnique({
+      where: {
+        projectsId: projectId,
+      },
+    })
+
+    return isExisting !== null
+  }
+
+  /**
+   * Deletes a vesting schedule from the database for a specific project.
+   *
+   * This function removes the vesting schedule associated with the provided project ID.
+   * All vesting batches and related data will be deleted as well.
+   *
+   * @async
+   * @param {string} projectId - The unique identifier of the project for which the vesting schedule should be deleted.
+   * @returns {Promise<void>} - A promise that resolves once the vesting schedule has been successfully deleted.
+   * @throws {Error} Throws an error if there is an issue deleting the vesting schedule from the database.
+   *
+   * @example
+   * await deleteVestingScheduleFromDb('0xf9492e17a');
+   */
+  deleteVestingScheduleFromDb = async (projectId: string): Promise<void> => {
+    await prisma.vestingSchedule.delete({
+      where: {
+        projectsId: projectId,
+      },
+    })
+  }
+
+  /**
+   * Retrieves the vesting schedule for a given project from the database.
+   * This function fetches the batch interval and vesting batch details (name, date, percentage)
+   * for a specific project, and returns the vesting batch details with the field name renamed
+   * from 'VestingBatch' to 'vestingBatch'.
+   *
+   * @async
+   * @param {string} projectId - The unique identifier of the project whose vesting schedule is to be fetched.
+   * @returns {Promise<{ batchInterval: string, vestingBatches: { name: string, date: Date, percentage: Decimal }[] }>}
+   *          A promise that resolves to an object containing:
+   *          - `batchInterval`: The interval between vesting batches (e.g., "MONTHLY").
+   *          - `vestingBatch`: An array of vesting batches, each containing:
+   *            - `name`: The name of the vesting batch.
+   *            - `date`: The date of the vesting batch.
+   *            - `percentage`: The percentage of the total allocation for the batch.
+   * @throws {Error} Throws an error if the vesting schedule for the given project ID is not found.
+   */
+  getVestingScheduleFromDB = async (
+    projectId: string
+  ): Promise<{
+    batchInterval: Interval
+    vestingBatches: { name: string; date: Date; percentage: Decimal }[]
+  }> => {
+    const vestingSchedule = await prisma.vestingSchedule.findUniqueOrThrow({
+      where: {
+        projectsId: projectId,
+      },
+      select: {
+        batchInterval: true,
+        VestingBatch: {
+          select: {
+            name: true,
+            date: true,
+            percentage: true,
+          },
+        },
+      },
+    })
+
+    // Rename the 'VestingBatch' field to 'vestingBatch'
+    return {
+      batchInterval: vestingSchedule.batchInterval,
+      vestingBatches: vestingSchedule.VestingBatch,
+    }
+  }
+
+  /**
+   * Edits the vesting schedule for a given project by deleting the existing schedule and
+   * creating a new one with updated details. This method updates the batch interval and
+   * the associated vesting batches (name, date, and percentage) for the specified project.
+   *
+   * @async
+   * @param {string} projectId - The unique identifier of the project whose vesting schedule is to be updated.
+   * @param {AddVestingSchedule} schedule - The new vesting schedule details, including:
+   *          - `batchInterval`: The interval between vesting batches (e.g., "MONTHLY").
+   *          - `vestingBatches`: An array of vesting batch objects containing:
+   *            - `name`: The name of the vesting batch.
+   *            - `date`: The date of the vesting batch.
+   *            - `percentage`: The percentage of the total allocation for the batch.
+   * @returns {Promise<void>} A promise that resolves when the vesting schedule has been successfully updated.
+   * @throws {Error} Throws an error if there is an issue deleting or creating the vesting schedule in the database.
+   */
+  editVestingScheduleInDb = async (
+    projectId: string,
+    schedule: AddVestingSchedule
+  ): Promise<void> => {
+    await prisma.vestingSchedule.delete({
+      where: {
+        projectsId: projectId,
+      },
+    })
+
+    await prisma.vestingSchedule.create({
+      data: {
+        batchInterval: schedule.batchInterval,
+        Projects: {
+          connect: {
+            id: projectId,
+          },
+        },
+        VestingBatch: {
+          createMany: {
+            data: schedule.vestingBatches.map(item => ({
+              ...item,
+              date: new Date(item.date),
+            })),
+          },
+        },
+      },
+    })
+  }
+  // #endregion
 }

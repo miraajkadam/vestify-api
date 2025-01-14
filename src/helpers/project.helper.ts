@@ -6,10 +6,12 @@ import {
   AddDistributionPoolPayload,
   AddProjectApiPayload,
   AddressGroup,
+  AddVestingSchedule,
   ProjectDetailsResponse,
   ProjectProfileDbResponse,
 } from '@/types/Project'
 import { isValidDateStr, isValidGuid } from '@/utils/common'
+import { isValidISODate } from '@/utils/date'
 import {
   isValidDiscordLink,
   isValidMediumLink,
@@ -307,6 +309,83 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload): bool
 
   return true
 }
+
+// #region vesting batches
+/**
+ * Validates if the provided project ID is a non-empty string.
+ *
+ * This function checks whether the input `projectId` is a string and ensures it is not an empty or whitespace-only string.
+ *
+ * @param {string} projectId - The project ID to validate.
+ * @returns {boolean} - Returns `true` if the project ID is a non-empty, valid string, otherwise `false`.
+ *
+ * @example
+ * validateProjectId('0xb12366ds'); // returns true
+ * validateProjectId('');           // returns false
+ * validateProjectId('   ');        // returns false
+ * validateProjectId(null);         // TypeScript will show an error, as `projectId` should be a string
+ */
+export const validateProjectId = (projectId: string): boolean =>
+  typeof projectId === 'string' && projectId.trim().length > 0
+
+export const isVestingScheduleValid = (payload: AddVestingSchedule) => {
+  // Step 1: Validate 'batchInterval' field
+  const validIntervals = ['MONTHLY', 'QUARTERLY', 'ANNUALLY']
+  if (!payload.batchInterval || !validIntervals.includes(payload.batchInterval)) {
+    return false
+  }
+
+  // Step 2: Validate 'vestingBatches' array
+  if (!Array.isArray(payload.vestingBatches) || payload.vestingBatches.length === 0) {
+    return false
+  }
+
+  let totalPercentage = 0 // To keep track of the total percentage
+  let previousDate = null // To store the date of the previous batch for comparison
+
+  // Step 3: Validate each vesting batch
+  for (const batch of payload.vestingBatches) {
+    if (typeof batch !== 'object' || !batch) {
+      return false
+    }
+
+    const { name, date, percentage } = batch
+
+    // Validate 'name' - should be a string
+    if (typeof name !== 'string' || name.trim() === '') {
+      return false
+    }
+
+    // Validate 'date' - should be a valid ISO 8601 date string
+    if (!isValidISODate(date)) {
+      return false
+    }
+
+    // Check if dates are in incremental order
+    if (previousDate && new Date(date) <= new Date(previousDate)) {
+      return false // The current date must be later than the previous date
+    }
+
+    // Validate 'percentage' - should be a number between 0 and 100
+    if (typeof percentage !== 'number' || percentage < 0 || percentage > 100) {
+      return false
+    }
+
+    // Add the current batch's percentage to the total
+    totalPercentage += percentage
+
+    // Update previousDate for the next iteration
+    previousDate = date
+  }
+
+  // Step 4: Check if the total percentage is exactly 100
+  if (totalPercentage !== 100) {
+    return false
+  }
+
+  return true
+}
+//#endregion
 
 // #region distribution pools
 /**
