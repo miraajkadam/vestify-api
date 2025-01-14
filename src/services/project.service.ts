@@ -2,7 +2,11 @@ import { ProjectRound } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 
 import prisma from '@/db'
-import type { AddDistributionPoolPayload, AddProjectApiPayload } from '@/types/Project'
+import type {
+  AddDistributionPoolPayload,
+  AddProjectApiPayload,
+  AddVestingSchedule,
+} from '@/types/Project'
 
 /**
  * Service class for managing projects in the database.
@@ -435,4 +439,25 @@ export default class ProjectService {
         },
       },
     })
+
+  addVestingScheduleInDB = async (projectId: string, schedule: AddVestingSchedule) => {
+    await prisma.vestingSchedule.create({
+      data: {
+        batchInterval: schedule.batchInterval,
+        Projects: {
+          connect: {
+            id: projectId,
+          },
+        },
+        VestingBatch: {
+          createMany: {
+            data: schedule.vestingBatches.map(item => ({
+              ...item,
+              date: new Date(item.date),
+            })),
+          },
+        },
+      },
+    })
+  }
 }

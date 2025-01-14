@@ -1,6 +1,7 @@
 import type {
   CurrentProjectTokenMetrics,
   DistributionPool,
+  Interval,
   PastProjectTokenMetrics,
   ProjectDeals,
   ProjectPartnersAndInvestors,
@@ -202,5 +203,20 @@ type AddressGroup = {
 }
 
 type AddressGroups = AddressGroup[]
+
+// #endregion
+
+// #region Vesting Schedule
+
+type AddVestingSchedule = {
+  batchInterval: Interval
+  vestingBatches: VestingBatches[]
+}
+
+type VestingBatches = {
+  name: string
+  date: string
+  percentage: number
+}
 
 // #endregion

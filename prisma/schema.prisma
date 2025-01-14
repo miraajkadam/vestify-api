@@ -147,6 +147,7 @@ model Projects {
   projectPartnersAndInvestors ProjectPartnersAndInvestors[]
   projectSocials              ProjectSocials                @relation(fields: [id], references: [id], onDelete: Cascade, map: "ProjectSocials_Project_Id")
   projectWallet               ProjectWallet                 @relation(fields: [id], references: [id], onDelete: Cascade, map: "ProjectWallet_Project_Id")
+  VestingSchedule             VestingSchedule?
 
   VC   VC     @relation(fields: [vcId], references: [id], onDelete: Cascade)
   vcId String @map("VCId")
@@ -234,6 +235,26 @@ model ProjectWallet {
   walletAddress String @map("WalletAddress")
 
   Projects Projects?
+}
+
+// Todo: Change VestingScheudle - Project to mandatory one-to-one relation
+model VestingSchedule {
+  id            String   @id @unique @default(uuid()) @map("Id")
+  batchInterval Interval @map("BatchInterval")
+
+  VestingBatch VestingBatch[]
+  Projects     Projects?      @relation(fields: [projectsId], references: [id])
+  projectsId   String?        @unique
+}
+
+model VestingBatch {
+  id         String   @id @unique @default(uuid()) @map("Id")
+  name       String   @map("Name")
+  date       DateTime @map("Date")
+  percentage Decimal  @map("Percentage")
+
+  VestingSchedule   VestingSchedule @relation(fields: [vestingScheduleId], references: [id], onDelete: Cascade)
+  vestingScheduleId String          @map("VestingScheduleId")
 }
 
 // endregion

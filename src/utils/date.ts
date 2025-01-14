@@ -57,3 +57,26 @@ export const isOlderThanOneYear = (date: Date) => {
   // Compare the provided date with one year ago
   return date < oneYearAgo
 }
+
+/**
+ * Validates if the given date string is a valid ISO 8601 date.
+ *
+ * This function checks if the provided date string can be parsed by JavaScript's `Date` object
+ * and if the result is a valid date. It ensures the date is in ISO 8601 format (e.g., "2025-01-01T00:00:00.000Z").
+ *
+ * @param {string} dateStr - The date string to be validated.
+ * @returns {boolean} `true` if the date is valid, `false` otherwise.
+ */
+export const isValidISODate = (dateStr: string): boolean => {
+  const parsedDate = Date.parse(dateStr)
+
+  // Check if the parsed date is a valid date
+  if (isNaN(parsedDate)) {
+    return false
+  }
+
+  // Ensure that the date string matches the ISO 8601 format
+  const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/
+
+  return isoRegex.test(dateStr)
+}

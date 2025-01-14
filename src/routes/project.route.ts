@@ -3,6 +3,7 @@ import { Router } from 'express'
 import {
   addNewProject,
   addPool,
+  addVestingScheduleCon,
   deleteProject,
   getAllProjects,
   getInvestmentStatsForProject,
@@ -886,5 +887,7 @@ projectRouter.post('/addPool', addPool)
  *                   example: "Unable to retrieve distribution pools"
  */
 projectRouter.get('/:projectId/distPools', getProjectDistPools)
+
+projectRouter.post('/:projectId/addVestingSchedule', addVestingScheduleCon)
 
 export default projectRouter
