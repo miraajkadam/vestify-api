@@ -4,9 +4,11 @@ import {
   getProjectDistributionPools,
   isAddNewProjectPayloadValid,
   isVestingScheduleValid,
+  mapAddressesToUsers,
   strProjForResponse,
   strRespFrInvestmentStats,
   validateAddDistributionPoolPayload,
+  validateDistPoolsDetailsParams,
   validateProjectId,
 } from '@/helpers/project.helper'
 import { ProjectService } from '@/services'
@@ -17,6 +19,7 @@ import {
   AddressGroups,
   AddVestingSchedule,
   DeleteProjectApiPayload,
+  GetDistributionPoolResponse,
   GetVestingSchedule,
   ProjectDetailsResponse,
   ProjectListResponse,
@@ -227,6 +230,86 @@ export const getProjectDistPools = async (
     return apiResponse.critical('Unable to add distribution pool', error)
   }
 }
+
+export const deleteAllProjectDistributionPools = async (
+  req: Request<{ projectId: string }, ApiResponse<null>>,
+  res: Response<ApiResponse<null>>
+) => {
+  const apiResponse = new ApiResponse<null>(res)
+
+  try {
+    const { projectId } = req.params
+
+    const invalidPId = !projectId || typeof projectId !== 'string'
+
+    if (invalidPId) return apiResponse.error('Invalid project Id')
+
+    const pService = new ProjectService()
+
+    await pService.deleteAllDistributionPoolFromDb(projectId)
+
+    return apiResponse.success('Successfully deleted all distribution pools')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('Unable to delete all distribution pool', error)
+  }
+}
+
+export const getProjectDistPoolDetails = async (
+  req: Request<{ distPoolId: string }, ApiResponse<GetDistributionPoolResponse>>,
+  res: Response<ApiResponse<GetDistributionPoolResponse>>
+) => {
+  const apiResponse = new ApiResponse<GetDistributionPoolResponse>(res)
+
+  try {
+    const { distPoolId } = req.params
+
+    const isParamsValid = validateDistPoolsDetailsParams(distPoolId)
+
+    if (!isParamsValid) return apiResponse.error('Invalid distribution pool id')
+
+    const pService = new ProjectService()
+
+    const distPool = await pService.getDistributionPoolFromDb(distPoolId)
+
+    if (!distPool) return apiResponse.error('Distribution pool not found')
+
+    // const mappedAddresses = mapAddressesToUsers(distPool.addresses)
+
+    return apiResponse.successWithData(distPool, 'Successfully fetched distribution pool')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('Unable to fetch distribution pool', error)
+  }
+}
+
+export const deleteProjectDistributionPool = async (
+  req: Request<{ distPoolId: string }, ApiResponse<null>>,
+  res: Response<ApiResponse<null>>
+) => {
+  const apiResponse = new ApiResponse<null>(res)
+
+  try {
+    const { distPoolId } = req.params
+
+    const isParamsValid = validateDistPoolsDetailsParams(distPoolId)
+
+    if (!isParamsValid) return apiResponse.error('Invalid distribution pool id')
+
+    const pService = new ProjectService()
+
+    await pService.deleteDistributionPoolFromDb(distPoolId)
+
+    return apiResponse.success('Successfully deleted distribution pool')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('Unable to delete distribution pool', error)
+  }
+}
+
 // #endregion
 
 // #region Vesting schedules
