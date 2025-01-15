@@ -44,8 +44,8 @@ model Users {
 
   joinedCapitals   UsersJoinedCapitals[]
   investedProjects UsersInvestedProjects[]
-
-  account Accounts @relation(fields: [id], references: [id], onDelete: Cascade)
+  userSocial       UserSocial              @relation(fields: [id], references: [id], onDelete: Cascade, map: "UserSocial_User_ID")
+  account          Accounts                @relation(fields: [id], references: [id], onDelete: Cascade)
 }
 
 model UsersJoinedCapitals {
@@ -82,6 +82,15 @@ model UsersInvestedProjects {
   transactionId   String   @map("TransactionId")
 
   @@id([id, userId, projectId])
+}
+
+model UserSocial {
+  id String @id @unique @map("Id")
+
+  x       String @map("X")
+  discord String @map("Discord")
+
+  user Users?
 }
 
 // endregion
