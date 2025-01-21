@@ -59,3 +59,20 @@ export const isValidDateStr = (dateString: string): boolean => {
  */
 export const isValidDateObj = (date: Date): boolean =>
   date instanceof Date && !isNaN(date.getTime())
+
+/**
+ * Returns a random whole number between two specified numbers (inclusive).
+ *
+ * @param {number} min - The lower bound (inclusive) of the range.
+ * @param {number} max - The upper bound (inclusive) of the range.
+ * @returns {number} A random whole number between `min` and `max`.
+ *
+ * @example
+ * // Returns a random number between 5 and 10 (inclusive)
+ * const randomNumber = getRandomBetween(5, 10);
+ * console.log(randomNumber);
+ */
+export const getRandomBetween = (min: number, max: number): number =>
+  Math.floor(Math.random() * (max - min + 1)) + min
+
+export const getRandomBoolean = () => Math.random() < 0.5 /* 50% chance for true or false*/ // 50% chance for true or false
