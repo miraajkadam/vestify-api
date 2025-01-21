@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker'
 import { Chain } from '@prisma/client'
 
 /**
@@ -81,3 +82,5 @@ export const isValidWalletAddress = (chain: Chain, walletAddress: string): boole
 
   return true
 }
+
+export const genRandomETHAddress = () => faker.finance.ethereumAddress()
