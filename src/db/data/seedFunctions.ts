@@ -458,8 +458,6 @@ export const userProjectsInvestment = async (vcIds: string[]) => {
       },
     })
 
-    const usersWithWallets = subscribedUsers as { userId: string; wallets: string[] }[]
-
     const userWithWalletsNew = [] as { userId: string; wallets: string[] }[]
 
     for await (const { userId } of subscribedUsers) {
@@ -490,8 +488,6 @@ export const userProjectsInvestment = async (vcIds: string[]) => {
           projectRoundDetails: { maximum, minimum },
           projectWallet: { walletAddress },
         }) => {
-          console.log(wallets)
-
           const userWallet = faker.helpers.arrayElements(wallets, 1)[0]
           const randomTransaction = getRandomTransaction(
             minimum.toNumber(),
