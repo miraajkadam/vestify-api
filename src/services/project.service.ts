@@ -401,6 +401,19 @@ export default class ProjectService {
       },
     })
 
+  deleteDistributionPoolFromDb = async (distPoolId: string) =>
+    await prisma.distributionPool.delete({
+      where: {
+        id: distPoolId,
+      },
+    })
+
+  deleteAllDistributionPoolFromDb = async (projectId: string) =>
+    await prisma.distributionPool.deleteMany({
+      where: {
+        projectsId: projectId,
+      },
+    })
   // #endregion
 
   /**

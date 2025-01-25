@@ -42,7 +42,19 @@ export default class AuthService {
               },
             },
           }
-        : { user: { create: {} } }
+        : {
+            user: {
+              create: {
+                userSocial: {
+                  create: {
+                    id,
+                    discord: '',
+                    x: '',
+                  },
+                },
+              },
+            },
+          }
 
     await prisma.accounts.update({
       where: { id },

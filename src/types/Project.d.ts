@@ -197,6 +197,8 @@ export type AddDistributionPoolPayload = {
 
 export type AddDistributionPoolResponse = DistributionPool['id']
 
+export type GetDistributionPoolResponse = Omit<AddDistributionPoolPayload, 'projectId'>
+
 type AddressGroup = {
   addresses: string[]
   name: string

@@ -485,4 +485,12 @@ export const getProjectDistributionPools = async (projectId: string): Promise<Ad
 
   return Object.values(merge)
 }
+
+export const validateDistPoolsDetailsParams = (distPoolId: string) => {
+  const validDistPoolId = isValidGuid(distPoolId)
+
+  if (!validDistPoolId) return false
+
+  return true
+}
 // #endregion

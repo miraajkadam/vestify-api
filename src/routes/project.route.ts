@@ -4,9 +4,12 @@ import {
   addNewProject,
   addPool,
   addVestingScheduleCon,
+  deleteAllProjectDistributionPools,
+  deleteProjectDistributionPool,
   deleteVestingSchedule,
   editVestingSchedule,
   getInvestmentStatsForProject,
+  getProjectDistPoolDetails,
   getProjectDistPools,
   getVestingSchedule,
 } from '@/controllers/project.controller'
@@ -567,6 +570,13 @@ projectRouter.post('/addPool', addPool)
  *                   example: "Unable to retrieve distribution pools"
  */
 projectRouter.get('/:projectId/distPools', getProjectDistPools)
+
+projectRouter.delete('/:projectId/deleteAllDistPools', deleteAllProjectDistributionPools)
+
+projectRouter.get('/distPool/:distPoolId/details', getProjectDistPoolDetails)
+
+projectRouter.delete('/distPool/:distPoolId/delete', deleteProjectDistributionPool)
+
 // #endregion
 
 // #region Vesting schedules
