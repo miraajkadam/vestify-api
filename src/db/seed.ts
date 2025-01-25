@@ -1,10 +1,16 @@
 import prisma from '@/db'
 import { genRandomETHAddress } from '@/utils/web3'
 import { v4 as uuid } from 'uuid'
-import { createProjects, createUserAccounts, createVCAccounts } from './data/seedFunctions'
+import {
+  createProjects,
+  createUserAccounts,
+  createVCAccounts,
+  userProjectsInvestment,
+  userSubscribeVCs,
+} from './data/seedFunctions'
 
 async function main() {
-  const [userNum, vcNum, projectsNum] = [100, 2, 5]
+  const [userNum, vcNum, maxProjectsPerVC] = [10, 5, 3]
 
   const userIds = Array.from({ length: userNum }, () => uuid())
   const userWallets = Array.from({ length: userNum }, () => genRandomETHAddress())
@@ -12,15 +18,25 @@ async function main() {
   const vcIds = Array.from({ length: vcNum }, () => uuid())
   const vcWallets = Array.from({ length: vcNum }, () => genRandomETHAddress())
 
-  await createVCAccounts(vcIds, vcWallets)
+  const vcsPromise = await createVCAccounts(vcIds, vcWallets)
 
-  await createUserAccounts(userIds, userWallets)
+  const usersPromise = await createUserAccounts(userIds, userWallets)
 
-  const projectAddresses = Array.from({ length: projectsNum }, () => genRandomETHAddress())
+  const projectsCreationPromise = Promise.all([vcsPromise]).then(async () => {
+    await createProjects(vcIds, userWallets, maxProjectsPerVC)
+  })
 
-  const projectWallets = Array.from({ length: projectsNum }, () => genRandomETHAddress())
+  const vcSubscriptionPromise = Promise.all([vcsPromise, usersPromise]).then(async () => {
+    return setTimeout(async () => {
+      await userSubscribeVCs(userIds, vcIds).then(async () => {
+        await userProjectsInvestment(vcIds)
+      })
+    }, 1000)
+  })
 
-  await createProjects(projectAddresses, projectWallets, vcIds, userWallets)
+  // Promise.all([vcSubscriptionPromise]).then(async () => {
+  //   console.log('2')
+  // })
 }
 
 main()
