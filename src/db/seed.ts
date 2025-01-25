@@ -12,11 +12,13 @@ async function main() {
   const vcIds = Array.from({ length: vcNum }, () => uuid())
   const vcWallets = Array.from({ length: vcNum }, () => genRandomETHAddress())
 
-  await createVCAccounts(vcIds, vcWallets)
+  const vcsPromise = await createVCAccounts(vcIds, vcWallets)
 
-  await createUserAccounts(userIds, userWallets)
+  const usersPromise = await createUserAccounts(userIds, userWallets)
 
-  const projectAddresses = Array.from({ length: projectsNum }, () => genRandomETHAddress())
+  const projectsCreationPromise = Promise.all([vcsPromise]).then(async () => {
+    await createProjects(vcIds, userWallets, maxProjectsPerVC)
+  })
 
   const projectWallets = Array.from({ length: projectsNum }, () => genRandomETHAddress())
 

@@ -1,8 +1,9 @@
+import prisma from '@/db'
 import { getRandomBetween, getRandomBoolean } from '@/utils/common'
+import { genRandomETHAddress } from '@/utils/web3'
 import { faker } from '@faker-js/faker'
 import { AccountType, Chain, Interval, ProjectRound, Release } from '@prisma/client'
-import { getRandomValues } from 'crypto'
-import prisma from '@/db'
+import { getRandomValues, randomUUID } from 'crypto'
 
 // #region sample arrays
 const WEB_3_TAGS = [
@@ -331,14 +332,18 @@ const randomPartnersAndInvestors = (num: number) => {
 }
 
 export const createProjects = async (
-  projectIds: string[],
-  walletAddresses: string[],
   vcIds: string[],
-  userIds: string[]
+  userIds: string[],
+  maxProjectsPerVC: number
 ) => {
-  projectIds.forEach(async (projectId: string, index) => {
+  vcIds.forEach(async vcId => {
+    const randomMaxProj = faker.number.int({ min: 1, max: maxProjectsPerVC })
+
+    const projectAddresses = Array.from({ length: randomMaxProj }, () => genRandomETHAddress())
+    const projectWallets = Array.from({ length: randomMaxProj }, () => genRandomETHAddress())
+
+    projectAddresses.forEach(async (projectId: string, index) => {
     const randomProject = genRandProjData(userIds)
-    const randomVcId = faker.helpers.arrayElements(vcIds, 1)[0]
 
     await prisma.projectRoundDetails.create({
       data: {
@@ -365,14 +370,14 @@ export const createProjects = async (
       data: {
         id: projectId,
         chain: Chain.EVM,
-        walletAddress: walletAddresses[index],
+          walletAddress: projectWallets[index],
       },
     })
 
     await prisma.projects.create({
       data: {
         id: projectId,
-        vcId: randomVcId,
+          vcId: vcId,
         ...randomProject.info,
         projectPartnersAndInvestors: {
           createMany: {
@@ -390,6 +395,7 @@ export const createProjects = async (
           },
         },
       },
+      })
     })
   })
 }
@@ -399,6 +405,8 @@ const generateTicker = () => {
   const ticker = faker.string.alpha({ length, casing: 'upper' })
   return ticker
 }
+// #endregion
+
 // #endregion
 
 // #region Common
