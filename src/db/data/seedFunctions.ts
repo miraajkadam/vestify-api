@@ -232,7 +232,7 @@ export const createUserAccounts = async (userIds: string[], wallets: string[]) =
 // #endregion
 
 // #region Projects
-const genRandProjData = (addresses: string[]) => {
+const genRandProjData = () => {
   const { discord, x, medium, telegram, website } = generateRandomSocials()
 
   return {
@@ -270,7 +270,7 @@ const genRandProjData = (addresses: string[]) => {
     },
     teamAndAdvisors: randomTeamAndAdvisors(faker.number.int({ min: 3, max: 10 })),
     partnersAndInvestors: randomPartnersAndInvestors(faker.number.int({ min: 3, max: 10 })),
-    distributionPools: randomDistributionPools(faker.number.int({ min: 3, max: 7 }), addresses),
+    distributionPools: [],
     vestingSchedule: randomVestingSchedule(),
   }
 }
@@ -297,6 +297,47 @@ const randomDistributionPools = (num: number, addresses: string[]) => {
   }
 
   return randomPools
+}
+
+export const createProjectDistributionPools = async () => {
+  const projects = await prisma.projects.findMany({
+    select: {
+      id: true,
+      investedUsers: {
+        select: {
+          user: {
+            select: {
+              account: {
+                select: {
+                  wallets: {
+                    select: {
+                      address: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+
+  for await (const project of projects) {
+    const randData = randomDistributionPools(
+      5,
+      project.investedUsers.map(u => u.user.account.wallets.map(w => w.address)).flat()
+    )
+
+    randData.forEach(async data => {
+      await prisma.distributionPool.create({
+        data: {
+          projectsId: project.id,
+          ...data,
+        },
+      })
+    })
+  }
 }
 
 const randomTeamAndAdvisors = (num: number) => {
@@ -331,11 +372,7 @@ const randomPartnersAndInvestors = (num: number) => {
   return randomPaI
 }
 
-export const createProjects = async (
-  vcIds: string[],
-  userIds: string[],
-  maxProjectsPerVC: number
-) => {
+export const createProjects = async (vcIds: string[], maxProjectsPerVC: number) => {
   vcIds.forEach(async vcId => {
     const randomMaxProj = faker.number.int({ min: 1, max: maxProjectsPerVC })
 
@@ -343,7 +380,7 @@ export const createProjects = async (
     const projectWallets = Array.from({ length: randomMaxProj }, () => genRandomETHAddress())
 
     projectAddresses.forEach(async (projectId: string, index) => {
-      const randomProject = genRandProjData(userIds)
+      const randomProject = genRandProjData()
 
       await prisma.projectRoundDetails.create({
         data: {
@@ -458,7 +495,7 @@ export const userProjectsInvestment = async (vcIds: string[]) => {
       },
     })
 
-    const userWithWalletsNew = [] as { userId: string; wallets: string[] }[]
+    const userWithWallets = [] as { userId: string; wallets: string[] }[]
 
     for await (const { userId } of subscribedUsers) {
       const wallets = await prisma.wallet.findMany({
@@ -470,13 +507,13 @@ export const userProjectsInvestment = async (vcIds: string[]) => {
         },
       })
 
-      userWithWalletsNew.push({
+      userWithWallets.push({
         userId,
         wallets: wallets.map(wallet => wallet.address),
       })
     }
 
-    userWithWalletsNew.forEach(({ userId, wallets }) => {
+    userWithWallets.forEach(({ userId, wallets }) => {
       const randomInvestableProjects = faker.helpers.arrayElements(
         projectIds,
         getRandomBetween(1, projectIds.length)
