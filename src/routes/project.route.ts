@@ -528,7 +528,7 @@ projectRouter.post('/addPool', addPool)
  *                       example: "0x1234abcd5678efgh"
  *                   id:
  *                     type: string
- *                     example: "abc123"
+ *                     example: "1c30cc8e-ad15-480e-9593-82a3a8ecc82c"
  *       '400':
  *         description: Invalid project ID format
  *         content:
@@ -571,10 +571,269 @@ projectRouter.post('/addPool', addPool)
  */
 projectRouter.get('/:projectId/distPools', getProjectDistPools)
 
+/**
+ * @swagger
+ * /api/project/{projectId}/deleteAllDistPools:
+ *   delete:
+ *     summary: Delete all distribution pools of a project
+ *     description: Deletes all distribution pools associated with a specific project using the projectId. Returns an error if the projectId is invalid or not found.
+ *     tags: [Project]
+ *     parameters:
+ *       - name: projectId
+ *         in: path
+ *         description: The unique ID of the project to delete distribution pools for.
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "c87b0321-f22e-4bc6-929d-3a42fec2e227"
+ *     responses:
+ *       '200':
+ *         description: Successfully deleted all distribution pools for the project
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Successfully deleted all distribution pools"
+ *       '400':
+ *         description: Invalid project ID format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid project Id"
+ *       '404':
+ *         description: Project not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Project not found"
+ *       '500':
+ *         description: Internal server error while deleting distribution pools
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to delete all distribution pools"
+ */
 projectRouter.delete('/:projectId/deleteAllDistPools', deleteAllProjectDistributionPools)
 
+/**
+ * @swagger
+ * /api/project/distPool/{distPoolId}/details:
+ *   get:
+ *     summary: Get details of a specific distribution pool
+ *     description: Fetches details of a specific distribution pool by its distPoolId, including associated investments and user details.
+ *     tags: [Project]
+ *     parameters:
+ *       - name: distPoolId
+ *         in: path
+ *         description: The unique ID of the distribution pool to fetch details for.
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "1c30cc8e-ad15-480e-9593-82a3a8ecc82c"
+ *     responses:
+ *       '200':
+ *         description: Successfully retrieved the distribution pool details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Successfully fetched distribution pool"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     info:
+ *                       type: object
+ *                       properties:
+ *                         addresses:
+ *                           type: array
+ *                           items:
+ *                             type: string
+ *                             example: "0x4b3316e6d309afcacdef6aedf839edfdf2a1cdad"
+ *                         projectsId:
+ *                           type: string
+ *                           example: "0x6af5e22dfddadac2de6bc9ebe4b6f272ed06da80"
+ *                         fee:
+ *                           type: string
+ *                           example: "92"
+ *                         maxAllocation:
+ *                           type: string
+ *                           example: "7144"
+ *                         minAllocation:
+ *                           type: string
+ *                           example: "50"
+ *                         name:
+ *                           type: string
+ *                           example: "Founding Groups"
+ *                     investments:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           socials:
+ *                             type: object
+ *                             properties:
+ *                               x:
+ *                                 type: string
+ *                                 example: "https://x.com/Vaughn.Beer"
+ *                               discord:
+ *                                 type: string
+ *                                 example: "https://discord.gg/Vaughn.Beer"
+ *                           investment:
+ *                             type: object
+ *                             properties:
+ *                               amount:
+ *                                 type: number
+ *                                 example: 290.175
+ *                               fromWallet:
+ *                                 type: string
+ *                                 example: "0x4b3316e6d309afcacdef6aedf839edfdf2a1cdad"
+ *                               toWallet:
+ *                                 type: string
+ *                                 example: "0x8c7baecee03bbf680c7cdb2b5c6bbbe34db02ff3"
+ *       '400':
+ *         description: Invalid distribution pool ID format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid distribution pool id"
+ *       '404':
+ *         description: Distribution pool not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Distribution pool not found"
+ *       '500':
+ *         description: Internal server error while fetching distribution pool details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to fetch distribution pool"
+ */
 projectRouter.get('/distPool/:distPoolId/details', getProjectDistPoolDetails)
 
+/**
+ * @swagger
+ * /api/project/distPool/{distPoolId}/delete:
+ *   delete:
+ *     summary: Delete a specific distribution pool
+ *     description: Deletes a distribution pool associated with a specific project using the distPoolId. Returns an error if the distPoolId is invalid or the pool is not found.
+ *     tags: [Project]
+ *     parameters:
+ *       - name: distPoolId
+ *         in: path
+ *         description: The unique ID of the distribution pool to delete.
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "abc123"
+ *     responses:
+ *       '200':
+ *         description: Successfully deleted the distribution pool
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Successfully deleted distribution pool"
+ *       '400':
+ *         description: Invalid distribution pool ID format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid distribution pool id"
+ *       '404':
+ *         description: Distribution pool not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Distribution pool not found"
+ *       '500':
+ *         description: Internal server error while deleting distribution pool
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to delete distribution pool"
+ */
 projectRouter.delete('/distPool/:distPoolId/delete', deleteProjectDistributionPool)
 
 // #endregion
