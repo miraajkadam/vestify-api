@@ -2,6 +2,7 @@ import prisma from '@/db'
 import { genRandomETHAddress } from '@/utils/web3'
 import { v4 as uuid } from 'uuid'
 import {
+  createProjectDistributionPools,
   createProjects,
   createUserAccounts,
   createVCAccounts,
@@ -23,13 +24,17 @@ async function main() {
   const usersPromise = await createUserAccounts(userIds, userWallets)
 
   const projectsCreationPromise = Promise.all([vcsPromise]).then(async () => {
-    await createProjects(vcIds, userWallets, maxProjectsPerVC)
+    await createProjects(vcIds, maxProjectsPerVC)
   })
 
   const vcSubscriptionPromise = Promise.all([vcsPromise, usersPromise]).then(async () => {
     return setTimeout(async () => {
       await userSubscribeVCs(userIds, vcIds).then(async () => {
-        await userProjectsInvestment(vcIds)
+        await userProjectsInvestment(vcIds).then(async () => {
+          setTimeout(async () => {
+            await createProjectDistributionPools()
+          }, 2000)
+        })
       })
     }, 1000)
   })
