@@ -401,6 +401,19 @@ export default class ProjectService {
       },
     })
 
+  deleteDistributionPoolFromDb = async (distPoolId: string) =>
+    await prisma.distributionPool.delete({
+      where: {
+        id: distPoolId,
+      },
+    })
+
+  deleteAllDistributionPoolFromDb = async (projectId: string) =>
+    await prisma.distributionPool.deleteMany({
+      where: {
+        projectsId: projectId,
+      },
+    })
   // #endregion
 
   /**
@@ -442,6 +455,24 @@ export default class ProjectService {
         },
       },
     })
+
+  getDistributionPoolFromDb = async (distPoolId: string) => {
+    const distPool = await prisma.distributionPool.findUnique({
+      where: {
+        id: distPoolId,
+      },
+      select: {
+        addresses: true,
+        projectsId: true,
+        fee: true,
+        maxAllocation: true,
+        minAllocation: true,
+        name: true,
+      },
+    })
+
+    return distPool
+  }
 
   // #region vesting schedule
   /**

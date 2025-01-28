@@ -44,8 +44,8 @@ model Users {
 
   joinedCapitals   UsersJoinedCapitals[]
   investedProjects UsersInvestedProjects[]
-
-  account Accounts @relation(fields: [id], references: [id], onDelete: Cascade)
+  userSocial       UserSocial              @relation(fields: [id], references: [id], onDelete: Cascade, map: "UserSocial_User_ID")
+  account          Accounts                @relation(fields: [id], references: [id], onDelete: Cascade)
 }
 
 model UsersJoinedCapitals {
@@ -84,6 +84,15 @@ model UsersInvestedProjects {
   @@id([id, userId, projectId])
 }
 
+model UserSocial {
+  id String @id @unique @map("Id")
+
+  x       String @map("X")
+  discord String @map("Discord")
+
+  user Users?
+}
+
 // endregion
 
 // region VC
@@ -116,18 +125,6 @@ model VCSocial {
   youtube  String? @map("Youtube")
 
   VC VC?
-}
-
-model DistributionPool {
-  id            String   @id @default(uuid()) @map("Id")
-  name          String   @map("Name")
-  addresses     String[] @map("Addresses")
-  fee           Decimal  @map("Fee")
-  maxAllocation Decimal  @map("MaxAllocation")
-  minAllocation Decimal  @map("MinAllocation")
-
-  Projects   Projects? @relation(fields: [projectsId], references: [id], onDelete: Cascade)
-  projectsId String?
 }
 
 // endregion
@@ -255,6 +252,18 @@ model VestingBatch {
 
   VestingSchedule   VestingSchedule @relation(fields: [vestingScheduleId], references: [id], onDelete: Cascade)
   vestingScheduleId String          @map("VestingScheduleId")
+}
+
+model DistributionPool {
+  id            String   @id @default(uuid()) @map("Id")
+  name          String   @map("Name")
+  addresses     String[] @map("Addresses")
+  fee           Decimal  @map("Fee")
+  maxAllocation Decimal  @map("MaxAllocation")
+  minAllocation Decimal  @map("MinAllocation")
+
+  Projects   Projects? @relation(fields: [projectsId], references: [id], onDelete: Cascade)
+  projectsId String?
 }
 
 // endregion
