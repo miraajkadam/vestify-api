@@ -5,10 +5,13 @@ import {
   addPool,
   addVestingScheduleCon,
   deleteAllProjectDistributionPools,
+  deleteProject,
   deleteProjectDistributionPool,
   deleteVestingSchedule,
   editVestingSchedule,
+  getAllProjects,
   getInvestmentStatsForProject,
+  getProjectByProjectId,
   getProjectDistPoolDetails,
   getProjectDistPools,
   getVestingSchedule,
@@ -262,6 +265,325 @@ const projectRouter = Router()
  *                   example: "Unable to add new project"
  */
 projectRouter.post('/new', addNewProject)
+
+/**
+ * @swagger
+ * /api/project/delete:
+ *   post:
+ *     summary: Delete a project
+ *     description: Deletes a project by its ID.
+ *     tags: [Project]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *                 description: The ID of the project to be deleted.
+ *                 example: "7242012c-511a-410a-b99a-7f2ecf0d238b"
+ *     responses:
+ *       200:
+ *         description: Successfully deleted the project.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Project deleted successfully
+ *       400:
+ *         description: Bad request due to invalid payload or missing fields.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid project ID
+ *       404:
+ *         description: Project not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Project not found
+ *       500:
+ *         description: Server error while deleting the project.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Unable to delete project
+ */
+projectRouter.post('/delete', deleteProject)
+/**
+ * @swagger
+ * openapi: 3.0.0
+ * info:
+ *   title: Project API
+ *   version: 1.0.0
+ *   description: API to manage and retrieve project information
+ * paths:
+ *   /api/project/getAll:
+ *     get:
+ *       summary: Retrieve all projects
+ *       operationId: getAllProjects
+ *       tags:
+ *         - Project
+ *       responses:
+ *         '200':
+ *           description: Successful response with the list of projects
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   success:
+ *                     type: boolean
+ *                     example: true
+ *                   message:
+ *                     type: string
+ *                     example: project list fetch successful
+ *                   data:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         name:
+ *                           type: string
+ *                           example: Bitcoin
+ *                         description:
+ *                           type: string
+ *                           example: Bitcoin is a leading cryptocurrency with significant market potential."
+ *                         round:
+ *                           type: string
+ *                           enum:
+ *                             - PRE_SEED
+ *                             - SEED
+ *                             - SERIES_A
+ *                             - SERIES_B
+ *                             - SERIES_C
+ *                           example: PRE_SEED
+ *         '500':
+ *           description: Internal server error
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   success:
+ *                     type: boolean
+ *                     example: false
+ *                   message:
+ *                     type: string
+ *                     example: unable to fetch project list
+ */
+projectRouter.get('/getAll', getAllProjects)
+/**
+ * @swagger
+ * /api/project/{projectId}:
+ *   get:
+ *     summary: Retrieve a project by its ID
+ *     description: Fetches the project details using the provided project ID.
+ *     tags: [Project]
+ *     parameters:
+ *       - name: projectId
+ *         in: path
+ *         required: true
+ *         description: The unique ID of the project to retrieve.
+ *         example: 30aa20ff-81b8-4752-982e-dc9808a6af8e
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved project details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Requested project fetched successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     project:
+ *                       type: object
+ *                       properties:
+ *                         name:
+ *                           type: string
+ *                           example: "Bitcoin"
+ *                         description:
+ *                           type: string
+ *                           example: "Bitcoin is a leading cryptocurrency with significant market potential."
+ *                         round:
+ *                           type: string
+ *                           example: "PRE_SEED"
+ *                         categories:
+ *                           type: array
+ *                           items:
+ *                             type: string
+ *                           example: ["Tech", "DEFI", "Crypto"]
+ *                         tokensReceived:
+ *                           type: string
+ *                           example: "0/0"
+ *                     tokenMetrics:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           tge:
+ *                             type: string
+ *                             example: "2024-08-28T12:20:13.264Z"
+ *                           tgeUnlock:
+ *                             type: string
+ *                             example: "80"
+ *                           price:
+ *                             type: string
+ *                             example: "1.23"
+ *                           round:
+ *                             type: string
+ *                             example: "PRE_SEED"
+ *                           tgeSummary:
+ *                             type: string
+ *                             example: "This is TGE Summary for Pre Seed round"
+ *                           fdv:
+ *                             type: string
+ *                             example: "1000000000"
+ *                         example: [
+ *                           {
+ *                             tge: "2024-08-28T12:20:13.264Z",
+ *                             tgeUnlock: "80",
+ *                             price: "1.23",
+ *                             round: "PRE_SEED",
+ *                             tgeSummary: "This is TGE Summary for Pre Seed round",
+ *                             fdv: "1000000000"
+ *                           },
+ *                           {
+ *                             tge: "2024-09-15T10:00:00.000Z",
+ *                             tgeUnlock: "70",
+ *                             price: "2.45",
+ *                             round: "SEED",
+ *                             tgeSummary: "This is TGE Summary for Seed round",
+ *                             fdv: "2000000000"
+ *                           },
+ *                           {
+ *                             tge: "2024-10-05T14:30:00.000Z",
+ *                             tgeUnlock: "60",
+ *                             price: "1.75",
+ *                             round: "PRIVATE_1",
+ *                             tgeSummary: "Summary for the Series A round",
+ *                             fdv: "1500000000"
+ *                           }
+ *                         ]
+ *                     socialLink:
+ *                       type: object
+ *                       properties:
+ *                         medium:
+ *                           type: string
+ *                           example: "https://medium.com/@project"
+ *                         website:
+ *                           type: string
+ *                           example: "https://website.com/project"
+ *                         x:
+ *                           type: string
+ *                           example: "https://twitter.com/project"
+ *                         telegram:
+ *                           type: string
+ *                           example: "https://t.me/project"
+ *                     teamAndAdvisors:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           name:
+ *                             type: string
+ *                             example: "Team Member"
+ *                           title:
+ *                             type: string
+ *                             example: "CEO"
+ *                           imgBase64:
+ *                             type: string
+ *                             example: "data:image/png;base64,..."
+ *                     partnersAndInvestors:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           name:
+ *                             type: string
+ *                             example: "Venture Capital Inc."
+ *                           logoBase64:
+ *                             type: string
+ *                             example: "b21hZSB3YSBtb3Ugc2hpbmRlaXJ1"
+ *       400:
+ *         description: Invalid project ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid project ID"
+ *       404:
+ *         description: Project not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Project not found"
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to fetch the project"
+ */
+projectRouter.get('/:projectId', getProjectByProjectId)
 
 /**
  * @swagger
