@@ -5,10 +5,13 @@ import {
   addPool,
   addVestingScheduleCon,
   deleteAllProjectDistributionPools,
+  deleteProject,
   deleteProjectDistributionPool,
   deleteVestingSchedule,
   editVestingSchedule,
+  getAllProjects,
   getInvestmentStatsForProject,
+  getProjectByProjectId,
   getProjectDistPoolDetails,
   getProjectDistPools,
   getVestingSchedule,
@@ -262,6 +265,325 @@ const projectRouter = Router()
  *                   example: "Unable to add new project"
  */
 projectRouter.post('/new', addNewProject)
+
+/**
+ * @swagger
+ * /api/project/delete:
+ *   post:
+ *     summary: Delete a project
+ *     description: Deletes a project by its ID.
+ *     tags: [Project]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *                 description: The ID of the project to be deleted.
+ *                 example: "7242012c-511a-410a-b99a-7f2ecf0d238b"
+ *     responses:
+ *       200:
+ *         description: Successfully deleted the project.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Project deleted successfully
+ *       400:
+ *         description: Bad request due to invalid payload or missing fields.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid project ID
+ *       404:
+ *         description: Project not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Project not found
+ *       500:
+ *         description: Server error while deleting the project.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Unable to delete project
+ */
+projectRouter.post('/delete', deleteProject)
+/**
+ * @swagger
+ * openapi: 3.0.0
+ * info:
+ *   title: Project API
+ *   version: 1.0.0
+ *   description: API to manage and retrieve project information
+ * paths:
+ *   /api/project/getAll:
+ *     get:
+ *       summary: Retrieve all projects
+ *       operationId: getAllProjects
+ *       tags:
+ *         - Project
+ *       responses:
+ *         '200':
+ *           description: Successful response with the list of projects
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   success:
+ *                     type: boolean
+ *                     example: true
+ *                   message:
+ *                     type: string
+ *                     example: project list fetch successful
+ *                   data:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         name:
+ *                           type: string
+ *                           example: Bitcoin
+ *                         description:
+ *                           type: string
+ *                           example: Bitcoin is a leading cryptocurrency with significant market potential."
+ *                         round:
+ *                           type: string
+ *                           enum:
+ *                             - PRE_SEED
+ *                             - SEED
+ *                             - SERIES_A
+ *                             - SERIES_B
+ *                             - SERIES_C
+ *                           example: PRE_SEED
+ *         '500':
+ *           description: Internal server error
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   success:
+ *                     type: boolean
+ *                     example: false
+ *                   message:
+ *                     type: string
+ *                     example: unable to fetch project list
+ */
+projectRouter.get('/getAll', getAllProjects)
+/**
+ * @swagger
+ * /api/project/{projectId}:
+ *   get:
+ *     summary: Retrieve a project by its ID
+ *     description: Fetches the project details using the provided project ID.
+ *     tags: [Project]
+ *     parameters:
+ *       - name: projectId
+ *         in: path
+ *         required: true
+ *         description: The unique ID of the project to retrieve.
+ *         example: 30aa20ff-81b8-4752-982e-dc9808a6af8e
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved project details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Requested project fetched successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     project:
+ *                       type: object
+ *                       properties:
+ *                         name:
+ *                           type: string
+ *                           example: "Bitcoin"
+ *                         description:
+ *                           type: string
+ *                           example: "Bitcoin is a leading cryptocurrency with significant market potential."
+ *                         round:
+ *                           type: string
+ *                           example: "PRE_SEED"
+ *                         categories:
+ *                           type: array
+ *                           items:
+ *                             type: string
+ *                           example: ["Tech", "DEFI", "Crypto"]
+ *                         tokensReceived:
+ *                           type: string
+ *                           example: "0/0"
+ *                     tokenMetrics:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           tge:
+ *                             type: string
+ *                             example: "2024-08-28T12:20:13.264Z"
+ *                           tgeUnlock:
+ *                             type: string
+ *                             example: "80"
+ *                           price:
+ *                             type: string
+ *                             example: "1.23"
+ *                           round:
+ *                             type: string
+ *                             example: "PRE_SEED"
+ *                           tgeSummary:
+ *                             type: string
+ *                             example: "This is TGE Summary for Pre Seed round"
+ *                           fdv:
+ *                             type: string
+ *                             example: "1000000000"
+ *                         example: [
+ *                           {
+ *                             tge: "2024-08-28T12:20:13.264Z",
+ *                             tgeUnlock: "80",
+ *                             price: "1.23",
+ *                             round: "PRE_SEED",
+ *                             tgeSummary: "This is TGE Summary for Pre Seed round",
+ *                             fdv: "1000000000"
+ *                           },
+ *                           {
+ *                             tge: "2024-09-15T10:00:00.000Z",
+ *                             tgeUnlock: "70",
+ *                             price: "2.45",
+ *                             round: "SEED",
+ *                             tgeSummary: "This is TGE Summary for Seed round",
+ *                             fdv: "2000000000"
+ *                           },
+ *                           {
+ *                             tge: "2024-10-05T14:30:00.000Z",
+ *                             tgeUnlock: "60",
+ *                             price: "1.75",
+ *                             round: "PRIVATE_1",
+ *                             tgeSummary: "Summary for the Series A round",
+ *                             fdv: "1500000000"
+ *                           }
+ *                         ]
+ *                     socialLink:
+ *                       type: object
+ *                       properties:
+ *                         medium:
+ *                           type: string
+ *                           example: "https://medium.com/@project"
+ *                         website:
+ *                           type: string
+ *                           example: "https://website.com/project"
+ *                         x:
+ *                           type: string
+ *                           example: "https://twitter.com/project"
+ *                         telegram:
+ *                           type: string
+ *                           example: "https://t.me/project"
+ *                     teamAndAdvisors:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           name:
+ *                             type: string
+ *                             example: "Team Member"
+ *                           title:
+ *                             type: string
+ *                             example: "CEO"
+ *                           imgBase64:
+ *                             type: string
+ *                             example: "data:image/png;base64,..."
+ *                     partnersAndInvestors:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           name:
+ *                             type: string
+ *                             example: "Venture Capital Inc."
+ *                           logoBase64:
+ *                             type: string
+ *                             example: "b21hZSB3YSBtb3Ugc2hpbmRlaXJ1"
+ *       400:
+ *         description: Invalid project ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid project ID"
+ *       404:
+ *         description: Project not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Project not found"
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to fetch the project"
+ */
+projectRouter.get('/:projectId', getProjectByProjectId)
 
 /**
  * @swagger
@@ -528,7 +850,7 @@ projectRouter.post('/addPool', addPool)
  *                       example: "0x1234abcd5678efgh"
  *                   id:
  *                     type: string
- *                     example: "abc123"
+ *                     example: "1c30cc8e-ad15-480e-9593-82a3a8ecc82c"
  *       '400':
  *         description: Invalid project ID format
  *         content:
@@ -571,10 +893,269 @@ projectRouter.post('/addPool', addPool)
  */
 projectRouter.get('/:projectId/distPools', getProjectDistPools)
 
+/**
+ * @swagger
+ * /api/project/{projectId}/deleteAllDistPools:
+ *   delete:
+ *     summary: Delete all distribution pools of a project
+ *     description: Deletes all distribution pools associated with a specific project using the projectId. Returns an error if the projectId is invalid or not found.
+ *     tags: [Project]
+ *     parameters:
+ *       - name: projectId
+ *         in: path
+ *         description: The unique ID of the project to delete distribution pools for.
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "c87b0321-f22e-4bc6-929d-3a42fec2e227"
+ *     responses:
+ *       '200':
+ *         description: Successfully deleted all distribution pools for the project
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Successfully deleted all distribution pools"
+ *       '400':
+ *         description: Invalid project ID format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid project Id"
+ *       '404':
+ *         description: Project not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Project not found"
+ *       '500':
+ *         description: Internal server error while deleting distribution pools
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to delete all distribution pools"
+ */
 projectRouter.delete('/:projectId/deleteAllDistPools', deleteAllProjectDistributionPools)
 
+/**
+ * @swagger
+ * /api/project/distPool/{distPoolId}/details:
+ *   get:
+ *     summary: Get details of a specific distribution pool
+ *     description: Fetches details of a specific distribution pool by its distPoolId, including associated investments and user details.
+ *     tags: [Project]
+ *     parameters:
+ *       - name: distPoolId
+ *         in: path
+ *         description: The unique ID of the distribution pool to fetch details for.
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "1c30cc8e-ad15-480e-9593-82a3a8ecc82c"
+ *     responses:
+ *       '200':
+ *         description: Successfully retrieved the distribution pool details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Successfully fetched distribution pool"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     info:
+ *                       type: object
+ *                       properties:
+ *                         addresses:
+ *                           type: array
+ *                           items:
+ *                             type: string
+ *                             example: "0x4b3316e6d309afcacdef6aedf839edfdf2a1cdad"
+ *                         projectsId:
+ *                           type: string
+ *                           example: "0x6af5e22dfddadac2de6bc9ebe4b6f272ed06da80"
+ *                         fee:
+ *                           type: string
+ *                           example: "92"
+ *                         maxAllocation:
+ *                           type: string
+ *                           example: "7144"
+ *                         minAllocation:
+ *                           type: string
+ *                           example: "50"
+ *                         name:
+ *                           type: string
+ *                           example: "Founding Groups"
+ *                     investments:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           socials:
+ *                             type: object
+ *                             properties:
+ *                               x:
+ *                                 type: string
+ *                                 example: "https://x.com/Vaughn.Beer"
+ *                               discord:
+ *                                 type: string
+ *                                 example: "https://discord.gg/Vaughn.Beer"
+ *                           investment:
+ *                             type: object
+ *                             properties:
+ *                               amount:
+ *                                 type: number
+ *                                 example: 290.175
+ *                               fromWallet:
+ *                                 type: string
+ *                                 example: "0x4b3316e6d309afcacdef6aedf839edfdf2a1cdad"
+ *                               toWallet:
+ *                                 type: string
+ *                                 example: "0x8c7baecee03bbf680c7cdb2b5c6bbbe34db02ff3"
+ *       '400':
+ *         description: Invalid distribution pool ID format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid distribution pool id"
+ *       '404':
+ *         description: Distribution pool not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Distribution pool not found"
+ *       '500':
+ *         description: Internal server error while fetching distribution pool details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to fetch distribution pool"
+ */
 projectRouter.get('/distPool/:distPoolId/details', getProjectDistPoolDetails)
 
+/**
+ * @swagger
+ * /api/project/distPool/{distPoolId}/delete:
+ *   delete:
+ *     summary: Delete a specific distribution pool
+ *     description: Deletes a distribution pool associated with a specific project using the distPoolId. Returns an error if the distPoolId is invalid or the pool is not found.
+ *     tags: [Project]
+ *     parameters:
+ *       - name: distPoolId
+ *         in: path
+ *         description: The unique ID of the distribution pool to delete.
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "abc123"
+ *     responses:
+ *       '200':
+ *         description: Successfully deleted the distribution pool
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Successfully deleted distribution pool"
+ *       '400':
+ *         description: Invalid distribution pool ID format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid distribution pool id"
+ *       '404':
+ *         description: Distribution pool not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Distribution pool not found"
+ *       '500':
+ *         description: Internal server error while deleting distribution pool
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to delete distribution pool"
+ */
 projectRouter.delete('/distPool/:distPoolId/delete', deleteProjectDistributionPool)
 
 // #endregion

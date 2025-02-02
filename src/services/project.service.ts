@@ -456,6 +456,24 @@ export default class ProjectService {
       },
     })
 
+  getDistributionPoolFromDb = async (distPoolId: string) => {
+    const distPool = await prisma.distributionPool.findUnique({
+      where: {
+        id: distPoolId,
+      },
+      select: {
+        addresses: true,
+        projectsId: true,
+        fee: true,
+        maxAllocation: true,
+        minAllocation: true,
+        name: true,
+      },
+    })
+
+    return distPool
+  }
+
   // #region vesting schedule
   /**
    * Adds a new vesting schedule to the database for a specific project.

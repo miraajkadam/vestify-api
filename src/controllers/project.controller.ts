@@ -4,14 +4,13 @@ import {
   getProjectDistributionPools,
   isAddNewProjectPayloadValid,
   isVestingScheduleValid,
-  mapAddressesToUsers,
   strProjForResponse,
   strRespFrInvestmentStats,
   validateAddDistributionPoolPayload,
   validateDistPoolsDetailsParams,
   validateProjectId,
 } from '@/helpers/project.helper'
-import { ProjectService } from '@/services'
+import { AccountService, ProjectService } from '@/services'
 import {
   AddDistributionPoolPayload,
   AddDistributionPoolResponse,
@@ -19,7 +18,6 @@ import {
   AddressGroups,
   AddVestingSchedule,
   DeleteProjectApiPayload,
-  GetDistributionPoolResponse,
   GetVestingSchedule,
   ProjectDetailsResponse,
   ProjectListResponse,
@@ -257,10 +255,10 @@ export const deleteAllProjectDistributionPools = async (
 }
 
 export const getProjectDistPoolDetails = async (
-  req: Request<{ distPoolId: string }, ApiResponse<GetDistributionPoolResponse>>,
-  res: Response<ApiResponse<GetDistributionPoolResponse>>
+  req: Request<{ distPoolId: string }, ApiResponse<any>>,
+  res: Response<ApiResponse<any>>
 ) => {
-  const apiResponse = new ApiResponse<GetDistributionPoolResponse>(res)
+  const apiResponse = new ApiResponse<any>(res)
 
   try {
     const { distPoolId } = req.params
@@ -275,9 +273,21 @@ export const getProjectDistPoolDetails = async (
 
     if (!distPool) return apiResponse.error('Distribution pool not found')
 
-    // const mappedAddresses = mapAddressesToUsers(distPool.addresses)
+    const accService = new AccountService()
 
-    return apiResponse.successWithData(distPool, 'Successfully fetched distribution pool')
+    const accInvestment = await accService.getUserDetailsViaAddresses(
+      distPool.projectsId!,
+      distPool.addresses
+    )
+
+    const strResp = {
+      info: {
+        ...distPool,
+      },
+      investments: accInvestment,
+    }
+
+    return apiResponse.successWithData(strResp, 'Successfully fetched distribution pool')
   } catch (ex: unknown) {
     const error = ex as Error
 

@@ -93,4 +93,65 @@ export default class AccountService {
 
     return entity !== null
   }
+
+  getUserDetailsViaAddresses = async (projectId: string, wallets: string[]) => {
+    const userDetails = []
+
+    for await (const wallet of wallets) {
+      const usrDet = await prisma.wallet.findFirstOrThrow({
+        where: { address: wallet },
+        select: {
+          Accounts: {
+            select: {
+              user: {
+                select: {
+                  investedProjects: {
+                    where: {
+                      projectId,
+                    },
+                    select: {
+                      amount: true,
+                      fromWalletKey: true,
+                      toWalletKey: true,
+                    },
+                  },
+                  userSocial: {
+                    select: {
+                      discord: true,
+                      x: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      })
+
+      const investedProj = usrDet.Accounts?.user?.investedProjects
+
+      let totalInvest = 0
+      if (!investedProj) {
+        totalInvest = 0
+      } else {
+        investedProj.forEach(prj => {
+          totalInvest += prj.amount.toNumber()
+        })
+      }
+
+      userDetails.push({
+        socials: {
+          x: usrDet.Accounts?.user?.userSocial.x,
+          discord: usrDet.Accounts?.user?.userSocial.discord,
+        },
+        investment: {
+          amount: totalInvest,
+          fromWallet: usrDet.Accounts?.user?.investedProjects[0].fromWalletKey,
+          toWallet: usrDet.Accounts?.user?.investedProjects[0].toWalletKey,
+        },
+      })
+    }
+
+    return userDetails
+  }
 }
