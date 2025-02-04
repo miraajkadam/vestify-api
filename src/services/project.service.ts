@@ -582,8 +582,8 @@ export default class ProjectService {
   ): Promise<{
     batchInterval: Interval
     vestingBatches: { name: string; date: Date; percentage: Decimal }[]
-  }> => {
-    const vestingSchedule = await prisma.vestingSchedule.findUniqueOrThrow({
+  } | null> => {
+    const vestingSchedule = await prisma.vestingSchedule.findUnique({
       where: {
         projectsId: projectId,
       },
@@ -598,6 +598,8 @@ export default class ProjectService {
         },
       },
     })
+
+    if (!vestingSchedule) return null
 
     // Rename the 'VestingBatch' field to 'vestingBatch'
     return {

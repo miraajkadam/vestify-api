@@ -440,10 +440,8 @@ export const getVestingSchedule = async (
     const isProjExist = await pService.checkProjectExistenceInDb(projectId)
     if (!isProjExist) return apiResponse.error('Project not found', 404)
 
-    const isExistingSchedule = await pService.getVestingScheduleFromDB(projectId)
-    if (!isExistingSchedule) return apiResponse.error(`Schedule doesn't exist`)
-
     const vestingSch = await pService.getVestingScheduleFromDB(projectId)
+    if (!vestingSch) return apiResponse.error('No vesting schedule added for the project')
 
     return apiResponse.successWithData(vestingSch, 'Fetched vesting schedule')
   } catch (ex: unknown) {
