@@ -414,7 +414,8 @@ export const validateAddDistributionPoolPayload = (
   fee: AddDistributionPoolPayload['fee'],
   maxAllocation: AddDistributionPoolPayload['maxAllocation'],
   minAllocation: AddDistributionPoolPayload['minAllocation'],
-  pId: AddDistributionPoolPayload['projectId']
+  pId: AddDistributionPoolPayload['projectId'],
+  isEdit: boolean
 ): boolean => {
   // Check if name is a non-empty string
   if (typeof name !== 'string' || name.trim().length === 0) return false
@@ -439,7 +440,7 @@ export const validateAddDistributionPoolPayload = (
   if (maxAllocation < minAllocation) return false
 
   // check P ID
-  if (!pId || typeof pId !== 'string') return false
+  if (!isEdit && (!pId || typeof pId !== 'string')) return false
 
   return true
 }

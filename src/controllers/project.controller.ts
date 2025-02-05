@@ -24,6 +24,7 @@ import {
   ProjectProfileResponse,
 } from '@/types/Project'
 import ApiResponse from '@/utils/ApiResponse'
+import { isValidGuid } from '@/utils/common'
 
 export const addNewProject = async (
   req: Request<null, ApiResponse<string>, AddProjectApiPayload, null>,
@@ -171,7 +172,8 @@ export const addPool = async (
       fee,
       maxAllocation,
       minAllocation,
-      projectId
+      projectId,
+      false
     )
 
     if (!isValidPayload) return apiResponse.error('Invalid payload')
@@ -317,6 +319,56 @@ export const deleteProjectDistributionPool = async (
     const error = ex as Error
 
     return apiResponse.critical('Unable to delete distribution pool', error)
+  }
+}
+
+export const editDistPool = async (
+  req: Request<
+    { distPoolId: string },
+    ApiResponse<AddDistributionPoolResponse>,
+    Omit<AddDistributionPoolPayload, 'projectId'>
+  >,
+  res: Response<ApiResponse<AddDistributionPoolResponse>>
+) => {
+  const apiResponse = new ApiResponse<AddDistributionPoolResponse>(res)
+
+  try {
+    const { distPoolId } = req.params
+    const { name, addresses, fee, maxAllocation, minAllocation } = req.body
+
+    const isValidPayload = validateAddDistributionPoolPayload(
+      name,
+      addresses,
+      fee,
+      maxAllocation,
+      minAllocation,
+      '',
+      true
+    )
+
+    if (!isValidPayload || !isValidGuid(distPoolId)) return apiResponse.error('Invalid payload')
+
+    const pService = new ProjectService()
+
+    const isDistPoolExist = await pService.checkDistPoolExistenceInDb(distPoolId)
+    if (!isDistPoolExist) return apiResponse.error('Dist Pool not found', 404)
+
+    const id = await pService.editDistributionPoolInDb(
+      name,
+      addresses,
+      fee,
+      maxAllocation,
+      minAllocation,
+      distPoolId
+    )
+
+    if (!id) return apiResponse.error('Unable to edit distribution pool in db')
+
+    return apiResponse.successWithData(id, 'Distribution pool edited successfully')
+  } catch (ex: unknown) {
+    const error = ex as Error
+
+    return apiResponse.critical('Unable to edit distribution pool', error)
   }
 }
 

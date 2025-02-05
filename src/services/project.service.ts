@@ -1,4 +1,4 @@
-import { Interval, ProjectRound } from '@prisma/client'
+import { DistributionPool, Interval, ProjectRound } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 
 import prisma from '@/db'
@@ -370,6 +370,33 @@ export default class ProjectService {
     return id
   }
 
+  editDistributionPoolInDb = async (
+    name: AddDistributionPoolPayload['name'],
+    addresses: AddDistributionPoolPayload['addresses'],
+    fee: AddDistributionPoolPayload['fee'],
+    maxAllocation: AddDistributionPoolPayload['maxAllocation'],
+    minAllocation: AddDistributionPoolPayload['minAllocation'],
+    distPoolId: DistributionPool['id']
+  ) => {
+    const { id } = await prisma.distributionPool.update({
+      where: {
+        id: distPoolId,
+      },
+      data: {
+        name,
+        addresses,
+        fee,
+        maxAllocation,
+        minAllocation,
+      },
+      select: {
+        id: true,
+      },
+    })
+
+    return id
+  }
+
   /**
    * Fetches the distribution pools for a given project from the database.
    *
@@ -415,6 +442,14 @@ export default class ProjectService {
       },
     })
   // #endregion
+
+  checkDistPoolExistenceInDb = async (id: string): Promise<boolean> => {
+    const entity = await prisma.distributionPool.findUnique({
+      where: { id },
+    })
+
+    return entity !== null
+  }
 
   /**
    * Retrieves the main investors' wallet addresses for a given project.

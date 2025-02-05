@@ -8,6 +8,7 @@ import {
   deleteProject,
   deleteProjectDistributionPool,
   deleteVestingSchedule,
+  editDistPool,
   editVestingSchedule,
   getAllProjects,
   getInvestmentStatsForProject,
@@ -1086,6 +1087,114 @@ projectRouter.delete('/:projectId/deleteAllDistPools', deleteAllProjectDistribut
  *                   example: "Unable to fetch distribution pool"
  */
 projectRouter.get('/distPool/:distPoolId/details', getProjectDistPoolDetails)
+
+/**
+ * @swagger
+ * /api/project/distPool/{distPoolId}/edit:
+ *   put:
+ *     summary: Edit an existing distribution pool
+ *     description: This endpoint allows editing the details of an existing distribution pool using the provided distPoolId.
+ *     tags: [Project]
+ *     parameters:
+ *       - name: distPoolId
+ *         in: path
+ *         description: The unique ID of the distribution pool to edit.
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "1c30cc8e-ad15-480e-9593-82a3a8ecc82c"
+ *     requestBody:
+ *       description: Payload to edit the distribution pool
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Updated Fund Pool"
+ *               addresses:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   pattern: '^0x[a-fA-F0-9]{40}$'
+ *                 example: ["0x1234abcd5678efgh", "0x9876zyxw4321kjl"]
+ *               fee:
+ *                 type: number
+ *                 format: float
+ *                 example: 0.05
+ *               maxAllocation:
+ *                 type: number
+ *                 format: float
+ *                 example: 2000000.00
+ *               minAllocation:
+ *                 type: number
+ *                 format: float
+ *                 example: 100000.00
+ *             required:
+ *               - name
+ *               - addresses
+ *               - fee
+ *               - maxAllocation
+ *               - minAllocation
+ *     responses:
+ *       '200':
+ *         description: Distribution pool successfully edited
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Distribution pool edited successfully"
+ *                 data:
+ *                   type: string
+ *                   example: "1c30cc8e-ad15-480e-9593-82a3a8ecc82c"
+ *       '400':
+ *         description: Invalid payload
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid payload"
+ *       '404':
+ *         description: Distribution pool not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Dist Pool not found"
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to edit distribution pool"
+ */
+projectRouter.put('/distPool/:distPoolId/edit', editDistPool)
 
 /**
  * @swagger
