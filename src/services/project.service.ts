@@ -510,42 +510,6 @@ export default class ProjectService {
   }
 
   // #region vesting schedule
-  // /**
-  //  * Adds a new vesting schedule to the database for a specific project.
-  //  *
-  //  * This function creates a vesting schedule linked to a project and adds vesting batches
-  //  * to the schedule. Each vesting batch specifies a batch date and other relevant information.
-  //  *
-  //  * @async
-  //  * @param {string} projectId - The unique identifier of the project for which the vesting schedule is being added.
-  //  * @param {AddVestingSchedule} schedule - The vesting schedule data that includes the batch interval and vesting batches.
-  //  * @returns {Promise<void>} - A promise that resolves once the vesting schedule and its batches have been successfully created.
-  //  * @throws {Error} Throws an error if there is an issue adding the vesting schedule to the database.
-  //  */
-  // addVestingScheduleInDB = async (
-  //   projectId: string,
-  //   schedule: AddVestingSchedule
-  // ): Promise<void> => {
-  //   await prisma.vestingSchedule.create({
-  //     data: {
-  //       releaseInterval: schedule.batchInterval,
-  //       Projects: {
-  //         connect: {
-  //           id: projectId,
-  //         },
-  //       },
-  //       VestingBatch: {
-  //         createMany: {
-  //           data: schedule.vestingBatches.map(item => ({
-  //             ...item,
-  //             date: new Date(item.date),
-  //           })),
-  //         },
-  //       },
-  //     },
-  //   })
-  // }
-
   createVestingSchedulesInDb = async (
     batches: {
       name: VestingBatch['name']
