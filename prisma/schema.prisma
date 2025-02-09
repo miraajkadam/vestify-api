@@ -236,8 +236,8 @@ model ProjectWallet {
 
 // Todo: Change VestingScheudle - Project to mandatory one-to-one relation
 model VestingSchedule {
-  id            String   @id @unique @default(uuid()) @map("Id")
-  batchInterval Interval @map("BatchInterval")
+  id              String  @id @unique @default(uuid()) @map("Id")
+  releaseInterval Release @map("ReleaseInterval")
 
   VestingBatch VestingBatch[]
   Projects     Projects?      @relation(fields: [projectsId], references: [id])
