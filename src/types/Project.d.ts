@@ -212,7 +212,7 @@ type AddressGroups = AddressGroup[]
 // #region Vesting Schedule
 
 type AddVestingSchedule = {
-  batchInterval: Interval
+  batchInterval: Release
   vestingBatches: VestingBatches<string>[]
 }
 
@@ -223,7 +223,7 @@ type VestingBatches<T extends string | Date = string> = {
 }
 
 type GetVestingSchedule = {
-  batchInterval: Interval
+  releaseInterval: Release
   vestingBatches: VestingBatches<Date>[]
 }
 

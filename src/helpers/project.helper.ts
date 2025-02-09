@@ -1,4 +1,4 @@
-import { ProjectRound } from '@prisma/client'
+import { ProjectRound, Release, VestingBatch } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 
 import { ProjectService } from '@/services'
@@ -256,6 +256,8 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload): bool
   )
     return false
 
+  if (!isValidReleases(releaseType, releaseMonths)) return false
+
   // Validate 'teamAndAdvisors' array
   if (!Array.isArray(payload.teamAndAdvisors)) return false
 
@@ -308,6 +310,113 @@ export const isAddNewProjectPayloadValid = (payload: AddProjectApiPayload): bool
   if (!isValidWalletAddress(chain, walletAddress)) return false
 
   return true
+}
+
+export const isValidReleases = (releaseType: string, releaseMonths: number) => {
+  if (
+    releaseType !== Release.LINEAR &&
+    releaseType !== Release.QUARTERLY &&
+    releaseType !== Release.YEARLY
+  )
+    return false
+
+  if (releaseType === Release.QUARTERLY && releaseMonths % 3 !== 0) {
+    return false
+  } else if (releaseType === Release.YEARLY && releaseMonths % 12 !== 0) {
+    return false
+  }
+
+  return true
+}
+
+export const createVestingSchedules = async (
+  pService: ProjectService,
+  projectId: string,
+  lockupPeriod: number,
+  releaseMonths: number,
+  tge: string,
+  tgeUnlock: number,
+  releaseType: Release
+) => {
+  const batches = [] as {
+    name: VestingBatch['name']
+    date: VestingBatch['date']
+    percentage: number
+  }[]
+
+  const firstBatch = {
+    name: 'TGE',
+    date: new Date(tge),
+    percentage: tgeUnlock,
+  }
+
+  batches.push(firstBatch)
+
+  const remainingBatches = getRemainingBatches(
+    tge,
+    tgeUnlock,
+    releaseMonths,
+    lockupPeriod,
+    releaseType
+  )
+
+  batches.push(...remainingBatches)
+
+  return pService.createVestingSchedulesInDb(batches, releaseType, projectId)
+}
+
+const getRemainingBatches = (
+  tge: string,
+  tgeUnlock: number,
+  releaseMonths: number,
+  lockupPeriod: number,
+  releaseType: Release
+) => {
+  const remainingPercentage = 100 - tgeUnlock
+
+  let remBatchesCount: number, batchPercentage: number, increment: number
+
+  switch (releaseType) {
+    case Release.LINEAR: {
+      remBatchesCount = releaseMonths
+      batchPercentage = remainingPercentage / remBatchesCount
+      increment = 1
+
+      break
+    }
+    case Release.QUARTERLY: {
+      remBatchesCount = releaseMonths / 3
+      batchPercentage = remainingPercentage / remBatchesCount
+      increment = 3
+
+      break
+    }
+    case Release.YEARLY: {
+      remBatchesCount = releaseMonths / 12
+      batchPercentage = remainingPercentage / remBatchesCount
+      increment = 12
+
+      break
+    }
+  }
+
+  const tgeDate = new Date(tge)
+  const batches = []
+  let tempDate = tgeDate.setMonth(tgeDate.getMonth() + lockupPeriod)
+
+  for (let i = 0; i < remBatchesCount; i++) {
+    const batch = {
+      name: `Batch ${i + 1}`,
+      date: new Date(tempDate),
+      percentage: batchPercentage,
+    }
+
+    batches.push(batch)
+
+    tempDate = tgeDate.setMonth(tgeDate.getMonth() + increment)
+  }
+
+  return batches
 }
 
 // #region vesting batches

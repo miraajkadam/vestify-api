@@ -3,7 +3,6 @@ import { Router } from 'express'
 import {
   addNewProject,
   addPool,
-  addVestingScheduleCon,
   deleteAllProjectDistributionPools,
   deleteProject,
   deleteProjectDistributionPool,
@@ -1470,7 +1469,7 @@ projectRouter.get('/:projectId/getVestingSchedule', getVestingSchedule)
  *                   type: string
  *                   example: "Unable to add vesting schedule."
  */
-projectRouter.post('/:projectId/addVestingSchedule', addVestingScheduleCon)
+// projectRouter.post('/:projectId/addVestingSchedule', addVestingScheduleCon)
 
 /**
  * @swagger
