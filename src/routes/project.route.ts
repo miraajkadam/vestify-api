@@ -1391,8 +1391,8 @@ projectRouter.get('/:projectId/getVestingSchedule', getVestingSchedule)
  *               batchInterval:
  *                 type: string
  *                 description: The interval for vesting batches (One of "MONTHLY", "QUARTERLY", "ANNUALLY").
- *                 enum: ["MONTHLY", "QUARTERLY", "ANNUALLY"]
- *                 example: "MONTHLY"
+ *                 enum: ['LINEAR', 'QUARTERLY', 'YEARLY']
+ *                 example: "LINEAR"
  *               vestingBatches:
  *                 type: array
  *                 items:
