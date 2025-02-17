@@ -439,7 +439,7 @@ export const validateProjectId = (projectId: string): boolean =>
 
 export const isVestingScheduleValid = (payload: AddVestingSchedule) => {
   // Step 1: Validate 'batchInterval' field
-  const validIntervals = ['MONTHLY', 'QUARTERLY', 'ANNUALLY']
+  const validIntervals = ['LINEAR', 'QUARTERLY', 'YEARLY']
   if (!payload.batchInterval || !validIntervals.includes(payload.batchInterval)) {
     return false
   }
